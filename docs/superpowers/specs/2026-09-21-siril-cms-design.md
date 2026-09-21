@@ -30,6 +30,7 @@
 | 6 | Шаблоны: блоки + варианты; тема = код (компоненты + CSS-токены) + конфиг |
 | 7 | Клиент правит контент сам, в веб-админке; drafts/publish — из коробки Payload |
 | 8 | Site-aware модель данных с первого дня → дешёвая миграция в v2 |
+| 9 | Пакетный менеджер: **pnpm** (workspaces: `nuxt`, `payload`, `blocks-definitions`, `infra`); strict hoisting, shared store |
 
 ## 3. Архитектура (v1)
 
@@ -130,14 +131,14 @@ Volume'ы: `pgdata`, `media`.
 
 ## 10. Локальная разработка
 
-Цель: `git clone → npm i → npm run dev` — и разработчик работает; без локальных установок БД/сервисов.
+Цель: `git clone → pnpm i → pnpm dev:all` — и разработчик работает; без локальных установок БД/сервисов.
 
 **Основной цикл (watch):**
 - **Docker — только Postgres** (`compose.dev.yml`). Nuxt и Payload — нативно на машине девелопера в watch-режиме: без контейнерного overhead, мгновенный HMR.
   - Nuxt: `localhost:3000` (SSR + API). Payload: `localhost:3001` (админка + REST `/api`). Nuxt SSR дёргает `http://localhost:3001/api`.
-  - `npm run dev:all` — одна команда: pg (docker) + nuxt + payload (concurrently).
-- **blocks-definitions** — Nuxt и Payload импортируют **TS-исходник напрямую** (workspaces/path-mapping): нулевых build-шагов в цикле, изменение schema блока видна в обоих сразу.
-- **Демо-сид**: `npm run seed` — создаёт демо-сайты (3–4, с разными theme IDs), демо-страницы/посты/формы/заявки → блоки разрабатывают и переключение тем тестируют в готовой среде.
+  - `pnpm dev:all` — одна команда: pg (docker) + nuxt + payload (concurrently).
+- **blocks-definitions** — Nuxt и Payload импортируют **TS-исходник напрямую** (pnpm workspaces, симлинк-зависимость): нулевых build-шагов в цикле, изменение schema блока видна в обоих сразу.
+- **Демо-сид**: `pnpm seed` — создаёт демо-сайты (3–4, с разными theme IDs), демо-страницы/посты/формы/заявки → блоки разрабатывают и переключение тем тестируют в готовой среде.
 - **Уведомления в dev**: без SMTP/telegram → лог в консоль.
 
 **Production-симуляция:** `docker compose up` (полный стек: Caddy + Nuxt + Payload + PG, localhost) — проверить on-demand TLS, purge-webhook, выдачу media до деплоя на нового клиента.
