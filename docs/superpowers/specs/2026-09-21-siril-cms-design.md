@@ -56,7 +56,7 @@ client.com/media ─► Caddy (static volume)
 | `pages` | title, slug, locale, `sections` (Blocks, см. §5), seo: {title, description, ogImage, canonical, noindex} |
 | `posts` | title, slug, locale, excerpt, body (rich-text), cover (media), categories, seo |
 | `categories` | name, slug |
-| `site-content` (global) | navigation (array: label, url, order), footer (text, socials, contacts) |
+| `site-content` (global) | navigation (array: label, page (rel → `pages`), externalUrl, order — в админке: дропдаун по списку страниц, drag-реордер), footer (text, socials, contacts) |
 | `forms` | name, slug, `fields` (Blocks — см. ниже), settings: successMessage, useHoneypot, useTurnstile |
 | `form-submissions` | form (rel), data (JSON: поле→значение), ip, userAgent, createdAt. Read-only |
 | `media` | встроенная Payload-коллекция, путь с префиксом `<site>/` |
@@ -103,6 +103,8 @@ client.com/media ─► Caddy (static volume)
   - `owner` (владелец, ты): всё, включая site-технические настройки (домен, SMTP, ключи), управление пользователями.
   - `editor` (клиент): страницы, посты, медиа, `site-content`, формы (включая билдер), **переключение темы**, заявки. Без site-технарядок.
 - **Drafts**: клиент правит в draft → кнопка «Опубликовать» (Payload). История версий → restore.
+- **Клиент создаёт страницы**: «Add» в списке pages → выбор блоков из палитры темы (фильтр по allowed-набору, §5) → контент → draft → publish. Slug — автогенерация из заголовка. Новые страницы автоматически попадают в sitemap (§8).
+- **Редактор меню**: site-content → navigation — добавить/удалить/переместить; ссылка = выбор из списка существующих страниц (relationship, поиск) либо externalUrl.
 - Кастомные панели: (1) form-builder, (2) страница «Дизайн» — переключатель тем с превью. (v2: реестр сайтов.)
 
 ## 8. SEO, кэш, i18n
