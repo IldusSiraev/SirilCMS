@@ -72,6 +72,64 @@ export const BLOCKS: BlockDef[] = [
       ] },
     ] },
   ]},
+  { type: 'team', name: 'Команда', variants: [
+    { id: 'default', name: 'Сетка', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'members', type: 'object-array', label: 'Люди', maxItems: 12, subfields: [
+        { name: 'name', type: 'text', label: 'Имя', required: true },
+        { name: 'role', type: 'text', label: 'Роль' },
+        { name: 'photo', type: 'image', label: 'Фото' },
+        { name: 'link', type: 'link', label: 'Ссылка (сайт/LinkedIn)' },
+      ] },
+    ] },
+  ]},
+  { type: 'portfolio-grid', name: 'Портфолио', variants: [
+    { id: 'default', name: 'Сетка', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'items', type: 'object-array', label: 'Работы', maxItems: 24, subfields: [
+        { name: 'title', type: 'text', label: 'Название', required: true },
+        { name: 'image', type: 'image', label: 'Обложка' },
+        { name: 'link', type: 'link', label: 'Ссылка (необяз.)' },
+      ] },
+    ] },
+  ]},
+  { type: 'cta', name: 'CTA', variants: [
+    { id: 'default', name: 'Центр', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок', required: true },
+      { name: 'body', type: 'richtext', label: 'Текст' },
+      { name: 'buttonText', type: 'text', label: 'Кнопка' },
+      { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
+    ] },
+    { id: 'banner', name: 'Баннер с фоном', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок', required: true },
+      { name: 'body', type: 'richtext', label: 'Текст' },
+      { name: 'image', type: 'image', label: 'Фоновое изображение' },
+      { name: 'buttonText', type: 'text', label: 'Кнопка' },
+      { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
+    ] },
+  ]},
+  { type: 'contact', name: 'Контакты', variants: [
+    { id: 'default', name: 'Карточка', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'email', type: 'email', label: 'Email' },
+      { name: 'phone', type: 'text', label: 'Телефон' },
+      { name: 'address', type: 'text', label: 'Адрес' },
+      { name: 'workHours', type: 'text', label: 'Часы работы' },
+      { name: 'mapLink', type: 'link', label: 'Ссылка на карту' },
+    ] },
+  ]},
+  { type: 'post-list', name: 'Посты: список', variants: [
+    { id: 'default', name: 'Список', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'limit', type: 'number', label: 'Сколько', placeholder: '6' },
+    ] },
+  ]},
+  { type: 'post-grid', name: 'Посты: сетка', variants: [
+    { id: 'default', name: 'Сетка', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'limit', type: 'number', label: 'Сколько', placeholder: '9' },
+    ] },
+  ]},
 ]
 const defaultThemeFrom = (blocks: BlockDef[]): ThemeDef => ({
   id: 'default', name: 'Default', tokens: { '--c-primary': '#0f766e' },

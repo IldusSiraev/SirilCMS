@@ -325,6 +325,80 @@ export interface Page {
             blockName?: string | null;
             blockType: 'testimonials';
           }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            members?:
+              | {
+                  name: string;
+                  role?: string | null;
+                  photo?: (number | null) | Media;
+                  link?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'team';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            items?:
+              | {
+                  title: string;
+                  image?: (number | null) | Media;
+                  link?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'portfolio-grid';
+          }
+        | {
+            variant?: ('default' | 'banner') | null;
+            title: string;
+            body?:
+              | {
+                  [k: string]: unknown;
+                }[]
+              | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            image?: (number | null) | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            email?: string | null;
+            phone?: string | null;
+            address?: string | null;
+            workHours?: string | null;
+            mapLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contact';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'post-list';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'post-grid';
+          }
       )[]
     | null;
   seo?: {
@@ -686,6 +760,82 @@ export interface PagesSelect<T extends boolean = true> {
                     avatar?: T;
                     id?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+        team?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              members?:
+                | T
+                | {
+                    name?: T;
+                    role?: T;
+                    photo?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'portfolio-grid'?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    image?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              body?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contact?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              email?: T;
+              phone?: T;
+              address?: T;
+              workHours?: T;
+              mapLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'post-list'?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'post-grid'?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              limit?: T;
               id?: T;
               blockName?: T;
             };
