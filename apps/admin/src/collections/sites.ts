@@ -7,7 +7,7 @@ export const Sites: CollectionConfig = {
     description: 'Настройки сайта (v1: одна запись)',
   },
   access: {
-    read: ({ req: { user } }) => isOwner(user) || !!user,
+    read: () => true,
     create: ({ req: { user } }) => isOwner(user),
     update: ({ req: { user } }) => isOwner(user),
     delete: ({ req: { user } }) => isOwner(user),
@@ -55,11 +55,11 @@ export const Sites: CollectionConfig = {
       name: 'settings',
       type: 'group',
       fields: [
-        { name: 'smtpHost', type: 'text' },
-        { name: 'smtpPort', type: 'number' },
-        { name: 'smtpUser', type: 'text' },
-        { name: 'smtpPass', type: 'text' },
-        { name: 'analyticsId', type: 'text' },
+        { name: 'smtpHost', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
+        { name: 'smtpPort', type: 'number', access: { read: ({ req: { user } }) => isOwner(user) } },
+        { name: 'smtpUser', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
+        { name: 'smtpPass', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
+        { name: 'analyticsId', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
       ],
     },
     {
