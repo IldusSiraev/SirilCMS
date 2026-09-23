@@ -41,7 +41,10 @@ export const Posts: CollectionConfig = {
         return true
       }
       if (!user) {
-        return (query?.status as string | undefined) !== 'draft'
+        if (query?.status === 'draft' || query?.draft === true) {
+          return false
+        }
+        return { _status: { equals: 'published' } }
       }
       return canScope(user, siteIdOf(data as MaybeSite))
     },

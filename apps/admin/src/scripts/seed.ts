@@ -26,22 +26,22 @@ async function seed() {
       await payload.create({
         collection: 'pages',
         overrideAccess: true,
-        data: { site: site.id, title: 'Главная', slug: 'home', sections: [] },
+        data: { site: site.id, title: 'Главная', slug: 'home', sections: [], _status: 'published' },
       }),
       await payload.create({
         collection: 'pages',
         overrideAccess: true,
-        data: { site: site.id, title: 'О проекте', slug: 'about', sections: [] },
+        data: { site: site.id, title: 'О проекте', slug: 'about', sections: [], _status: 'published' },
       }),
       await payload.create({
         collection: 'pages',
         overrideAccess: true,
-        data: { site: site.id, title: 'Контакты', slug: 'contact', sections: [] },
+        data: { site: site.id, title: 'Контакты', slug: 'contact', sections: [], _status: 'published' },
       }),
       await payload.create({
         collection: 'pages',
         overrideAccess: true,
-        data: { site: site.id, title: 'Услуги', slug: 'services', sections: [] },
+        data: { site: site.id, title: 'Услуги', slug: 'services', sections: [], _status: 'published' },
       }),
     ]
 
@@ -62,6 +62,7 @@ async function seed() {
           slug: `post-${i}`,
           body: [{ type: 'paragraph', children: [{ type: 'text', text: `Текст поста ${i}…` }] }],
           category: null,
+          _status: 'published',
         },
       })
     }
