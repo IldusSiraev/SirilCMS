@@ -3,8 +3,12 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { Categories } from './src/collections/categories'
 import { Media } from './src/collections/media'
+import { Pages } from './src/collections/pages'
+import { Posts } from './src/collections/posts'
 import { Sites } from './src/collections/sites'
+import { SiteContent } from './src/collections/site-content'
 import { Users } from './src/collections/users'
 
 const filename = fileURLToPath(import.meta.url)
@@ -16,7 +20,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Sites, Media, Users],
+  collections: [Sites, Media, Users, Pages, Posts, Categories, SiteContent],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.PAYLOAD_DB_URI ?? '',

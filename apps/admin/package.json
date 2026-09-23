@@ -7,15 +7,16 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start -p 3001",
-    "seed": "payload run scripts/seed.ts",
-    "migrate": "payload migrate",
-    "migrate:generate": "payload migrate:create",
+    "seed": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js run scripts/seed.ts --disable-transpile",
+    "migrate": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js migrate --disable-transpile",
+    "migrate:generate": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js migrate:create --disable-transpile",
     "test": "vitest run",
-    "generate:importmap": "payload generate:importmap",
-    "generate:types": "payload generate:types"
+    "generate:importmap": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js generate:importmap --disable-transpile",
+    "generate:types": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js generate:types --disable-transpile"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.90.1",
+    "@siril/blocks-definitions": "workspace:*",
     "@payloadcms/next": "^3.90.1",
     "next": "16.3.5",
     "payload": "^3.90.1",
