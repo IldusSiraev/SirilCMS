@@ -33,6 +33,45 @@ export const BLOCKS: BlockDef[] = [
       { name: 'items', type: 'array-text', label: 'Пункты', maxItems: 12 },
     ] },
   ] },
+  { type: 'pricing', name: 'Цены', variants: [
+    { id: 'default', name: 'Сетка', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'plans', type: 'object-array', label: 'Тарифы', maxItems: 6, subfields: [
+        { name: 'title', type: 'text', label: 'Тариф' },
+        { name: 'price', type: 'text', label: 'Цена' },
+        { name: 'description', type: 'richtext', label: 'Описание' },
+        { name: 'buttonText', type: 'text', label: 'Кнопка (необяз.)' },
+        { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
+        { name: 'featured', type: 'boolean', label: 'Выделенный' },
+      ] },
+    ] },
+  ]},
+  { type: 'gallery', name: 'Галерея', variants: [
+    { id: 'default', name: 'Сетка', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'images', type: 'image-array', label: 'Картинки', maxItems: 12 },
+    ] },
+  ]},
+  { type: 'faq', name: 'FAQ', variants: [
+    { id: 'default', name: 'Список', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'items', type: 'object-array', label: 'Вопросы', maxItems: 20, subfields: [
+        { name: 'question', type: 'text', label: 'Вопрос', required: true },
+        { name: 'answer', type: 'richtext', label: 'Ответ', required: true },
+      ] },
+    ] },
+  ]},
+  { type: 'testimonials', name: 'Отзывы', variants: [
+    { id: 'default', name: 'Сетка карточек', fields: [
+      { name: 'title', type: 'text', label: 'Заголовок' },
+      { name: 'items', type: 'object-array', label: 'Отзывы', maxItems: 9, subfields: [
+        { name: 'quote', type: 'richtext', label: 'Цитата' },
+        { name: 'author', type: 'text', label: 'Автор' },
+        { name: 'role', type: 'text', label: 'Роль/компания' },
+        { name: 'avatar', type: 'image', label: 'Фото' },
+      ] },
+    ] },
+  ]},
 ]
 const defaultThemeFrom = (blocks: BlockDef[]): ThemeDef => ({
   id: 'default', name: 'Default', tokens: { '--c-primary': '#0f766e' },

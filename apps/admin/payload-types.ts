@@ -259,6 +259,72 @@ export interface Page {
             blockName?: string | null;
             blockType: 'features';
           }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            plans?:
+              | {
+                  title?: string | null;
+                  price?: string | null;
+                  description?:
+                    | {
+                        [k: string]: unknown;
+                      }[]
+                    | null;
+                  buttonText?: string | null;
+                  buttonLink?: string | null;
+                  featured?: boolean | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricing';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            images?: (number | Media)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer: {
+                    [k: string]: unknown;
+                  }[];
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            items?:
+              | {
+                  quote?:
+                    | {
+                        [k: string]: unknown;
+                      }[]
+                    | null;
+                  author?: string | null;
+                  role?: string | null;
+                  avatar?: (number | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
       )[]
     | null;
   seo?: {
@@ -558,6 +624,66 @@ export interface PagesSelect<T extends boolean = true> {
                 | T
                 | {
                     value?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        pricing?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              plans?:
+                | T
+                | {
+                    title?: T;
+                    price?: T;
+                    description?: T;
+                    buttonText?: T;
+                    buttonLink?: T;
+                    featured?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              images?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    role?: T;
+                    avatar?: T;
                     id?: T;
                   };
               id?: T;
