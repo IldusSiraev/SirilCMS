@@ -2,7 +2,14 @@
   <div class="app">
     <header class="site-header">
       <nav>
-        <a v-for="it in nav" :key="it.label" :href="href(it)" :target="it.externalUrl ? '_blank' : undefined">{{ it.label }}</a>
+        <a
+          v-for="it in nav"
+          :key="it.label"
+          :href="href(it)"
+          :target="it.externalUrl ? '_blank' : undefined"
+          :rel="it.externalUrl ? 'noopener' : undefined"
+          >{{ it.label }}</a
+        >
       </nav>
     </header>
     <main class="site-main"><slot /></main>
@@ -24,8 +31,12 @@ const footer = computed(() => data.value?.content?.footer ?? null)
 const hasContacts = computed(
   () => !!(footer.value?.email || footer.value?.phone || footer.value?.telegram || (footer.value?.social?.length ?? 0)),
 )
-const href = (it: any) =>
-  it.externalUrl ? it.externalUrl : it.page?.slug ? `/${it.page.slug}` : it.page ? `/${it.page}` : '/'
+const href = (it: any) => {
+  if (it.externalUrl) return it.externalUrl
+  if (it.page?.slug) return `/${it.page.slug}`
+  if (it.page != null && typeof it.page === 'string') return `/${it.page}`
+  return '/'
+}
 </script>
 <style>
 :root { color-scheme: light; }
