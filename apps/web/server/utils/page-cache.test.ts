@@ -13,4 +13,13 @@ describe('page-cache', () => {
     clearCache(); setCache('c', 'z', 60_000)
     clearCache(); expect(getCache('c')).toBeNull()
   })
+  it('не превышает 200 записей (evict oldest)', () => {
+    clearCache()
+    for (let i = 0; i < 201; i++) setCache(`k${i}`, `v${i}`, 60_000)
+    expect(getCache('k0')).toBeNull(); expect(getCache('k200')).toBe('v200'); clearCache()
+  })
+  it('изоляция ключей', () => {
+    clearCache(); setCache('a', 'x', 60_000)
+    expect(getCache('b')).toBeNull(); clearCache()
+  })
 })

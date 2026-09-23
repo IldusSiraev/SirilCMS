@@ -1,6 +1,11 @@
 const m = new Map<string, { html: string; exp: number }>()
+const MAX_ENTRIES = 200
 
 export function setCache(key: string, html: string, ttlMs: number) {
+  if (m.size >= MAX_ENTRIES && !m.has(key)) {
+    const oldest = m.keys().next().value
+    if (oldest !== undefined) m.delete(oldest)
+  }
   m.set(key, { html, exp: Date.now() + ttlMs })
 }
 

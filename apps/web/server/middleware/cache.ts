@@ -10,8 +10,10 @@ function toBuf(v: unknown): Buffer {
 export default defineEventHandler(async (event) => {
   const url = event.path
   if (event.method !== 'GET' || url.startsWith('/api') || url.startsWith('/media')) return
-  const key = `${event.node.req.headers.host}:${url}`
-  const ttl = Number(process.env.ROUTE_TTL ?? 300_000)
+  const path = url.split('?')[0]
+  const key = `${event.node.req.headers.host}:${path}`
+  const rawTtl = Number(process.env.ROUTE_TTL ?? 300_000)
+  const ttl = Number.isFinite(rawTtl) && rawTtl > 0 ? rawTtl : 300_000
   const cached = getCache(key)
   if (cached) {
     setHeader(event, 'content-type', 'text/html; charset=utf-8')
