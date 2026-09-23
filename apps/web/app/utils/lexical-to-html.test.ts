@@ -10,6 +10,12 @@ it('nested paragraph', () => {
 it('null-safe', () => {
   expect(lexicalToHtml(null)).toBe('')
 })
+it('string input is escaped (array-text items)', () => {
+  expect(lexicalToHtml('<img src=x onerror=alert(1)>')).toBe('&lt;img src=x onerror=alert(1)&gt;')
+})
+it('string input with entities', () => {
+  expect(lexicalToHtml('a < b & c > d')).toBe('a &lt; b &amp; c &gt; d')
+})
 it('multi-paragraph join', () => {
   expect(lexicalToHtml([
     { type: 'paragraph', children: [{ type: 'text', text: 'a' }] },

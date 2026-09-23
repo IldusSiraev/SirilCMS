@@ -27,7 +27,7 @@ function escape(text: string): string {
 
 export function lexicalToHtml(value: unknown): string {
   if (value == null) return ''
-  if (typeof value === 'string') return value
+  if (typeof value === 'string') return escape(value)
   const out: string[] = []
   collect(value, out)
   return out.map(escape).join('\n')

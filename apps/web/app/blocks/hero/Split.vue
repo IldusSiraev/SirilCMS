@@ -4,7 +4,7 @@
       <h1>{{ block.title }}</h1>
       <div class="hero-sub"><RichText :value="block.subtitle" /></div>
     </div>
-    <img :src="mediaUrl(block.image)" v-if="block.image" class="hero-img">
+    <img :src="imgSrc" v-if="imgSrc" class="hero-img">
   </section>
 </template>
 <script setup lang="ts">
@@ -12,6 +12,7 @@ import { getTheme } from '@siril/blocks-definitions'
 const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
+const imgSrc = computed(() => mediaUrl(props.block.image))
 </script>
 <style>
 .hero--split { display: flex; gap: 2rem; align-items: center; padding: 4rem 2rem; max-width: 72rem; margin: 0 auto; }

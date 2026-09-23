@@ -1,6 +1,6 @@
 <template>
   <section class="text-image text-image--split" :style="tokens">
-    <img :src="mediaUrl(block.image)" v-if="block.image" class="text-image-img">
+    <img :src="imgSrc" v-if="imgSrc" class="text-image-img">
     <div class="text-image-copy">
       <h2>{{ block.title }}</h2>
       <div class="text-image-body"><RichText :value="block.body" /></div>
@@ -12,6 +12,7 @@ import { getTheme } from '@siril/blocks-definitions'
 const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
+const imgSrc = computed(() => mediaUrl(props.block.image))
 </script>
 <style>
 .text-image { display: flex; gap: 2rem; align-items: center; padding: 2rem; max-width: 72rem; margin: 0 auto; }
