@@ -9,3 +9,4 @@ dist/
 data/
 backups/
 pgdata/
+apps/admin/media/

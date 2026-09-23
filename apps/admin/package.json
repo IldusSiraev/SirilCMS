@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start -p 3001",
     "seed": "payload run scripts/seed.ts",
+    "migrate": "payload migrate",
+    "migrate:generate": "payload migrate:create",
     "test": "vitest run",
     "generate:importmap": "payload generate:importmap",
     "generate:types": "payload generate:types"

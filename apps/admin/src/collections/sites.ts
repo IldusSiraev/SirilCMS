@@ -1,0 +1,72 @@
+import type { CollectionConfig } from 'payload'
+import { isOwner } from '../access/site-scope'
+
+export const Sites: CollectionConfig = {
+  slug: 'sites',
+  admin: {
+    description: 'Настройки сайта (v1: одна запись)',
+  },
+  access: {
+    read: ({ req: { user } }) => isOwner(user) || !!user,
+    create: ({ req: { user } }) => isOwner(user),
+    update: ({ req: { user } }) => isOwner(user),
+    delete: ({ req: { user } }) => isOwner(user),
+  },
+  fields: [
+    {
+      name: 'name',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      unique: true,
+      defaultValue: 'default',
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'domain',
+      type: 'text',
+    },
+    {
+      name: 'locale',
+      type: 'text',
+      defaultValue: 'ru',
+    },
+    {
+      name: 'theme',
+      type: 'select',
+      options: [
+        { value: 'default', label: 'Default' },
+      ], // T12: options из THEMES
+      defaultValue: 'default',
+    },
+    {
+      name: 'contacts',
+      type: 'group',
+      fields: [
+        { name: 'email', type: 'email' },
+        { name: 'phone', type: 'text' },
+        { name: 'telegram', type: 'text' },
+      ],
+    },
+    {
+      name: 'settings',
+      type: 'group',
+      fields: [
+        { name: 'smtpHost', type: 'text' },
+        { name: 'smtpPort', type: 'number' },
+        { name: 'smtpUser', type: 'text' },
+        { name: 'smtpPass', type: 'text' },
+        { name: 'analyticsId', type: 'text' },
+      ],
+    },
+    {
+      name: 'logo',
+      type: 'upload',
+      relationTo: 'media',
+    },
+  ],
+  versions: false,
+}
