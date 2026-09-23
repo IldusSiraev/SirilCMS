@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isOwner } from '../access/site-scope'
+import { publishHook } from '../utils/publish-hook'
 
 export const Sites: CollectionConfig = {
   slug: 'sites',
@@ -11,6 +12,13 @@ export const Sites: CollectionConfig = {
     create: ({ req: { user } }) => isOwner(user),
     update: ({ req: { user } }) => isOwner(user),
     delete: ({ req: { user } }) => isOwner(user),
+  },
+  hooks: {
+    afterChange: [
+      async (args) => {
+        publishHook('site', args.doc.id as number)
+      },
+    ],
   },
   fields: [
     {

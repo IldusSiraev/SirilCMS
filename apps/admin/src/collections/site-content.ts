@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { publishHook } from '../utils/publish-hook'
 
 export const SiteContent: CollectionConfig = {
   slug: 'site-content',
@@ -11,6 +12,13 @@ export const SiteContent: CollectionConfig = {
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
     delete: ({ req: { user } }) => !!user,
+  },
+  hooks: {
+    afterChange: [
+      async (args) => {
+        publishHook('site', args.doc.id as number)
+      },
+    ],
   },
   fields: [
     { name: 'site', type: 'relationship', relationTo: 'sites', required: true, unique: true, index: true },

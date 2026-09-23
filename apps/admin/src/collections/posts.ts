@@ -1,5 +1,6 @@
 import type { CollectionConfig, Field } from 'payload'
 import { canScope, isOwner } from '../access/site-scope'
+import { publishHook } from '../utils/publish-hook'
 import { seo } from './seo'
 
 // Минимальный адаптер rich text (MVP): в монорепо не установлен @payloadcms/richtext-lexical
@@ -54,6 +55,16 @@ export const Posts: CollectionConfig = {
   },
   versions: {
     drafts: true,
+  },
+  hooks: {
+    afterChange: [
+      async (args) => {
+        // draft-save не меняет опубликованное → без purge (fire-and-forget)
+        const draftParam = args.req.query?.draft
+        if (draftParam === true || draftParam === 'true') return
+        publishHook('post', args.doc.id as number)
+      },
+    ],
   },
   fields: [
     { name: 'site', type: 'relationship', relationTo: 'sites', required: true },

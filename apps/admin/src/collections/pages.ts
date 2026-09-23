@@ -1,6 +1,7 @@
 import type { CollectionConfig, Field } from 'payload'
 import { BLOCKS, toPayloadBlockFields } from '@siril/blocks-definitions'
 import { canScope, isOwner } from '../access/site-scope'
+import { publishHook } from '../utils/publish-hook'
 import { seo } from './seo'
 
 type MaybeSite = { site?: number | { id?: number } } | null | undefined
@@ -41,6 +42,16 @@ export const Pages: CollectionConfig = {
   },
   versions: {
     drafts: true,
+  },
+  hooks: {
+    afterChange: [
+      async (args) => {
+        // draft-save не меняет опубликованное → без purge (fire-and-forget)
+        const draftParam = args.req.query?.draft
+        if (draftParam === true || draftParam === 'true') return
+        publishHook('page', args.doc.id as number)
+      },
+    ],
   },
   fields: [
     { name: 'site', type: 'relationship', relationTo: 'sites', required: true },
