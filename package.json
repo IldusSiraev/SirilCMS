@@ -4,6 +4,7 @@
   "scripts": {
     "dev:pg": "node infra/scripts/dev-pg.mjs",
     "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/web dev\" \"pnpm --filter @siril/admin dev\"",
+    "seed": "pnpm --filter @siril/admin seed",
     "test": "pnpm -r --no-bail test"
   },
   "devDependencies": { "concurrently": "^9.0.0" }
