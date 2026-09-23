@@ -1,6 +1,6 @@
 <template>
   <div v-if="page">
-    <BlockRenderer v-for="b in sections" :key="b.id ?? `${b.type}:${b.variant}`" :block="b" :theme-id="themeId" />
+    <BlockRenderer v-for="b in sections" :key="b.id ?? `${b.blockType ?? b.type}:${b.variant}`" :block="b" :theme-id="themeId" />
   </div>
 </template>
 <script setup lang="ts">

@@ -216,7 +216,51 @@ export interface Page {
   title: string;
   slug?: string | null;
   locale?: string | null;
-  sections?: unknown[] | null;
+  sections?:
+    | (
+        | {
+            variant?: ('default' | 'split') | null;
+            title: string;
+            subtitle?:
+              | {
+                  [k: string]: unknown;
+                }[]
+              | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            image?: (number | null) | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            variant?: ('default' | 'split') | null;
+            title?: string | null;
+            body?:
+              | {
+                  [k: string]: unknown;
+                }[]
+              | null;
+            image?: (number | null) | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text-image';
+          }
+        | {
+            variant?: 'default' | null;
+            title?: string | null;
+            items?:
+              | {
+                  value?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'features';
+          }
+      )[]
+    | null;
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -480,7 +524,46 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   locale?: T;
-  sections?: T | {};
+  sections?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              subtitle?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'text-image'?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              body?: T;
+              image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        features?:
+          | T
+          | {
+              variant?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
   seo?:
     | T
     | {

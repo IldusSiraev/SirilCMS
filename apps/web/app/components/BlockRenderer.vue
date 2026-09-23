@@ -7,10 +7,11 @@ import { getBlock, getTheme, resolveVariant } from '@siril/blocks-definitions'
 import { getBlockComponent } from '../blocks/registry'
 
 const props = defineProps<{ block: any; themeId: string }>()
-const def: BlockDef | undefined = getBlock(props.block.type)
+const type = props.block.blockType ?? props.block.type
+const def: BlockDef | undefined = getBlock(type)
 const fallbackDef: BlockDef = {
-  type: props.block.type,
-  name: props.block.type,
+  type: type,
+  name: type,
   variants: [{ id: 'default', name: 'Default', fields: [] }],
 }
 const r = resolveVariant(
@@ -18,5 +19,5 @@ const r = resolveVariant(
   def ?? fallbackDef,
   props.block.variant,
 )
-const resolved = getBlockComponent(props.block.type, r.variant)
+const resolved = getBlockComponent(type, r.variant)
 </script>
