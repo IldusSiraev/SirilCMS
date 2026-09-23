@@ -2,7 +2,7 @@
   <section class="gallery-block" :style="tokens">
     <h2 class="gallery-title">{{ block.title }}</h2>
     <div class="gallery-grid">
-      <img v-for="(img, idx) in images" :key="idx" :src="mediaUrl(img)" loading="lazy" class="gallery-img">
+      <img v-for="(src, idx) in images" :key="idx" :src="src" loading="lazy" class="gallery-img">
     </div>
   </section>
 </template>
@@ -11,7 +11,11 @@ import { getTheme } from '@siril/blocks-definitions'
 const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
-const images = computed(() => (props.block.images ?? []))
+const images = computed(() =>
+  (props.block.images ?? [])
+    .map((m: unknown) => mediaUrl(m))
+    .filter((s): s is string => s != null),
+)
 </script>
 <style>
 .gallery-block { padding: 2rem; max-width: 72rem; margin: 0 auto; }
