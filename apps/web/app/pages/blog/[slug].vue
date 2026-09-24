@@ -8,7 +8,8 @@
 <script setup lang="ts">
 import { getTheme } from '@siril/blocks-definitions'
 const route = useRoute()
-const themeId = 'default'
+const { data: siteData } = await useSite()
+const themeId = siteData.value?.site?.theme ?? 'default'
 const theme = getTheme(themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
 
