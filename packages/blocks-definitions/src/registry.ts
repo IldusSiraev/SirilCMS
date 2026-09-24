@@ -130,6 +130,11 @@ export const BLOCKS: BlockDef[] = [
       { name: 'limit', type: 'number', label: 'Сколько', placeholder: '9' },
     ] },
   ]},
+  { type: 'form-block', name: 'Форма', variants: [
+    { id: 'default', name: 'Форма обратной связи', fields: [
+      { name: 'form', type: 'form', label: 'Форма', required: true },
+    ] },
+  ]},
 ]
 // Явные темы (T12): default — текущий вид (teal); mono — ч/б, serif, часть вариантов недоступна → fallback.
 const all = (): Record<string, ThemeBlockConfig> => Object.fromEntries(BLOCKS.map(b => [b.type, { enabled: true } as ThemeBlockConfig]))

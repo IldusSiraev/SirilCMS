@@ -75,6 +75,7 @@ export interface Config {
     categories: Category;
     'site-content': SiteContent;
     forms: Form;
+    'form-submissions': FormSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +91,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'site-content': SiteContentSelect<false> | SiteContentSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -404,6 +406,13 @@ export interface Page {
             blockName?: string | null;
             blockType: 'post-grid';
           }
+        | {
+            variant?: 'default' | null;
+            form: number | Form;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'form-block';
+          }
       )[]
     | null;
   seo?: {
@@ -416,6 +425,49 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Определение формы. Конструктор: /form-builder?form=<id>
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  site: number | Site;
+  name: string;
+  /**
+   * POST /api/forms/<slug>/submit (T14)
+   */
+  slug?: string | null;
+  successMessage?: string | null;
+  fields?:
+    | {
+        name: string;
+        label: string;
+        type?:
+          | (
+              | 'text'
+              | 'email'
+              | 'tel'
+              | 'textarea'
+              | 'select'
+              | 'checkbox'
+              | 'checkbox-group'
+              | 'date'
+              | 'file'
+              | 'consent'
+              | 'honeypot'
+            )
+          | null;
+        required?: boolean | null;
+        placeholder?: string | null;
+        options?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -491,45 +543,23 @@ export interface SiteContent {
   createdAt: string;
 }
 /**
- * Определение формы. Конструктор: /form-builder?form=<id>
+ * Заявки: read-only (создаёт web)
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "forms".
+ * via the `definition` "form-submissions".
  */
-export interface Form {
+export interface FormSubmission {
   id: number;
   site: number | Site;
-  name: string;
-  /**
-   * POST /api/forms/<slug>/submit (T14)
-   */
-  slug?: string | null;
-  successMessage?: string | null;
-  fields?:
+  form: number | Form;
+  values?:
     | {
-        name: string;
-        label: string;
-        type?:
-          | (
-              | 'text'
-              | 'email'
-              | 'tel'
-              | 'textarea'
-              | 'select'
-              | 'checkbox'
-              | 'checkbox-group'
-              | 'date'
-              | 'file'
-              | 'consent'
-              | 'honeypot'
-            )
-          | null;
-        required?: boolean | null;
-        placeholder?: string | null;
-        options?: string | null;
+        name?: string | null;
+        value?: string | null;
         id?: string | null;
       }[]
     | null;
+  ip?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -588,6 +618,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'forms';
         value: number | Form;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: number | FormSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -891,6 +925,14 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        'form-block'?:
+          | T
+          | {
+              variant?: T;
+              form?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   seo?:
     | T
@@ -993,6 +1035,24 @@ export interface FormsSelect<T extends boolean = true> {
         options?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  site?: T;
+  form?: T;
+  values?:
+    | T
+    | {
+        name?: T;
+        value?: T;
+        id?: T;
+      };
+  ip?: T;
   updatedAt?: T;
   createdAt?: T;
 }

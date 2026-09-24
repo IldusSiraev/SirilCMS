@@ -4,6 +4,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './src/collections/categories'
+import { FormSubmissions } from './src/collections/form-submissions'
 import { Forms } from './src/collections/forms'
 import { Media } from './src/collections/media'
 import { Pages } from './src/collections/pages'
@@ -21,7 +22,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Sites, Media, Users, Pages, Posts, Categories, SiteContent, Forms],
+  collections: [Sites, Media, Users, Pages, Posts, Categories, SiteContent, Forms, FormSubmissions],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.PAYLOAD_DB_URI ?? '',
