@@ -14,19 +14,35 @@ export const submissionsCsv: Endpoint = {
       })
     }
     const { payload } = req
-    const formId = Number(req.searchParams.get('form') ?? 0)
+    const formIdRaw = req.searchParams.get('form')
+    if (formIdRaw && !/^\d+$/.test(formIdRaw)) {
+      return new Response(JSON.stringify({ error: 'Invalid form id' }), {
+        status: 400,
+        headers: { 'content-type': 'application/json' },
+      })
+    }
+    const formId = formIdRaw ? Number(formIdRaw) : 0
 
     const { docs } = await payload.find({
       collection: 'form-submissions',
       ...(formId ? { where: { form: { equals: formId } } } : {}),
       limit: -1,
       depth: 1,
+      sort: 'createdAt',
     })
     const submissions = (docs ?? []) as unknown as FormSubmission[]
 
-    const form: Form | null = formId
-      ? ((await payload.findByID({ collection: 'forms', id: formId })) as unknown as Form)
-      : null
+    let form: Form | null = null
+    if (formId) {
+      try {
+        form = (await payload.findByID({ collection: 'forms', id: formId })) as unknown as Form
+      } catch {
+        return new Response(JSON.stringify({ error: 'Form not found' }), {
+          status: 404,
+          headers: { 'content-type': 'application/json' },
+        })
+      }
+    }
     const fields = form?.fields ?? []
 
     const headers = ['Дата', ...fields.map((f) => f.label ?? f.name), 'IP']
