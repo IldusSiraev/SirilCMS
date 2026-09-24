@@ -30,10 +30,12 @@ const { data } = await useSite()
 // Тема — данные CMS (T12): токены встраиваем <style> из ?raw текущей темы;
 // ?raw + инлайн — чтобы в head не грузились <link> на ВСЕ темы (чужая тема выигрывала бы каскад).
 // Неизвестный id / провал загрузки → default.
+// CSS в <style> — доверенный (2 файла в репозитории); сюда НЕ передавать пользовательский контент (breakout </style>).
 const themeId = (data.value?.site?.theme ?? 'default') as string
 const themeCssModules = import.meta.glob('../../themes/*/tokens.css', { query: '?raw', import: 'default' }) as Record<string, () => Promise<string>>
 const themeCssModule = (id: string) => Object.entries(themeCssModules).find(([p]) => p.includes(`/${id}/tokens.css`))
-const defaultModule = themeCssModule('default')!
+const defaultModule = themeCssModule('default')
+if (!defaultModule) throw new Error('themes/default/tokens.css not found in build')
 const selected = themeCssModule(themeId) ?? defaultModule
 let tokensCss = ''
 try {
