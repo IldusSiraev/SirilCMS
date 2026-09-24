@@ -15,7 +15,7 @@ if (!home) throw createError({ statusCode: 404, message: 'Home not found' })
 
 const sections = (home.sections ?? []) as any[]
 const seo: any = home.seo
-const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.canonical : `${base}/`
+const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.canonical : base
 useSeoMeta({
   title: seo?.title || home.title,
   description: seo?.description,
