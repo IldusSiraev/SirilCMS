@@ -9,7 +9,7 @@ const slugParts = Array.isArray(route.params.slug) ? route.params.slug : [route.
 const slug = (slugParts as string[]).join('/')
 
 const { data } = await useSite()
-const siteDomain = data.value?.site?.domain || useRuntimeConfig().SITE_DOMAIN
+const siteDomain = data.value?.site?.domain || useRuntimeConfig().public.SITE_DOMAIN
 const base = `https://${siteDomain}`
 const themeId = data.value?.site?.theme ?? 'default'
 
@@ -21,7 +21,7 @@ if (!page) throw createError({ statusCode: 404, message: 'Not found' })
 
 const sections = (page.sections ?? []) as any[]
 const seo: any = page.seo
-const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.canonical : `${base}/${slug}`
+const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.canonical : (slug === 'home' ? base : `${base}/${slug}`)
 useSeoMeta({
   title: seo?.title || page.title,
   description: seo?.description,

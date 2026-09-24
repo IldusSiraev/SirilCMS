@@ -9,7 +9,7 @@
 import { getTheme } from '@siril/blocks-definitions'
 const route = useRoute()
 const { data: siteData } = await useSite()
-const siteDomain = siteData.value?.site?.domain || useRuntimeConfig().SITE_DOMAIN
+const siteDomain = siteData.value?.site?.domain || useRuntimeConfig().public.SITE_DOMAIN
 const base = `https://${siteDomain}`
 const themeId = siteData.value?.site?.theme ?? 'default'
 const theme = getTheme(themeId)

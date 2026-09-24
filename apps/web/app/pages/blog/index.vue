@@ -10,7 +10,7 @@
 const { data } = await useAsyncData('posts-index', () =>
   $fetch<{ docs: any[] }>('/api/posts?limit=50'))
 const { data: siteData } = await useSite()
-const siteDomain = siteData.value?.site?.domain || useRuntimeConfig().SITE_DOMAIN
+const siteDomain = siteData.value?.site?.domain || useRuntimeConfig().public.SITE_DOMAIN
 const base = `https://${siteDomain}`
 const posts = computed(() => data.value?.docs ?? [])
 useSeoMeta({

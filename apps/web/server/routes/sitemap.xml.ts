@@ -1,7 +1,7 @@
 import { payloadGet } from '../utils/payload'
 
 export default defineEventHandler(async (event) => {
-  const base = `https://${useRuntimeConfig().SITE_DOMAIN}`
+  const base = `https://${useRuntimeConfig().public.SITE_DOMAIN}`
   const [pages, posts] = await Promise.all([
     payloadGet<{ docs: any[] }>('pages?limit=500&depth=1'),
     payloadGet<{ docs: any[] }>('posts?limit=500'),

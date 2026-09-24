@@ -5,7 +5,7 @@
 </template>
 <script setup lang="ts">
 const { data } = await useSite()
-const siteDomain = data.value?.site?.domain || useRuntimeConfig().SITE_DOMAIN
+const siteDomain = data.value?.site?.domain || useRuntimeConfig().public.SITE_DOMAIN
 const base = `https://${siteDomain}`
 const themeId = data.value?.site?.theme ?? 'default'
 
@@ -19,7 +19,7 @@ const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.c
 useSeoMeta({
   title: seo?.title || home.title,
   description: seo?.description,
-  ogImage: mediaUrl(seo.ogImage) ?? undefined,
+  ogImage: mediaUrl(seo?.ogImage) ?? undefined,
   canonical,
   robots: seo?.noindex ? 'noindex' : undefined,
 })
