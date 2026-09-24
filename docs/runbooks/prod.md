@@ -100,6 +100,7 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 | Media (картинки) не грузятся | media URL = `https://admin.<domain>/api/media/file/…` (запечен в build `NUXT_PUBLIC_MEDIA_BASE`); DNS `admin.*` должен резолвиться; пересобрать web после изменения |
 | 503 от Let's Encrypt | порты 80/443 не публичны или DNS A не указывает на сервер; staging: `docker compose run --rm caddy caddy cert-expiring ...` / домены временно в `tls internal` |
 | Admin не стартует | `make logs admin` — типично `PAYLOAD_SECRET` < 32 символов |
+| Изменения в контенте видны с задержкой | HTML-кэш web: TTL 5 мин (env `ROUTE_TTL` в web, сек). Нормально: публичация из админки шлёт purge (`POST web/api/purge`, Bearer `PURGE_TOKEN`) — страница обносится мгновенно. Если не обносится: заголовок `x-siril-cache: HIT` + проверьте `NUXT_URL=http://web:3000` в admin (иначе purge молча падает) |
 
 ## 6. Что **не** входит в v1 (carry-overs)
 

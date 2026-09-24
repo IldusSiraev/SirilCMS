@@ -32,6 +32,7 @@ services:
     restart: unless-stopped
     environment:
       PAYLOAD_DB_URI: postgresql://${POSTGRES_USER:-payload}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-payload}
+      NUXT_URL: 'http://web:3000'
       PORT: "3001"
     ports:
       - "3001:3001"
