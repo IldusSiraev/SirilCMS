@@ -1,0 +1,9 @@
+.env
+node_modules
+.git
+.next
+.output
+.nuxt
+backups
+apps/admin/.next
+infra
