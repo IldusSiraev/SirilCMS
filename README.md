@@ -22,4 +22,4 @@ make -C infra new-site # инструкция на второй сайт (сво
 
 Бэкап БД: `cd infra && POSTGRES_DB_URI=postgresql://... make backup` → `infra/backups/*.sql.gz` (авто-очистка > 30 дней).
 
-Локальный демо без домена: `SITE_DOMAIN=localhost`; админка пробрасывается напрямую на `http://localhost:3001` override `3001:3001` в compose). С реальным доменом Caddy сам выпустит Let's Encrypt (80/443).
+Локальный демо без домена: в `.env` — `SITE_DOMAIN=localhost`; админка доступна на `http://localhost:3001` (порт пробрасывает `3001:3001` в compose). Для демо `web` пересобрать с локальным media: `docker compose -f infra/docker-compose.prod.yml --env-file infra/.env build --build-arg NUXT_PUBLIC_MEDIA_BASE=http://localhost:3001`. С реальным доменом Caddy сам выпустит Let's Encrypt (80/443).

@@ -6,4 +6,3 @@ node_modules
 .nuxt
 backups
 apps/admin/.next
-infra
