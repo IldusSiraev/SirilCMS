@@ -7,8 +7,9 @@ export default async function FormBuilderPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { form } = await searchParams
+  const formId = Array.isArray(form) ? form[0] : form
 
-  if (!form) {
+  if (!formId) {
     return (
       <div style={{ padding: '2rem', fontSize: '1rem' }}>
         <h1 style={{ marginTop: 0 }}>Form builder</h1>
@@ -22,5 +23,5 @@ export default async function FormBuilderPage({
     )
   }
 
-  return <FormBuilderClient formId={form} />
+  return <FormBuilderClient formId={formId} />
 }
