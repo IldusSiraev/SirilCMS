@@ -74,6 +74,7 @@ export interface Config {
     posts: Post;
     categories: Category;
     'site-content': SiteContent;
+    forms: Form;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'site-content': SiteContentSelect<false> | SiteContentSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -489,6 +491,49 @@ export interface SiteContent {
   createdAt: string;
 }
 /**
+ * Определение формы. Конструктор: /form-builder?form=<id>
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  site: number | Site;
+  name: string;
+  /**
+   * POST /api/forms/<slug>/submit (T14)
+   */
+  slug?: string | null;
+  successMessage?: string | null;
+  fields?:
+    | {
+        name: string;
+        label: string;
+        type?:
+          | (
+              | 'text'
+              | 'email'
+              | 'tel'
+              | 'textarea'
+              | 'select'
+              | 'checkbox'
+              | 'checkbox-group'
+              | 'date'
+              | 'file'
+              | 'consent'
+              | 'honeypot'
+            )
+          | null;
+        required?: boolean | null;
+        placeholder?: string | null;
+        options?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -539,6 +584,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'site-content';
         value: number | SiteContent;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: number | Form;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -920,6 +969,29 @@ export interface SiteContentSelect<T extends boolean = true> {
         email?: T;
         phone?: T;
         telegram?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  site?: T;
+  name?: T;
+  slug?: T;
+  successMessage?: T;
+  fields?:
+    | T
+    | {
+        name?: T;
+        label?: T;
+        type?: T;
+        required?: T;
+        placeholder?: T;
+        options?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
