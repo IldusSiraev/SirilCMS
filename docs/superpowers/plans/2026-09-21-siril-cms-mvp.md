@@ -2036,12 +2036,12 @@ Run: открыть страницу → в HTML: `<link rel="canonical" href="h
 
 ## Definition of Done (MVP)
 
-- [ ] Все 14 блоков по spec §5 рендерятся; фолбэк вариантов на тему mono работает.
-- [ ] Клиент (editor) умеет: создать страницу, отредактировать меню/футер (site-content), загрузить медиа, draft→publish, собрать форму в builder, переключить тему (design-страница), посмотреть заявки + CSV.
-- [ ] `pnpm test` — все тесты зелёные (packages + web server utils).
-- [ ] Dev-loop: `pnpm dev:all` + `pnpm seed` → демо-сайт за <2 мин.
-- [ ] Production: `make -C infra up` → web + admin + media + TLS; `make backup` (pg_dump).
-- [ ] Git: каждый task — свой conventional-коммит (см. шаги «Коммит»).
+- [x] Все 14 блоков по spec §5 рендерятся; фолбэк вариантов на тему mono работает.
+- [x] Клиент (editor) умеет: создать страницу, отредактировать меню/футер (site-content), загрузить медиа, draft→publish, собрать форму в builder, переключить тему (design-страница), посмотреть заявки + CSV.
+- [x] `pnpm test` — все тесты зелёные (packages + web server utils).
+- [x] Dev-loop: `pnpm dev:all` + `pnpm seed` → демо-сайт за <2 мин.
+- [ ] Production: `make -C infra up` → web + admin + media + TLS; `make backup` (pg_dump).  ← build-verification done (T17); runtime+TLS on VPS (no docker in sandbox)
+- [x] Git: каждый task — свой conventional-коммит (см. шаги «Коммит»).
 
 ## Handoff
 
