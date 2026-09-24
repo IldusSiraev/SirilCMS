@@ -83,13 +83,16 @@ export default function DesignClient({ initial }: { initial: DesignInitial }) {
       setLoadError('')
       setStatus('')
     } catch (e) {
-      setLoadError(`Ошибка загрузки: ${(e as Error).message}`)
+      setLoadError(`Ошибка загрузки: ${e instanceof Error ? e.message : String(e)}`)
     }
   }, [])
 
   useEffect(() => {
+    // SSR (initial.kind === 'site') уже прислал актуальный сайт — повторный fetch на mount
+    // не нужен и создаёт гонку: радиокнопку, выбранную до резолва, load() перезапишет (M1).
+    if (initial.kind === 'site') return
     void load()
-  }, [load])
+  }, [load, initial.kind])
 
   const save = async () => {
     if (!site || !pending || saving) return
@@ -111,7 +114,7 @@ export default function DesignClient({ initial }: { initial: DesignInitial }) {
       setStatus('Сохранено — тема применится на следующем purge (хук T8).')
       await load()
     } catch (e) {
-      setStatus(`Ошибка сохранения: ${(e as Error).message}`)
+      setStatus(`Ошибка сохранения: ${e instanceof Error ? e.message : String(e)}`)
     } finally {
       setSaving(false)
     }
