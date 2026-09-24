@@ -1,0 +1,4 @@
+:root { --c-primary: #111111; --c-bg: #fff; --c-text: #111111; --radius: 0; }
+body { font-family: Georgia, 'Times New Roman', serif; color: var(--c-text); background: var(--c-bg); }
+a { color: var(--c-primary); }
+img { filter: grayscale(1); }

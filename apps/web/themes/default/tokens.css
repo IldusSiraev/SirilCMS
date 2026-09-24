@@ -1,0 +1,3 @@
+:root { --c-primary: #0f766e; --c-bg: #fff; --c-text: #111827; --radius: .5rem; }
+body { font-family: system-ui, sans-serif; color: var(--c-text); background: var(--c-bg); }
+a { color: var(--c-primary); }

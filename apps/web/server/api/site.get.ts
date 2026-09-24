@@ -2,6 +2,11 @@ import { payloadGet } from '../utils/payload'
 
 let cache: { at: number; data: unknown } | null = null
 
+// Чистим кэш при purge, чтобы свитч темы (sites.theme) применялся без задержки в 30 с
+export function clearSiteCache() {
+  cache = null
+}
+
 export default defineEventHandler(async (event) => {
   if (cache && Date.now() - cache.at < 30_000) return cache.data
   const [sites, contents] = await Promise.all([

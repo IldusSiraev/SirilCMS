@@ -139,7 +139,10 @@ export interface Site {
   slug?: string | null;
   domain?: string | null;
   locale?: string | null;
-  theme?: 'default' | null;
+  /**
+   * Переключение темы — мгновенное (данные). Блоки/варианты, не поддержанные темой, отрисовываются по fallback-варианту.
+   */
+  theme?: ('default' | 'mono') | null;
   contacts?: {
     email?: string | null;
     phone?: string | null;

@@ -131,10 +131,23 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
 ]
-const defaultThemeFrom = (blocks: BlockDef[]): ThemeDef => ({
-  id: 'default', name: 'Default', tokens: { '--c-primary': '#0f766e' },
-  blocks: Object.fromEntries(blocks.map(b => [b.type, { enabled: true }] as [string, ThemeBlockConfig])),
-})
-export const THEMES: ThemeDef[] = [defaultThemeFrom(BLOCKS)]
+// Явные темы (T12): default — текущий вид (teal); mono — ч/б, serif, часть вариантов недоступна → fallback.
+const all = (): Record<string, ThemeBlockConfig> => Object.fromEntries(BLOCKS.map(b => [b.type, { enabled: true } as ThemeBlockConfig]))
+const defaultTheme: ThemeDef = {
+  id: 'default', name: 'Default (teal)',
+  tokens: { '--c-primary': '#0f766e', '--c-bg': '#ffffff', '--c-text': '#111827', '--radius': '.5rem' },
+  blocks: { ...all(), 'form-block': { enabled: true } }, // form-block — forward-compat (T13)
+}
+const mono: ThemeDef = {
+  id: 'mono', name: 'Mono (ч/б, serif)',
+  tokens: { '--c-primary': '#111111', '--c-bg': '#ffffff', '--c-text': '#111111', '--radius': '0' },
+  blocks: {
+    ...all(), 'form-block': { enabled: false },
+    hero: { enabled: true, variants: ['default'] },
+    'text-image': { enabled: true, variants: ['default'] },
+    cta: { enabled: true, variants: ['default'] },
+  },
+}
+export const THEMES: ThemeDef[] = [defaultTheme, mono]
 export const getBlock = (type: string): BlockDef | undefined => BLOCKS.find(b => b.type === type)
 export const getTheme = (id: string): ThemeDef => THEMES.find(t => t.id === id) ?? THEMES[0]

@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <style v-html="tokensCss"></style>
     <header class="site-header">
       <nav>
         <a
@@ -26,6 +27,20 @@
 </template>
 <script setup lang="ts">
 const { data } = await useSite()
+// Тема — данные CMS (T12): токены встраиваем <style> из ?raw текущей темы;
+// ?raw + инлайн — чтобы в head не грузились <link> на ВСЕ темы (чужая тема выигрывала бы каскад).
+// Неизвестный id / провал загрузки → default.
+const themeId = (data.value?.site?.theme ?? 'default') as string
+const themeCssModules = import.meta.glob('../../themes/*/tokens.css', { query: '?raw', import: 'default' }) as Record<string, () => Promise<string>>
+const themeCssModule = (id: string) => Object.entries(themeCssModules).find(([p]) => p.includes(`/${id}/tokens.css`))
+const defaultModule = themeCssModule('default')!
+const selected = themeCssModule(themeId) ?? defaultModule
+let tokensCss = ''
+try {
+  tokensCss = await selected[1]()
+} catch {
+  tokensCss = await defaultModule[1]()
+}
 const nav = computed(() => data.value?.content?.navigation ?? [])
 const footer = computed(() => data.value?.content?.footer ?? null)
 const hasContacts = computed(

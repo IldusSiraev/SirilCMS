@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { resolveVariant, allowedVariants, paletteForTheme } from './resolve'
+import { getTheme, getBlock } from './registry'
 import type { BlockDef, ThemeDef } from './types'
 
 const block: BlockDef = { type: 'hero', name: 'Hero', variants: [
@@ -24,4 +25,9 @@ it('пустые allowed → fallback true', () => {
 it('paletteForTheme фильтрует disabled', () => {
   const t3: ThemeDef = { ...theme, blocks: { hero: { enabled: false } } }
   expect(paletteForTheme(t3).map(b => b.type)).not.toContain('hero')
+})
+it('getTheme mono', () => expect(getTheme('mono').id).toBe('mono'))
+it('mono не поддерживает hero/split → fallback', () => {
+  const hero = getBlock('hero')!
+  expect(resolveVariant(getTheme('mono'), hero, 'split')).toEqual({ variant: 'default', fallback: true })
 })

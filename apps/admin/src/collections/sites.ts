@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { THEMES } from '@siril/blocks-definitions'
 import { isOwner } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 
@@ -45,10 +46,9 @@ export const Sites: CollectionConfig = {
     {
       name: 'theme',
       type: 'select',
-      options: [
-        { value: 'default', label: 'Default' },
-      ], // T12: options из THEMES
+      options: THEMES.map(t => ({ value: t.id, label: t.name })),
       defaultValue: 'default',
+      admin: { description: 'Переключение темы — мгновенное (данные). Блоки/варианты, не поддержанные темой, отрисовываются по fallback-варианту.' },
     },
     {
       name: 'contacts',
