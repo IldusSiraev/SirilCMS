@@ -12,6 +12,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+  migrate:
+    build:
+      context: ..
+      dockerfile: infra/docker/admin.Dockerfile
+      target: build
+    command: pnpm --filter @siril/admin migrate
+    env_file: ../.env
+    environment:
+      PAYLOAD_DB_URI: postgresql://${POSTGRES_USER:-payload}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-payload}
+    depends_on:
+      postgres:
+        condition: service_healthy
   admin:
     build:
       context: ..
@@ -28,6 +40,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
   web:
     build:
       context: ..
@@ -41,7 +55,7 @@ services:
     image: caddy:2
     restart: unless-stopped
     ports: ["80:80", "443:443"]
-    environment: { SITE_DOMAIN: ${SITE_DOMAIN:-localhost} }
+    environment: { SITE_DOMAIN: "${SITE_DOMAIN:-localhost}" }
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data

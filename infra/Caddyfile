@@ -1,7 +1,10 @@
 {$SITE_DOMAIN} {
-  handle /media/* { reverse_proxy admin:3001 }
+  handle /media/* {
+    reverse_proxy admin:3001
+  }
   reverse_proxy web:3000
 }
+
 admin.{$SITE_DOMAIN} {
   reverse_proxy admin:3001
 }
