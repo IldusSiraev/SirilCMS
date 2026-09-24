@@ -5,7 +5,8 @@
 </template>
 <script setup lang="ts">
 const { data } = await useSite()
-const siteDomain = data.value?.site?.domain
+const siteDomain = data.value?.site?.domain || useRuntimeConfig().SITE_DOMAIN
+const base = `https://${siteDomain}`
 const themeId = data.value?.site?.theme ?? 'default'
 
 const { data: homeRes } = await useAsyncData('home-page', () => $fetch<{ page: any }>('/api/page?slug=home'))
@@ -14,11 +15,12 @@ if (!home) throw createError({ statusCode: 404, message: 'Home not found' })
 
 const sections = (home.sections ?? []) as any[]
 const seo: any = home.seo
+const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.canonical : `${base}/`
 useSeoMeta({
   title: seo?.title || home.title,
   description: seo?.description,
-  ogImage: seo?.ogImage?.filename ? `http://${siteDomain}/media/${seo.ogImage.filename}` : undefined,
-  canonical: seo?.canonical || `http://${siteDomain}/`,
+  ogImage: mediaUrl(seo.ogImage) ?? undefined,
+  canonical,
   robots: seo?.noindex ? 'noindex' : undefined,
 })
 useHead({ htmlAttrs: { lang: 'ru' } })

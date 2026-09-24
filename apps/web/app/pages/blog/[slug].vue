@@ -9,6 +9,8 @@
 import { getTheme } from '@siril/blocks-definitions'
 const route = useRoute()
 const { data: siteData } = await useSite()
+const siteDomain = siteData.value?.site?.domain || useRuntimeConfig().SITE_DOMAIN
+const base = `https://${siteDomain}`
 const themeId = siteData.value?.site?.theme ?? 'default'
 const theme = getTheme(themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
@@ -18,8 +20,16 @@ const { data } = await useAsyncData(`post-${route.params.slug}`, () =>
 const post = computed(() => data.value?.post)
 if (!post.value) throw createError({ statusCode: 404, message: 'Not found' })
 const postCover = computed(() => mediaUrl(post.value?.cover))
-
-useSeoMeta({ title: post.value.title, description: post.value.excerpt ?? '' })
+const seo: any = post.value?.seo
+const slug = String(route.params.slug)
+const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.canonical : `${base}/blog/${slug}`
+useSeoMeta({
+  title: post.value.title,
+  description: post.value.excerpt ?? '',
+  ogImage: mediaUrl(seo?.ogImage) ?? undefined,
+  canonical,
+  robots: seo?.noindex ? 'noindex' : undefined,
+})
 </script>
 <style>
 .post { padding: 2rem; max-width: 48rem; margin: 0 auto; }
