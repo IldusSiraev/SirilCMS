@@ -32,7 +32,7 @@ services:
     build:
       context: ..
       dockerfile: infra/docker/web.Dockerfile
-      args: { PAYLOAD_URL: 'http://admin:3001', NUXT_PUBLIC_MEDIA_BASE: 'https://admin.${SITE_DOMAIN}' }
+      args: { PAYLOAD_URL: 'http://admin:3001', NUXT_PUBLIC_MEDIA_BASE: 'https://admin.${SITE_DOMAIN:?SITE_DOMAIN is required}' }
     env_file: ../.env
     restart: unless-stopped
     environment: { PAYLOAD_URL: 'http://admin:3001' }

@@ -3,8 +3,6 @@ RUN corepack enable
 WORKDIR /app
 COPY . .
 RUN pnpm install --frozen-lockfile
-ARG POSTGRES_DB_URI
-ENV POSTGRES_DB_URI=$POSTGRES_DB_URI
 RUN pnpm --filter @siril/admin build
 
 FROM node:22-alpine
