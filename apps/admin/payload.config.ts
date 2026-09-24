@@ -12,6 +12,7 @@ import { Posts } from './src/collections/posts'
 import { Sites } from './src/collections/sites'
 import { SiteContent } from './src/collections/site-content'
 import { Users } from './src/collections/users'
+import { submissionsCsv } from './src/endpoints/submissions-csv'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -33,5 +34,8 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  // Payload 3.90: custom REST endpoints — top-level `endpoints` (config.endpoints, dist: utilities/handleEndpoints.js).
+  // НЕ `custom: { endpoints }` — в маршрутизации custom.* не читается.
+  endpoints: [submissionsCsv],
   plugins: [],
 })

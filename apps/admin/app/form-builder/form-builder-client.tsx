@@ -183,6 +183,21 @@ export default function FormBuilderClient({ formId }: { formId: string }) {
           <button style={{ ...styles.btn, padding: '0.4rem 0.9rem' }} onClick={() => void save()}>
             Save
           </button>
+          <a
+            style={{
+              ...styles.btn,
+              padding: '0.4rem 0.9rem',
+              display: 'inline-block',
+              textDecoration: 'none',
+              border: '1px solid #d1d5db',
+              borderRadius: '4px',
+            }}
+            href={`/api/submissions-csv?form=${formId}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Экспорт CSV
+          </a>
         </div>
       </div>
 
