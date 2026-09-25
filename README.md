@@ -81,7 +81,7 @@ Prereq: `docker` с compose; в корне в `.env` заполнены `POSTGRE
 make -C infra up       # сборка + поднимает postgres, admin, web, caddy
 make -C infra ps       # статус
 make -C infra logs     # логи
-make -C infra new-site # инструкция на второй сайт (свой .env.<name> + project-name)
+make -C infra new-site # инструкция: новый сайт = новый сервер (мультисайт на одном сервере — см. docs/roadmap.md)
 ```
 
 Бэкап БД: `cd infra && POSTGRES_DB_URI=postgresql://... make backup` → `infra/backups/*.sql.gz` (авто-очистка > 30 дней).
