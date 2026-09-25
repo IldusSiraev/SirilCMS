@@ -86,9 +86,10 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 | Обновление кода | `git pull && make -C infra up` (пересоберёт образы, поднимет) |
 | Бэкап БД | `cd infra && POSTGRES_DB_URI="postgresql://payload:***@postgres:5432/payload" make backup` → `infra/backups/<date-time>.sql.gz` (авто-очистка >30 дн) |
 | Восстановление | `gunzip < f.sql.gz \| docker compose -f infra/docker-compose.prod.yml --env-file .env exec -i postgres psql -U payload payload` |
-| Новый сайт | `make -C infra new-site` (cp .env .env.<name>, свой project-name, свои домены) |
+| Новый сайт | `make -C infra new-site` — печатает инструкцию: новый сайт = новый сервер |
+| Другой env-файл (staging и т.п.) | `make -C infra up ENV_FILE=../.env.staging` (тот же флаг у `ps`/`logs`/`smoke`) |
 
-Ограничение: `backup.sh` и `new-site` используют **default** compose-проект `infra` без `--env-file`/`--project-name` — для сайтов из `make new-site` (`siril<name>`) бэкап запустить вручную с теми же флагами: `docker compose -f docker-compose.prod.yml --env-file ../.env --project-name siril<name> exec -T postgres pg_dump ...`. Запускать из каталога `infra` (путь `infra/backups`).
+Несколько сайтов на одном сервере не поддерживаются: Caddy занимает `80`/`443`, admin — `3001`, второй compose-проект не поднимется рядом с первым. Один сервер = один сайт; для клиента — новый сервер (см. [docs/roadmap.md](../roadmap.md), раздел «Модель развёртывания»). Мультисайт на одном сервере — там же, Фаза 3.
 
 ## 5. Типовые проблемы
 
@@ -107,4 +108,4 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 - Хеджирование first-user (T3-2) — сейчас: создать админа до публикации
 - `admin:3001` host-порт — закрыть файрволом (см. §2)
 - Автоматические бэкапы (cron) — `make backup` запускать вручную/через cron
-- Multi-tenancy на одном домене — v1 модель: 1 домен = 1 сайт (через `new-site`)
+- Multi-tenancy на одном домене — v1 модель: 1 домен = 1 сайт на своём сервере (см. [docs/roadmap.md](../roadmap.md))
