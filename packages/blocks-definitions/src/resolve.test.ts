@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { expect, it } from 'vitest'
 import { resolveVariant, allowedVariants, paletteForTheme } from './resolve'
 import { getTheme, getBlock } from './registry'
 import type { BlockDef, ThemeDef } from './types'
