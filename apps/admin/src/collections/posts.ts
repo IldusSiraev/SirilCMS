@@ -1,5 +1,5 @@
 import type { CollectionConfig, Field } from 'payload'
-import { canScope, isOwner } from '../access/site-scope'
+import { publishedOnlyReadAccess } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { seo } from './seo'
 
@@ -17,38 +17,13 @@ const bodyField = {
   editor: minimalRichText,
 } as unknown as Field
 
-type MaybeSite = { site?: number | { id?: number } } | null | undefined
-
-// doc может быть number или { id } (в зависимости от depth); fallback 1 — как в brief
-const siteIdOf = (doc: MaybeSite): number => {
-  const site = doc?.site
-  if (site == null) {
-    return 1
-  }
-  if (typeof site === 'object') {
-    return site.id ?? 1
-  }
-  return site
-}
-
 export const Posts: CollectionConfig = {
   slug: 'posts',
   admin: {
     defaultColumns: ['title', 'slug', 'site', 'category'],
   },
   access: {
-    read: ({ req: { user, query }, data }) => {
-      if (isOwner(user)) {
-        return true
-      }
-      if (!user) {
-        if (query?.status === 'draft' || query?.draft === true) {
-          return false
-        }
-        return { _status: { equals: 'published' } }
-      }
-      return canScope(user, siteIdOf(data as MaybeSite))
-    },
+    read: ({ req: { user, query }, data }) => publishedOnlyReadAccess(user, query, data),
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
     delete: ({ req: { user } }) => !!user,
