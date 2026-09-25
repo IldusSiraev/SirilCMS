@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { THEMES } from '@siril/blocks-definitions'
 import { isOwner } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
+import { decryptField, encryptField } from '../utils/field-encryption'
 
 export const Sites: CollectionConfig = {
   slug: 'sites',
@@ -66,7 +67,15 @@ export const Sites: CollectionConfig = {
         { name: 'smtpHost', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
         { name: 'smtpPort', type: 'number', access: { read: ({ req: { user } }) => isOwner(user) } },
         { name: 'smtpUser', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
-        { name: 'smtpPass', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
+        {
+          name: 'smtpPass',
+          type: 'text',
+          access: { read: ({ req: { user } }) => isOwner(user) },
+          hooks: {
+            beforeChange: [({ value }) => (value ? encryptField(value) : value)],
+            afterRead: [({ value }) => (value ? decryptField(value) : value)],
+          },
+        },
         { name: 'analyticsId', type: 'text', admin: { description: 'ID счётчика Яндекс.Метрики (число). Публично читаемо — подставляется в <head> сайта.' } },
       ],
     },

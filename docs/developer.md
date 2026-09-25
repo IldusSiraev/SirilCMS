@@ -73,7 +73,7 @@ pnpm test                                  # 38 тестов (blocks 16 / admin 
 
 ### 3.2 Настройки сайта (колекция Sites)
 
-Одна запись на сайт. Поля: `name`, `slug`, `domain`, `locale`, **`theme`** (select из `THEMES` — см. §5.1), `contacts`, `logo` (media), `settings` (smtp-поля видны только owner; `analyticsId` — публичный ID счётчика Яндекс.Метрики, подставляется в `<head>` сайта layout'ом). Изменение темы — **изменение данных, работает мгновенно, без деплоя**.
+Одна запись на сайт. Поля: `name`, `slug`, `domain`, `locale`, **`theme`** (select из `THEMES` — см. §5.1), `contacts`, `logo` (media), `settings` (smtp-поля видны только owner; `smtpPass` дополнительно шифруется в БД — `apps/admin/src/utils/field-encryption.ts`, AES-256-GCM, ключ из `PAYLOAD_SECRET`; `analyticsId` — публичный ID счётчика Яндекс.Метрики, подставляется в `<head>` сайта layout'ом). Изменение темы — **изменение данных, работает мгновенно, без деплоя**.
 
 ### 3.3 Навигация и футер (Site-content)
 
