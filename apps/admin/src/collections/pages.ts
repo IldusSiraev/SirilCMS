@@ -10,7 +10,7 @@ export const Pages: CollectionConfig = {
     defaultColumns: ['title', 'slug', 'site'],
   },
   access: {
-    read: ({ req: { user, query }, data }) => publishedOnlyReadAccess(user, query, data),
+    read: ({ req: { user, query } }) => publishedOnlyReadAccess(user, query),
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
     delete: ({ req: { user } }) => !!user,

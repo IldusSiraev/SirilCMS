@@ -36,17 +36,27 @@ type ReadQuery = { status?: unknown; draft?: unknown } | undefined
 /**
  * Draft-фильтр для pages/posts: owner видит всё; анонимный запрос с явным
  * draft=true/status=draft отклоняется, иначе скоупится published-only
- * where-constraint'ом; авторизованный не-owner — canScope по сайту документа.
+ * where-constraint'ом; авторизованный не-owner получает where-constraint по
+ * сайту ПОЛЬЗОВАТЕЛЯ.
+ *
+ * Payload 3.90.1 не передаёт `data` в access.read ни для find (list), ни для
+ * findByID — executeAccess вызывается без data (node_modules/payload/dist/
+ * collections/operations/find.js, findByID.js). Раньше здесь стоял
+ * canScope(user, resolveSiteId(data)), который при отсутствующем data
+ * фолбечился на site=1: editor с site=1 получал boolean true и терял
+ * where-фильтр вовсе (Payload's combineQueries не добавляет constraint для
+ * boolean-результата — видел бы ВСЕ сайты в list-запросе), а editor с
+ * site!==1 получал boolean false → Forbidden на любой read, включая
+ * findByID своих же документов.
  */
 export const publishedOnlyReadAccess = (
   user: ScopedUser | null | undefined,
   query: ReadQuery,
-  data: SiteScopedDoc,
-): true | false | { _status: { equals: 'published' } } => {
+): true | false | { _status: { equals: 'published' } } | { site: { equals: number } } => {
   if (isOwner(user)) return true
   if (!user) {
     if (query?.status === 'draft' || query?.draft === true) return false
     return { _status: { equals: 'published' } }
   }
-  return canScope(user, resolveSiteId(data))
+  return { site: { equals: resolveSiteId({ site: user.site }) } }
 }

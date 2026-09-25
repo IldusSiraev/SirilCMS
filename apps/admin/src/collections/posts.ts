@@ -23,7 +23,7 @@ export const Posts: CollectionConfig = {
     defaultColumns: ['title', 'slug', 'site', 'category'],
   },
   access: {
-    read: ({ req: { user, query }, data }) => publishedOnlyReadAccess(user, query, data),
+    read: ({ req: { user, query } }) => publishedOnlyReadAccess(user, query),
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
     delete: ({ req: { user } }) => !!user,
