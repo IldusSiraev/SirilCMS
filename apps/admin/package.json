@@ -16,8 +16,9 @@
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.90.1",
-    "@siril/blocks-definitions": "workspace:*",
     "@payloadcms/next": "^3.90.1",
+    "@payloadcms/translations": "^3.90.2",
+    "@siril/blocks-definitions": "workspace:*",
     "next": "16.3.5",
     "payload": "^3.90.1",
     "react": "19.2.8",

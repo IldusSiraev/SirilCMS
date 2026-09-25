@@ -1,6 +1,5 @@
 <template>
   <div class="app">
-    <style v-html="tokensCss"></style>
     <header class="site-header">
       <nav>
         <a
@@ -43,6 +42,9 @@ try {
 } catch {
   tokensCss = await defaultModule[1]()
 }
+// Токены в <head> через unhead: <style> в шаблоне client-компонента запрещён vite:vue
+// (в dev — hard error, в client-сборке тег молча отбрасывался и тема терялась после гидратации).
+useHead({ style: tokensCss ? [{ innerHTML: tokensCss }] : [] })
 const nav = computed(() => data.value?.content?.navigation ?? [])
 const footer = computed(() => data.value?.content?.footer ?? null)
 const hasContacts = computed(

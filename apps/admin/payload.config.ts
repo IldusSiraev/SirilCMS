@@ -2,6 +2,8 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
+import { en } from '@payloadcms/translations/languages/en'
+import { ru } from '@payloadcms/translations/languages/ru'
 
 import { Categories } from './src/collections/categories'
 import { FormSubmissions } from './src/collections/form-submissions'
@@ -38,4 +40,8 @@ export default buildConfig({
   // НЕ `custom: { endpoints }` — в маршрутизации custom.* не читается.
   endpoints: [submissionsCsv],
   plugins: [],
+  i18n: {
+    fallbackLanguage: 'en',
+    supportedLanguages: { en, ru },
+  },
 })
