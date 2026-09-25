@@ -1,22 +1,8 @@
 import type { CollectionConfig, Field } from 'payload'
 import { BLOCKS, toPayloadBlockFields } from '@siril/blocks-definitions'
-import { canScope, isOwner } from '../access/site-scope'
+import { publishedOnlyReadAccess } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { seo } from './seo'
-
-type MaybeSite = { site?: number | { id?: number } } | null | undefined
-
-// doc может быть number или { id } (в зависимости от depth); fallback 1 — как в brief
-const siteIdOf = (doc: MaybeSite): number => {
-  const site = doc?.site
-  if (site == null) {
-    return 1
-  }
-  if (typeof site === 'object') {
-    return site.id ?? 1
-  }
-  return site
-}
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -24,18 +10,7 @@ export const Pages: CollectionConfig = {
     defaultColumns: ['title', 'slug', 'site'],
   },
   access: {
-    read: ({ req: { user, query }, data }) => {
-      if (isOwner(user)) {
-        return true
-      }
-      if (!user) {
-        if (query?.status === 'draft' || query?.draft === true) {
-          return false
-        }
-        return { _status: { equals: 'published' } }
-      }
-      return canScope(user, siteIdOf(data as MaybeSite))
-    },
+    read: ({ req: { user, query }, data }) => publishedOnlyReadAccess(user, query, data),
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
     delete: ({ req: { user } }) => !!user,
