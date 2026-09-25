@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { canScope } from '../access/site-scope'
+import { notifySubmission } from '../utils/notify'
 
 export const FormSubmissions: CollectionConfig = {
   slug: 'form-submissions',
@@ -12,6 +13,14 @@ export const FormSubmissions: CollectionConfig = {
     create: () => true,
     update: () => false,
     delete: () => false,
+  },
+  hooks: {
+    afterChange: [
+      ({ doc, req, operation }) => {
+        if (operation !== 'create') return
+        notifySubmission(req.payload, doc).catch((err) => console.error('[notify] failed', err))
+      },
+    ],
   },
   fields: [
     { name: 'site', type: 'relationship', relationTo: 'sites', required: true },

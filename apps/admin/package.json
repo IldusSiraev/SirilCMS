@@ -20,6 +20,7 @@
     "@payloadcms/translations": "^3.90.2",
     "@siril/blocks-definitions": "workspace:*",
     "next": "16.3.5",
+    "nodemailer": "^10.0.10",
     "payload": "^3.90.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
