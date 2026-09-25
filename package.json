@@ -7,7 +7,8 @@
     "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/web dev\" \"pnpm --filter @siril/admin dev\"",
     "seed": "pnpm --filter @siril/admin seed",
     "test": "pnpm -r --no-bail test",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "pnpm -r --no-bail typecheck"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

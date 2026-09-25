@@ -6,7 +6,7 @@ import { rateLimit } from '../../../utils/rate-limit'
 export default defineEventHandler(async (event) => {
   const slug = String(event.context.params?.slug ?? '')
   const forwarded = event.headers.get('x-forwarded-for')
-  const ip = (forwarded ? forwarded.split(',')[0].trim() : '') || (event.node.req.socket.remoteAddress ?? 'unknown')
+  const ip = (forwarded ? forwarded.split(',')[0]?.trim() : '') || (event.node.req.socket.remoteAddress ?? 'unknown')
   if (!rateLimit(`form:${slug}:${ip}`)) throw createError({ statusCode: 429, message: 'Too many requests' })
   const body: Record<string, unknown> = await readBody(event)
   const { docs } = await payloadGet<{ docs: any[] }>(`forms?where[slug][equals]=${encodeURIComponent(slug!)}&depth=2`)

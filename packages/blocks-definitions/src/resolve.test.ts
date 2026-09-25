@@ -22,6 +22,11 @@ it('пустые allowed → fallback true', () => {
   const t2: ThemeDef = { ...theme, blocks: { hero: { enabled: true, variants: [] } } }
   expect(allowedVariants(t2, block)).toEqual(['default'])
 })
+it('variants темы называют несуществующий id блока → fallback на первый вариант блока, не пустой список', () => {
+  const t4: ThemeDef = { ...theme, blocks: { hero: { enabled: true, variants: ['typo-does-not-exist'] } } }
+  expect(allowedVariants(t4, block)).toEqual(['default'])
+  expect(resolveVariant(t4, block, 'split')).toEqual({ variant: 'default', fallback: true })
+})
 it('paletteForTheme фильтрует disabled', () => {
   const t3: ThemeDef = { ...theme, blocks: { hero: { enabled: false } } }
   expect(paletteForTheme(t3).map(b => b.type)).not.toContain('hero')

@@ -14,7 +14,7 @@ const tokens = Object.fromEntries(Object.entries(theme.tokens))
 const images = computed(() =>
   (props.block.images ?? [])
     .map((m: unknown) => mediaUrl(m))
-    .filter((s): s is string => s != null),
+    .filter((s: string | null): s is string => s != null),
 )
 </script>
 <style>

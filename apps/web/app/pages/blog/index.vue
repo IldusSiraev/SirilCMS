@@ -16,8 +16,8 @@ const posts = computed(() => data.value?.docs ?? [])
 useSeoMeta({
   title: 'Блог',
   description: 'Посты',
-  canonical: `${base}/blog`,
 })
+useHead({ link: [{ rel: 'canonical', href: `${base}/blog` }] })
 </script>
 <style>
 .blog-index { padding: 2rem; max-width: 72rem; margin: 0 auto; }

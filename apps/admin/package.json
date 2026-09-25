@@ -11,6 +11,7 @@
     "migrate": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js migrate --disable-transpile",
     "migrate:generate": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js migrate:create --disable-transpile",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "generate:importmap": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js generate:importmap --disable-transpile",
     "generate:types": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js generate:types --disable-transpile"
   },

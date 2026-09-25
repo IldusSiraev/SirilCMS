@@ -55,8 +55,9 @@ pnpm dev:pg                            # Postgres (docker :5432 или внеш�
 pnpm --filter @siril/admin migrate     # миграции
 pnpm seed                              # демо-контент (идемпотентно)
 pnpm dev:all                           # web :3000 + admin :3001
-pnpm test                              # 61 тест
+pnpm test                              # 62 теста
 pnpm lint                              # ESLint
+pnpm typecheck                         # tsc/nuxt typecheck
 ```
 
 Вход в админку (по сиду): **`owner@demo.ru` / `admin123`** (публичная панель — `http://localhost:3001/admin`).
