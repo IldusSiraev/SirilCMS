@@ -6,7 +6,18 @@
     "dev:pg": "node infra/scripts/dev-pg.mjs",
     "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/web dev\" \"pnpm --filter @siril/admin dev\"",
     "seed": "pnpm --filter @siril/admin seed",
-    "test": "pnpm -r --no-bail test"
+    "test": "pnpm -r --no-bail test",
+    "lint": "eslint ."
   },
-  "devDependencies": { "concurrently": "^9.0.0" }
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "concurrently": "^9.0.0",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-vue": "^10.11.1",
+    "globals": "^17.12.0",
+    "typescript-eslint": "^8.70.1",
+    "vue-eslint-parser": "^10.4.1"
+  }
 }

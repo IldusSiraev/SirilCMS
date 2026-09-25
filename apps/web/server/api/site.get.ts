@@ -7,7 +7,7 @@ export function clearSiteCache() {
   cache = null
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (_event) => {
   if (cache && Date.now() - cache.at < 30_000) return cache.data
   const [sites, contents] = await Promise.all([
     payloadGet<{ docs: any[] }>('sites?limit=1'),

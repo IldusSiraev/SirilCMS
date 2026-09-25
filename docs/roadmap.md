@@ -41,7 +41,7 @@
 ### Качество / CI
 
 - [x] GitHub Actions CI: `test` + `build` (postgres-сервис, `pnpm -r build`).
-- [ ] ESLint (единый конфиг на монорепо) + `lint` в CI.
+- [x] ESLint (единый конфиг на монорепо) + `lint` в CI. Один `eslint.config.mjs` в корне: `typescript-eslint` везде, `eslint-plugin-vue` (`flat/essential`, без стилистики — в репо нет Prettier) для `apps/web`, `eslint-plugin-react` + классические `react-hooks` правила для `apps/admin`. `no-explicit-any` выключен (Payload/Nuxt код на нём держится); Nuxt auto-imports (`useHead`, `useSite`, `mediaUrl` и т.п.) — вручную заданный список globals, `@nuxt/eslint` не подключали.
 - [ ] `typecheck` (`tsc --noEmit` / `nuxt typecheck`) во всех workspace + в CI.
 - [ ] CI-проверка миграций: `migrate` на чистой БД + проверка, что схема не требует новой миграции (нет забытого `migrate:generate` после правки контрактов блоков).
 

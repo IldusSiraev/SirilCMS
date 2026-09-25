@@ -79,7 +79,8 @@ curl http://localhost:3001                 # → Payload admin
 ## 6. Тесты
 
 ```bash
-pnpm test          # 38 тестов: blocks 16 / admin 4 / web 18
+pnpm test          # 61 тест: blocks 16 / admin 24 / web 21
+pnpm lint          # ESLint на весь монорепо
 ```
 
 ## 7. Типовые проблемы

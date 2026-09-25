@@ -27,6 +27,7 @@ pnpm --filter @siril/admin migrate         # apply Payload migrations
 pnpm seed                                  # demo content (idempotent — skips if sites already exist)
 pnpm dev:all                               # web :3000 + admin :3001 (runs dev:pg first)
 pnpm test                                  # all tests (pnpm -r --no-bail test)
+pnpm lint                                  # ESLint across the whole monorepo (root eslint.config.mjs)
 ```
 
 Single-workspace test runs (all use vitest):

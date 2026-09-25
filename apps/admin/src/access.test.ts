@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canScope, isOwner, publishedOnlyReadAccess, resolveSiteId } from './access/site-scope'
+import { canScope, publishedOnlyReadAccess, resolveSiteId } from './access/site-scope'
 
 it('owner видит всё', () => {
   expect(canScope({ role: 'owner' }, 1)).toBe(true)

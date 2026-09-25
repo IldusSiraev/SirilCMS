@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { expect, it } from 'vitest'
 import { FORM_FIELD_TYPES, validateSubmission } from './form-fields'
 import type { FormFieldDef } from './types'
 
