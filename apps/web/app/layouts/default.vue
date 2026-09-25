@@ -25,6 +25,8 @@
   </div>
 </template>
 <script setup lang="ts">
+import { yandexMetrikaTag } from '../utils/analytics'
+
 const { data } = await useSite()
 // Тема — данные CMS (T12): токены встраиваем <style> из ?raw текущей темы;
 // ?raw + инлайн — чтобы в head не грузились <link> на ВСЕ темы (чужая тема выигрывала бы каскад).
@@ -45,6 +47,11 @@ try {
 // Токены в <head> через unhead: <style> в шаблоне client-компонента запрещён vite:vue
 // (в dev — hard error, в client-сборке тег молча отбрасывался и тема терялась после гидратации).
 useHead({ style: tokensCss ? [{ innerHTML: tokensCss }] : [] })
+const analyticsTag = yandexMetrikaTag(data.value?.site?.settings?.analyticsId)
+useHead({
+  script: analyticsTag ? [{ innerHTML: analyticsTag.script }] : [],
+  noscript: analyticsTag ? [{ innerHTML: analyticsTag.noscript }] : [],
+})
 const nav = computed(() => data.value?.content?.navigation ?? [])
 const footer = computed(() => data.value?.content?.footer ?? null)
 const hasContacts = computed(
