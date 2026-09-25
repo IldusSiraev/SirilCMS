@@ -2,7 +2,6 @@ import { readBody } from 'h3'
 import { validateSubmission } from '@siril/blocks-definitions'
 import { payloadGet } from '../../../utils/payload'
 import { rateLimit } from '../../../utils/rate-limit'
-import { notifyNewSubmission } from '../../../utils/notify'
 
 export default defineEventHandler(async (event) => {
   const slug = String(event.context.params?.slug ?? '')
@@ -32,6 +31,5 @@ export default defineEventHandler(async (event) => {
   } catch {
     throw createError({ statusCode: 422, message: 'Не удалось сохранить заявку' })
   }
-  notifyNewSubmission({ formName: form.name, values: Object.fromEntries(values.map((p: any) => [p.name, p.value])) }).catch((err) => console.error('[notify] failed', err))
   return { ok: true }
 })
