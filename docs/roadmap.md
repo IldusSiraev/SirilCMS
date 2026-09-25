@@ -41,7 +41,7 @@
 
 ### Качество / CI
 
-- [ ] Подтвердить, что `build`-job в CI проходит (postgres-сервис, `pnpm -r build`).
+- [x] GitHub Actions CI: `test` + `build` (postgres-сервис, `pnpm -r build`).
 - [ ] ESLint (единый конфиг на монорепо) + `lint` в CI.
 - [ ] `typecheck` (`tsc --noEmit` / `nuxt typecheck`) во всех workspace + в CI.
 - [ ] CI-проверка миграций: `migrate` на чистой БД + проверка, что схема не требует новой миграции (нет забытого `migrate:generate` после правки контрактов блоков).
