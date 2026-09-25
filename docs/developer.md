@@ -67,7 +67,7 @@ pnpm test                                  # 38 тестов (blocks 16 / admin 
 - Роль — select: `owner` (Владелец) / `editor` (Клиент); дефолт — **editor**.
 - `editor` ограничен site-связью: видит только контент своего сайта.
 
-> ⚠️ **Первый пользователь** в пустой БД может быть создан без авторизации (логика «self-register первого»). При этом **без явного `"role": "owner"` пользователь станет editor** — в системе не останется админа (дыра). Первый админ создаётся с `role: owner` явно (seed так и делает).
+> ⚠️ **Первый пользователь** в пустой БД может быть создан без авторизации (логика «self-register первого») — это осознанный компромисс для деплоя без ручного сидинга, но неаутентифицированный запрос может задать `role` произвольно. `beforeChange`-хук (`apps/admin/src/collections/users.ts` + `apps/admin/src/utils/first-user.ts`) **принудительно** ставит `role: owner` первому пользователю (проверка `count(users) === 0`), независимо от того, что передал вызывающий, — в системе не может остаться без владельца. Кто первым успеет создать пользователя в пустой БД — тот и станет owner; создавайте первого админа **сразу после деплоя**, до публикации сайта.
 
 **i18n интерфейса** — `payload.config.ts`, `i18n: { fallbackLanguage: 'en', supportedLanguages: { en, ru } }` (пакет `@payloadcms/translations`). Язык определяется по `Accept-Language` запроса; переключить можно в профиле пользователя (Settings → language). Кастомные/дополнительные строки — через `i18n.translations` (см. [Payload i18n docs](https://payloadcms.com/docs/configuration/i18n)). Field labels полей — plain-строки (русские), от языка UI не зависят.
 
@@ -258,7 +258,7 @@ pnpm dev:all     # создать страницу в admin с новым бло
    через `useHead({ style: [{ innerHTML }] })` (пример: layout default.vue).
 2. **Rich-text**: `editor: 'true'` (строка) в Payload 3 → crash `editor.validate is not a function`.
    Использовать `minimalRichTextEditor` из `to-payload.ts`.
-3. **Первый admin**: без явного `role: owner` — в системе не будет владельца (§3.1).
+3. **Первый admin**: `role: owner` ставится автоматически хуком (§3.1) — но первым успевает тот, кто первым дернёт `POST /api/users` в пустой БД, так что создавайте его сразу после деплоя.
 4. **Draft ≠ publish**: draft-save не чистит кэш (это осознанно). Если кэш «просрочен» —
    опубликовать версию или `POST /api/purge`.
 5. **Тема без CSS-файла**: layout падает только если отсутствует `themes/default/tokens.css`

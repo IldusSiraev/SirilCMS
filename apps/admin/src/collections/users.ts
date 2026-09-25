@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isOwner } from '../access/site-scope'
+import { forceOwnerForFirstUser } from '../utils/first-user'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -7,6 +8,15 @@ export const Users: CollectionConfig = {
   admin: {
     group: 'Authentication',
     hidden: true,
+  },
+  hooks: {
+    beforeChange: [
+      async ({ data, operation, req }) => {
+        if (operation !== 'create') return data
+        const { totalDocs } = await req.payload.count({ collection: 'users', overrideAccess: true })
+        return forceOwnerForFirstUser(data, totalDocs)
+      },
+    ],
   },
   access: {
     read: ({ req: { user }, id }) => {
