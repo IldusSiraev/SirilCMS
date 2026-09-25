@@ -1,6 +1,7 @@
 {
   "name": "siril-cms",
   "private": true,
+  "packageManager": "pnpm@11.24.0",
   "scripts": {
     "dev:pg": "node infra/scripts/dev-pg.mjs",
     "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/web dev\" \"pnpm --filter @siril/admin dev\"",
