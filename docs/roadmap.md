@@ -28,7 +28,7 @@
 
 - [x] **Email-уведомления о заявках никогда не отправлялись.**
   Причина: `apps/web/server/utils/notify.ts` читал `site.settings.smtpHost` через публичный Payload API без токена, а поля `settings.*` доступны на чтение только `owner`. Исправлено: отправка перенесена в `apps/admin/src/utils/notify.ts`, вызывается afterChange-хуком на `form-submissions` (`overrideAccess: true`).
-- [ ] **`settings.analyticsId` нигде не используется на web** (и недоступен ему по той же причине). Либо подключить счётчик, либо убрать поле.
+- [x] **`settings.analyticsId` нигде не использовался на web.** Подключён: поле стало публично читаемым (не секрет, в отличие от smtp-полей), `apps/web/app/utils/analytics.ts` (`yandexMetrikaTag`) строит тег счётчика Яндекс.Метрики, `layouts/default.vue` вставляет его в `<head>` через `useHead`, когда ID задан и валиден (только цифры).
 - [ ] **`make -C infra new-site` вводит в заблуждение.** Второй compose-проект на том же сервере падает на конфликте портов (Caddy `80/443`, admin `3001`), а захардкоженный `env_file: ../.env` отдаёт всем проектам `PAYLOAD_SECRET`/`PURGE_TOKEN` первого сайта. Этот сценарий не поддерживается (см. «Модель развёртывания») — убрать цель, до мультисайта: «новый сайт = новый сервер».
 - [ ] `env_file: ../.env` в `infra/docker-compose.prod.yml` — параметризовать (или убрать в пользу `--env-file`), чтобы файл окружения задавался в одном месте.
 

@@ -67,7 +67,7 @@ export const Sites: CollectionConfig = {
         { name: 'smtpPort', type: 'number', access: { read: ({ req: { user } }) => isOwner(user) } },
         { name: 'smtpUser', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
         { name: 'smtpPass', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
-        { name: 'analyticsId', type: 'text', access: { read: ({ req: { user } }) => isOwner(user) } },
+        { name: 'analyticsId', type: 'text', admin: { description: 'ID счётчика Яндекс.Метрики (число). Публично читаемо — подставляется в <head> сайта.' } },
       ],
     },
     {
