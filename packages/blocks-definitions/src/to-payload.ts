@@ -41,7 +41,7 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
   const variant = {
     type: 'select', name: 'variant', label: 'Вариант',
     options: def.variants.map(v => ({ value: v.id, label: v.name })),
-    defaultValue: def.variants[0].id,
+    defaultValue: def.variants[0]!.id,
   }
   return [variant, ...fields]
 }

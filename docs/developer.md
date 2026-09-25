@@ -44,7 +44,7 @@ pnpm dev:pg                                # Postgres 16 (docker) или вне�
 pnpm --filter @siril/admin migrate         # применить миграции
 pnpm seed                                  # демо-контент (идемпотентен)
 pnpm dev:all                               # web :3000 + admin :3001
-pnpm test                                  # 61 тест (blocks 16 / admin 24 / web 21)
+pnpm test                                  # 62 теста (blocks 17 / admin 24 / web 21)
 ```
 
 Вход в админку после сида: `owner@demo.ru / admin123`.
@@ -273,8 +273,9 @@ pnpm dev:all     # создать страницу в admin с новым бло
 ## 7. Полезные команды (шпаргалка)
 
 ```bash
-pnpm test                                   # все тесты (61)
+pnpm test                                   # все тесты (62)
 pnpm lint                                   # ESLint на весь монорепо (eslint.config.mjs)
+pnpm typecheck                              # tsc/nuxt typecheck во всех workspace
 pnpm --filter @siril/blocks-definitions test   # только контракты блоков
 pnpm --filter @siril/admin migrate:generate # новая миграция (после изменения схемы)
 pnpm --filter @siril/admin migrate          # применить миграции

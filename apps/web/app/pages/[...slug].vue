@@ -26,8 +26,7 @@ useSeoMeta({
   title: seo?.title || page.title,
   description: seo?.description,
   ogImage: mediaUrl(seo?.ogImage) ?? undefined,
-  canonical,
   robots: seo?.noindex ? 'noindex' : undefined,
 })
-useHead({ htmlAttrs: { lang: 'ru' } })
+useHead({ htmlAttrs: { lang: 'ru' }, link: [{ rel: 'canonical', href: canonical }] })
 </script>

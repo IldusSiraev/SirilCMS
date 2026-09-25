@@ -79,8 +79,9 @@ curl http://localhost:3001                 # → Payload admin
 ## 6. Тесты
 
 ```bash
-pnpm test          # 61 тест: blocks 16 / admin 24 / web 21
+pnpm test          # 62 теста: blocks 17 / admin 24 / web 21
 pnpm lint          # ESLint на весь монорепо
+pnpm typecheck     # tsc/nuxt typecheck во всех workspace
 ```
 
 ## 7. Типовые проблемы

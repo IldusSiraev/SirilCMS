@@ -27,9 +27,9 @@ useSeoMeta({
   title: post.value.title,
   description: post.value.excerpt ?? '',
   ogImage: mediaUrl(seo?.ogImage) ?? undefined,
-  canonical,
   robots: seo?.noindex ? 'noindex' : undefined,
 })
+useHead({ link: [{ rel: 'canonical', href: canonical }] })
 </script>
 <style>
 .post { padding: 2rem; max-width: 48rem; margin: 0 auto; }

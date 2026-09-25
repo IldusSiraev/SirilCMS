@@ -155,4 +155,4 @@ const mono: ThemeDef = {
 }
 export const THEMES: ThemeDef[] = [defaultTheme, mono]
 export const getBlock = (type: string): BlockDef | undefined => BLOCKS.find(b => b.type === type)
-export const getTheme = (id: string): ThemeDef => THEMES.find(t => t.id === id) ?? THEMES[0]
+export const getTheme = (id: string): ThemeDef => THEMES.find(t => t.id === id) ?? defaultTheme
