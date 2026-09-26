@@ -3,6 +3,7 @@ import { BLOCKS, toPayloadBlockFields } from '@siril/blocks-definitions'
 import { publishedOnlyReadAccess } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { buildPreviewURL } from '../utils/preview-url'
+import { makeDuplicateSlug } from '../utils/duplicate-slug'
 import { seo } from './seo'
 
 export const Pages: CollectionConfig = {
@@ -34,7 +35,13 @@ export const Pages: CollectionConfig = {
   fields: [
     { name: 'site', type: 'relationship', relationTo: 'sites', required: true },
     { name: 'title', type: 'text', required: true },
-    { name: 'slug', type: 'text', unique: true },
+    {
+      name: 'slug',
+      type: 'text',
+      unique: true,
+      // Payload default для unique-полей — " - Copy" (пробел+заглавная, невалидно для URL); свой хук вместо него.
+      hooks: { beforeDuplicate: [({ value }) => makeDuplicateSlug(value)] },
+    },
     { name: 'locale', type: 'text', defaultValue: 'ru' },
     // BLOCKS пуст до T9 — пустой массив допустим, Payload обрабатывает без блоков
     // (v3: blocks — массив { slug, fields })
