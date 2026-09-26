@@ -12,8 +12,9 @@ const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
 const limit = Math.max(1, Number(props.block.limit) || 6)
-const { data } = await useAsyncData(`posts-block-${limit}`, () =>
-  $fetch<{ docs: any[] }>(`/api/posts?limit=${limit}`))
+const host = useRequestURL().host
+const { data } = await useAsyncData(`posts-block:list:${host}:${limit}`, () =>
+  $fetch<{ docs: any[] }>('/api/posts', { query: { limit, host } }))
 const posts = computed(() => data.value?.docs ?? [])
 </script>
 <style>

@@ -15,8 +15,9 @@ const themeId = siteData.value?.site?.theme ?? 'default'
 const theme = getTheme(themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
 
-const { data } = await useAsyncData(`post-${route.params.slug}`, () =>
-  $fetch<{ post: any }>(`/api/post/${encodeURIComponent(String(route.params.slug))}`))
+const host = useRequestURL().host
+const { data } = await useAsyncData(`post:${host}:${route.params.slug}`, () =>
+  $fetch<{ post: any }>(`/api/post/${encodeURIComponent(String(route.params.slug))}`, { query: { host } }))
 const post = computed(() => data.value?.post)
 if (!post.value) throw createError({ statusCode: 404, message: 'Not found' })
 const postCover = computed(() => mediaUrl(post.value?.cover))

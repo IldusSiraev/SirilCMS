@@ -230,7 +230,7 @@ export interface Page {
     | (
         | {
             variant?: ('default' | 'split') | null;
-            title: string;
+            title?: string | null;
             subtitle?:
               | {
                   [k: string]: unknown;
@@ -368,7 +368,7 @@ export interface Page {
           }
         | {
             variant?: ('default' | 'banner') | null;
-            title: string;
+            title?: string | null;
             body?:
               | {
                   [k: string]: unknown;
@@ -411,7 +411,7 @@ export interface Page {
           }
         | {
             variant?: 'default' | null;
-            form: number | Form;
+            form?: (number | null) | Form;
             id?: string | null;
             blockName?: string | null;
             blockType: 'form-block';

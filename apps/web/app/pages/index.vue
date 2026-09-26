@@ -9,7 +9,9 @@ const siteDomain = data.value?.site?.domain || useRuntimeConfig().public.SITE_DO
 const base = `https://${siteDomain}`
 const themeId = data.value?.site?.theme ?? 'default'
 
-const { data: homeRes } = await useAsyncData('home-page', () => $fetch<{ page: any }>('/api/page?slug=home'))
+const host = useRequestURL().host
+const { data: homeRes } = await useAsyncData(`home-page:${host}`, () =>
+  $fetch<{ page: any }>('/api/page', { query: { slug: 'home', host } }))
 const home = homeRes.value?.page
 if (!home) throw createError({ statusCode: 404, message: 'Home not found' })
 
