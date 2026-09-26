@@ -8,6 +8,7 @@ import { seo } from './seo'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  indexes: [{ unique: true, fields: ['site', 'slug'] }],
   admin: {
     defaultColumns: ['title', 'slug', 'site'],
     preview: (doc, { token }) =>
@@ -38,8 +39,9 @@ export const Pages: CollectionConfig = {
     {
       name: 'slug',
       type: 'text',
-      unique: true,
-      // Payload default для unique-полей — " - Copy" (пробел+заглавная, невалидно для URL); свой хук вместо него.
+      // Уникальность — составной индекс (site, slug), не одиночное unique: true (см. `indexes` выше):
+      // два сайта в одной установке должны мочь оба иметь страницу с slug "home".
+      // Payload default beforeDuplicate для unique-полей — " - Copy" (пробел+заглавная, невалидно для URL); свой хук вместо него.
       hooks: { beforeDuplicate: [({ value }) => makeDuplicateSlug(value)] },
     },
     { name: 'locale', type: 'text', defaultValue: 'ru' },
