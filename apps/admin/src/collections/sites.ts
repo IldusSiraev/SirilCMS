@@ -41,7 +41,13 @@ export const Sites: CollectionConfig = {
     },
     {
       name: 'locale',
-      type: 'text',
+      type: 'select',
+      // Язык контента этого сайта (весь сайт целиком — v1 не поддерживает мультиязычность внутри одного сайта).
+      // Используется на web для <html lang>. Опции — те же, что admin i18n.supportedLanguages (payload.config.ts).
+      options: [
+        { value: 'ru', label: 'Русский' },
+        { value: 'en', label: 'English' },
+      ],
       defaultValue: 'ru',
     },
     {

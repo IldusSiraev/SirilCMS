@@ -4,135 +4,135 @@ import type { BlockDef, ThemeBlockConfig, ThemeDef } from './types'
 export const BLOCKS: BlockDef[] = [
   { type: 'hero', name: 'Hero', description: 'Первый экран', variants: [
     { id: 'default', name: 'Центр', layout: 'center', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок', required: true },
-      { name: 'subtitle', type: 'richtext', label: 'Подзаголовок' },
-      { name: 'buttonText', type: 'text', label: 'Кнопка' },
-      { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' }, required: true },
+      { name: 'subtitle', type: 'richtext', label: { ru: 'Подзаголовок', en: 'Subtitle' } },
+      { name: 'buttonText', type: 'text', label: { ru: 'Кнопка', en: 'Button' } },
+      { name: 'buttonLink', type: 'link', label: { ru: 'Ссылка кнопки', en: 'Button link' } },
     ] },
     { id: 'split', name: 'Сплит', layout: 'split-right', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок', required: true },
-      { name: 'subtitle', type: 'richtext', label: 'Подзаголовок' },
-      { name: 'image', type: 'image', label: 'Изображение' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' }, required: true },
+      { name: 'subtitle', type: 'richtext', label: { ru: 'Подзаголовок', en: 'Subtitle' } },
+      { name: 'image', type: 'image', label: { ru: 'Изображение', en: 'Image' } },
     ] },
   ] },
   { type: 'text-image', name: 'Текст + изображение', variants: [
     { id: 'default', name: 'Справа', layout: 'split-right', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'body', type: 'richtext', label: 'Текст' },
-      { name: 'image', type: 'image', label: 'Изображение' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'body', type: 'richtext', label: { ru: 'Текст', en: 'Text' } },
+      { name: 'image', type: 'image', label: { ru: 'Изображение', en: 'Image' } },
     ] },
     { id: 'split', name: 'Слева', layout: 'split-left', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'body', type: 'richtext', label: 'Текст' },
-      { name: 'image', type: 'image', label: 'Изображение' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'body', type: 'richtext', label: { ru: 'Текст', en: 'Text' } },
+      { name: 'image', type: 'image', label: { ru: 'Изображение', en: 'Image' } },
     ] },
   ] },
   { type: 'features', name: 'Возможности', variants: [
     { id: 'default', name: 'Сетка', layout: 'grid', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'items', type: 'array-text', label: 'Пункты', maxItems: 12 },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'items', type: 'array-text', label: { ru: 'Пункты', en: 'Items' }, maxItems: 12 },
     ] },
   ] },
   { type: 'pricing', name: 'Цены', variants: [
     { id: 'default', name: 'Сетка', layout: 'grid', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'plans', type: 'object-array', label: 'Тарифы', maxItems: 6, subfields: [
-        { name: 'title', type: 'text', label: 'Тариф' },
-        { name: 'price', type: 'text', label: 'Цена' },
-        { name: 'description', type: 'richtext', label: 'Описание' },
-        { name: 'buttonText', type: 'text', label: 'Кнопка (необяз.)' },
-        { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
-        { name: 'featured', type: 'boolean', label: 'Выделенный' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'plans', type: 'object-array', label: { ru: 'Тарифы', en: 'Plans' }, maxItems: 6, subfields: [
+        { name: 'title', type: 'text', label: { ru: 'Тариф', en: 'Plan' } },
+        { name: 'price', type: 'text', label: { ru: 'Цена', en: 'Price' } },
+        { name: 'description', type: 'richtext', label: { ru: 'Описание', en: 'Description' } },
+        { name: 'buttonText', type: 'text', label: { ru: 'Кнопка (необяз.)', en: 'Button (optional)' } },
+        { name: 'buttonLink', type: 'link', label: { ru: 'Ссылка кнопки', en: 'Button link' } },
+        { name: 'featured', type: 'boolean', label: { ru: 'Выделенный', en: 'Featured' } },
       ] },
     ] },
   ]},
   { type: 'gallery', name: 'Галерея', variants: [
     { id: 'default', name: 'Сетка', layout: 'grid', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'images', type: 'image-array', label: 'Картинки', maxItems: 12 },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'images', type: 'image-array', label: { ru: 'Картинки', en: 'Images' }, maxItems: 12 },
     ] },
   ]},
   { type: 'faq', name: 'FAQ', variants: [
     { id: 'default', name: 'Список', layout: 'list', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'items', type: 'object-array', label: 'Вопросы', maxItems: 20, subfields: [
-        { name: 'question', type: 'text', label: 'Вопрос', required: true },
-        { name: 'answer', type: 'richtext', label: 'Ответ', required: true },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'items', type: 'object-array', label: { ru: 'Вопросы', en: 'Questions' }, maxItems: 20, subfields: [
+        { name: 'question', type: 'text', label: { ru: 'Вопрос', en: 'Question' }, required: true },
+        { name: 'answer', type: 'richtext', label: { ru: 'Ответ', en: 'Answer' }, required: true },
       ] },
     ] },
   ]},
   { type: 'testimonials', name: 'Отзывы', variants: [
     { id: 'default', name: 'Сетка карточек', layout: 'grid', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'items', type: 'object-array', label: 'Отзывы', maxItems: 9, subfields: [
-        { name: 'quote', type: 'richtext', label: 'Цитата' },
-        { name: 'author', type: 'text', label: 'Автор' },
-        { name: 'role', type: 'text', label: 'Роль/компания' },
-        { name: 'avatar', type: 'image', label: 'Фото' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'items', type: 'object-array', label: { ru: 'Отзывы', en: 'Testimonials' }, maxItems: 9, subfields: [
+        { name: 'quote', type: 'richtext', label: { ru: 'Цитата', en: 'Quote' } },
+        { name: 'author', type: 'text', label: { ru: 'Автор', en: 'Author' } },
+        { name: 'role', type: 'text', label: { ru: 'Роль/компания', en: 'Role/company' } },
+        { name: 'avatar', type: 'image', label: { ru: 'Фото', en: 'Photo' } },
       ] },
     ] },
   ]},
   { type: 'team', name: 'Команда', variants: [
     { id: 'default', name: 'Сетка', layout: 'grid', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'members', type: 'object-array', label: 'Люди', maxItems: 12, subfields: [
-        { name: 'name', type: 'text', label: 'Имя', required: true },
-        { name: 'role', type: 'text', label: 'Роль' },
-        { name: 'photo', type: 'image', label: 'Фото' },
-        { name: 'link', type: 'link', label: 'Ссылка (сайт/LinkedIn)' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'members', type: 'object-array', label: { ru: 'Люди', en: 'People' }, maxItems: 12, subfields: [
+        { name: 'name', type: 'text', label: { ru: 'Имя', en: 'Name' }, required: true },
+        { name: 'role', type: 'text', label: { ru: 'Роль', en: 'Role' } },
+        { name: 'photo', type: 'image', label: { ru: 'Фото', en: 'Photo' } },
+        { name: 'link', type: 'link', label: { ru: 'Ссылка (сайт/LinkedIn)', en: 'Link (website/LinkedIn)' } },
       ] },
     ] },
   ]},
   { type: 'portfolio-grid', name: 'Портфолио', variants: [
     { id: 'default', name: 'Сетка', layout: 'grid', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'items', type: 'object-array', label: 'Работы', maxItems: 24, subfields: [
-        { name: 'title', type: 'text', label: 'Название', required: true },
-        { name: 'image', type: 'image', label: 'Обложка' },
-        { name: 'link', type: 'link', label: 'Ссылка (необяз.)' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'items', type: 'object-array', label: { ru: 'Работы', en: 'Works' }, maxItems: 24, subfields: [
+        { name: 'title', type: 'text', label: { ru: 'Название', en: 'Name' }, required: true },
+        { name: 'image', type: 'image', label: { ru: 'Обложка', en: 'Cover' } },
+        { name: 'link', type: 'link', label: { ru: 'Ссылка (необяз.)', en: 'Link (optional)' } },
       ] },
     ] },
   ]},
   { type: 'cta', name: 'CTA', variants: [
     { id: 'default', name: 'Центр', layout: 'center', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок', required: true },
-      { name: 'body', type: 'richtext', label: 'Текст' },
-      { name: 'buttonText', type: 'text', label: 'Кнопка' },
-      { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' }, required: true },
+      { name: 'body', type: 'richtext', label: { ru: 'Текст', en: 'Text' } },
+      { name: 'buttonText', type: 'text', label: { ru: 'Кнопка', en: 'Button' } },
+      { name: 'buttonLink', type: 'link', label: { ru: 'Ссылка кнопки', en: 'Button link' } },
     ] },
     { id: 'banner', name: 'Баннер с фоном', layout: 'banner', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок', required: true },
-      { name: 'body', type: 'richtext', label: 'Текст' },
-      { name: 'image', type: 'image', label: 'Фоновое изображение' },
-      { name: 'buttonText', type: 'text', label: 'Кнопка' },
-      { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' }, required: true },
+      { name: 'body', type: 'richtext', label: { ru: 'Текст', en: 'Text' } },
+      { name: 'image', type: 'image', label: { ru: 'Фоновое изображение', en: 'Background image' } },
+      { name: 'buttonText', type: 'text', label: { ru: 'Кнопка', en: 'Button' } },
+      { name: 'buttonLink', type: 'link', label: { ru: 'Ссылка кнопки', en: 'Button link' } },
     ] },
   ]},
   { type: 'contact', name: 'Контакты', variants: [
     { id: 'default', name: 'Карточка', layout: 'list', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'email', type: 'email', label: 'Email' },
-      { name: 'phone', type: 'text', label: 'Телефон' },
-      { name: 'address', type: 'text', label: 'Адрес' },
-      { name: 'workHours', type: 'text', label: 'Часы работы' },
-      { name: 'mapLink', type: 'link', label: 'Ссылка на карту' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'email', type: 'email', label: { ru: 'Email', en: 'Email' } },
+      { name: 'phone', type: 'text', label: { ru: 'Телефон', en: 'Phone' } },
+      { name: 'address', type: 'text', label: { ru: 'Адрес', en: 'Address' } },
+      { name: 'workHours', type: 'text', label: { ru: 'Часы работы', en: 'Working hours' } },
+      { name: 'mapLink', type: 'link', label: { ru: 'Ссылка на карту', en: 'Map link' } },
     ] },
   ]},
   { type: 'post-list', name: 'Посты: список', variants: [
     { id: 'default', name: 'Список', layout: 'list', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'limit', type: 'number', label: 'Сколько', placeholder: '6' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'limit', type: 'number', label: { ru: 'Сколько', en: 'Count' }, placeholder: '6' },
     ] },
   ]},
   { type: 'post-grid', name: 'Посты: сетка', variants: [
     { id: 'default', name: 'Сетка', layout: 'grid', fields: [
-      { name: 'title', type: 'text', label: 'Заголовок' },
-      { name: 'limit', type: 'number', label: 'Сколько', placeholder: '9' },
+      { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+      { name: 'limit', type: 'number', label: { ru: 'Сколько', en: 'Count' }, placeholder: '9' },
     ] },
   ]},
   { type: 'form-block', name: 'Форма', variants: [
     { id: 'default', name: 'Форма обратной связи', layout: 'list', fields: [
-      { name: 'form', type: 'form', label: 'Форма', required: true },
+      { name: 'form', type: 'form', label: { ru: 'Форма', en: 'Form' }, required: true },
     ] },
   ]},
 ]

@@ -44,7 +44,6 @@ export const Pages: CollectionConfig = {
       // Payload default beforeDuplicate для unique-полей — " - Copy" (пробел+заглавная, невалидно для URL); свой хук вместо него.
       hooks: { beforeDuplicate: [({ value }) => makeDuplicateSlug(value)] },
     },
-    { name: 'locale', type: 'text', defaultValue: 'ru' },
     // BLOCKS пуст до T9 — пустой массив допустим, Payload обрабатывает без блоков
     // (v3: blocks — массив { slug, fields })
     {
