@@ -21,11 +21,12 @@ it('variant — визуальный пикер: превью-SVG на variant, 
   expect(previews?.[0]?.svg).toContain('<svg')
   expect(previews?.[1]?.svg).not.toBe(previews?.[0]?.svg)
 })
-it('union полей с зависимостью от variant', () => {
+it('union полей — admin.condition показывает поле только для варианта-владельца', () => {
   const fields = toPayloadBlockFields(block)
   const image = fields.find(f => f.name === 'image')
-  const admin = image?.admin as { dependencies?: { variant?: { in?: unknown } } } | undefined
-  expect(admin?.dependencies?.variant?.in).toEqual(['split'])
+  const admin = image?.admin as { condition?: (data: unknown, siblingData: Record<string, unknown>) => boolean } | undefined
+  expect(admin?.condition?.(undefined, { variant: 'split' })).toBe(true)
+  expect(admin?.condition?.(undefined, { variant: 'default' })).toBe(false)
 })
 it('toPayloadFormFields — строки в порядке: name, label, type, required, placeholder, options', () => {
   const rows = toPayloadFormFields()

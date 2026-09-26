@@ -37,7 +37,7 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
   const union = [...new Map(all.map(f => [f.name, f] as [string, BlockField])).values()]
   const fields = union.map(f => {
     const owners = def.variants.filter(v => v.fields.some(x => x.name === f.name)).map(v => v.id)
-    return { ...toPayloadField(f), admin: { dependencies: { variant: { in: owners } } } }
+    return { ...toPayloadField(f), admin: { condition: (_data: unknown, siblingData: Record<string, unknown>) => owners.includes(siblingData?.variant as string) } }
   })
   const variant = {
     type: 'select', name: 'variant', label: 'Вариант',
