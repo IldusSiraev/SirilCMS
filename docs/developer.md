@@ -27,8 +27,8 @@ Mono-repo (pnpm workspaces):
 
 Ключевые правила (не нарушать):
 
-- **Публичные чтения — без auth.** Web-сервер ходит в Payload API без токенов; draft-фильтр — server-side (published-only).
-- **Кэш страниц** — middleware `apps/web/server/middleware/cache.ts` (HTML, TTL 5 мин, хедер `x-siril-cache`).
+- **Публичные чтения — без auth.** Web-сервер ходит в Payload API без токенов; draft-фильтр — server-side (published-only). Исключение — `/preview/*`: форвардит JWT редактора (см. §3.4), те же `access.read`-правила, новых обходов нет.
+- **Кэш страниц** — middleware `apps/web/server/middleware/cache.ts` (HTML, TTL 5 мин, хедер `x-siril-cache`). `/preview/*` из кэша исключён.
 - **Purge**: payload-хук `apps/admin/src/utils/publish-hook.ts` (afterChange, fire-and-forget `POST {NUXT_URL}/api/purge` c `Bearer PURGE_TOKEN`). **draft-save не чистит кэш** (проверка параметра `draft`), publish чистит.
 - **Роль owner** — единственный полный доступ; `editor` (Клиент) — только свой site (`canScope`, `apps/admin/src/access/site-scope.ts`).
 
@@ -84,6 +84,8 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 Страница = `title`, `slug`, `sections[]` (**блоки**, см. §4) + SEO-блок (`seo()` — title/description/og/canonical/noindex). Включены versions (drafts): черновик → Publish. Публичный сайт читает только published.
 
 Домашняя страница — страница со `slug: home` (иначе web отдаёт 404 «Home not found»).
+
+**Предпросмотр черновика.** Кнопка «Предпросмотр» рядом с «Сохранить черновик» (появляется после первого сохранения) открывает `{NUXT_URL}/preview/page/<slug>?token=<JWT>` в новой вкладке — Nuxt-роут (`apps/web/app/pages/preview/page/[...slug].vue` → `apps/web/server/api/preview/page.get.ts`) форвардит этот JWT в Payload с `draft=true`, рендерит той же вёрсткой блоков, что и публичный сайт, помечает `<meta robots noindex>`. Токен выдаёт сам Payload (`admin.preview` в `pages.ts`) — это JWT текущего редактора, действует до истечения его сессии; чужой/протухший токен → анонимный доступ → драфт не отдаётся (404). У постов — тот же механизм, `/preview/post/<slug>`. Живого обновления без перезагрузки страницы (полноценный Payload Live Preview с iframe) пока нет — см. `docs/roadmap.md`.
 
 ### 3.5 Блог (Posts + Categories)
 
