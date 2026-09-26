@@ -49,7 +49,9 @@ services:
     image: caddy:2
     restart: unless-stopped
     ports: ["80:80", "443:443"]
-    environment: { SITE_DOMAIN: "${SITE_DOMAIN:-localhost}" }
+    environment:
+      SITE_DOMAIN: "${SITE_DOMAIN:-localhost}"
+      SITE_DOMAINS: "${SITE_DOMAINS:-${SITE_DOMAIN:-localhost}}"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data

@@ -1,10 +1,14 @@
-{$SITE_DOMAIN} {
-  handle /media/* {
-    reverse_proxy admin:3001
-  }
-  reverse_proxy web:3000
+# SITE_DOMAINS — пробел-разделённый список публичных доменов сайтов этой установки
+# (по умолчанию = SITE_DOMAIN, см. docker-compose.prod.yml). Все сайты в одной
+# установке используют ОДНУ общую админку (один владелец, несколько сайтов) —
+# каждому домену не нужен свой admin.<domain>, поэтому ниже только один блок.
+{$SITE_DOMAINS} {
+	handle /media/* {
+		reverse_proxy admin:3001
+	}
+	reverse_proxy web:3000
 }
 
 admin.{$SITE_DOMAIN} {
-  reverse_proxy admin:3001
+	reverse_proxy admin:3001
 }
