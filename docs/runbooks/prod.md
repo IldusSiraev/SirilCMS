@@ -84,13 +84,35 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 | Статус | `make -C infra ps` |
 | Логи | `make -C infra logs <service>` (web/admin/caddy/postgres) |
 | Рестарт сервиса | `docker compose -f infra/docker-compose.prod.yml --env-file .env restart web` |
-| Обновление версии | задать `IMAGE_TAG=vX.Y.Z` в `.env` (или оставить `latest`) → `make -C infra up` (пуллит образы, применит миграции, поднимет) |
+| Обновление версии | см. §4.1 |
 | Бэкап БД | `cd infra && POSTGRES_DB_URI="postgresql://payload:***@postgres:5432/payload" make backup` → `infra/backups/<date-time>.sql.gz` (авто-очистка >30 дн) |
 | Восстановление | `gunzip < f.sql.gz \| docker compose -f infra/docker-compose.prod.yml --env-file .env exec -i postgres psql -U payload payload` |
 | Новый сайт | `make -C infra new-site` — печатает инструкцию: новый сайт = новый сервер |
 | Другой env-файл (staging и т.п.) | `make -C infra up ENV_FILE=../.env.staging` (тот же флаг у `ps`/`logs`/`smoke`) |
 
 Несколько сайтов на одном сервере не поддерживаются: Caddy занимает `80`/`443`, admin — `3001`, второй compose-проект не поднимется рядом с первым. Один сервер = один сайт; для клиента — новый сервер (см. [docs/roadmap.md](../roadmap.md), раздел «Модель развёртывания»). Мультисайт на одном сервере — там же, Фаза 3.
+
+### 4.1 Обновление версии
+
+Порядок обязателен — бэкап **до** пулла новых образов, миграции необратимы:
+
+```bash
+# 1. Бэкап БД (перед любым обновлением)
+cd infra && POSTGRES_DB_URI="postgresql://payload:***@postgres:5432/payload" make backup
+cd ..
+
+# 2. Задать версию (или оставить latest — тогда просто re-pull текущего тега)
+#    в .env: IMAGE_TAG=vX.Y.Z
+
+# 3. Пулл образов + подъём
+make -C infra up
+# без make: docker compose -f infra/docker-compose.prod.yml --env-file .env pull \
+#           && docker compose -f infra/docker-compose.prod.yml --env-file .env up -d
+```
+
+Миграции Payload применяются автоматически: one-shot сервис `migrate` стартует перед `admin` при каждом `up` и выполняет `pnpm --filter @siril/admin migrate` (образ `admin-migrate`, см. §2) — ручной шаг не нужен. Если миграция в новой версии breaking (несовместима со старыми данными без ручных действий) — сверяться с release notes/`CHANGELOG.md` (см. [docs/roadmap.md](../roadmap.md)) перед обновлением на минорную/мажорную версию.
+
+Если `migrate` упал (exit ≠ 0) — `admin` не стартует (`depends_on: service_completed_successfully`), сайт продолжает работать на старой версии `web`/`admin` до ручного вмешательства. Откат: вернуть предыдущий `IMAGE_TAG` в `.env`, `make -C infra up`; если миграция уже частично применилась — восстановить БД из бэкапа шага 1 (`gunzip < f.sql.gz | ... psql`, см. таблицу выше) **до** отката образов.
 
 ## 5. Типовые проблемы
 
