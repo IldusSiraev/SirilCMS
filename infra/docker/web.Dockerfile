@@ -5,8 +5,6 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 ARG PAYLOAD_URL=http://admin:3001
 ENV PAYLOAD_URL=$PAYLOAD_URL
-ARG NUXT_PUBLIC_MEDIA_BASE=http://localhost:3001
-ENV NUXT_PUBLIC_MEDIA_BASE=$NUXT_PUBLIC_MEDIA_BASE
 RUN pnpm --filter @siril/web build
 
 FROM node:22-alpine
