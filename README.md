@@ -67,6 +67,7 @@ pnpm typecheck                         # tsc/nuxt typecheck
 - [docs/developer.md](docs/developer.md) — **руководство разработчика**: архитектура, администрирование, создание блоков, темы/вёрстка, грабли.
 - [docs/runbooks/dev.md](docs/runbooks/dev.md), [docs/runbooks/prod.md](docs/runbooks/prod.md) — операционные ранбуки.
 - [docs/superpowers/specs](docs/superpowers/specs) — дизайн-спека проекта.
+- [CHANGELOG.md](CHANGELOG.md) — история версий, breaking-изменения и ручные шаги при обновлении.
 
 ## Кастомные страницы (custom-страницы админки)
 
