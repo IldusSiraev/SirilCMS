@@ -9,7 +9,7 @@ function toBuf(v: unknown): Buffer {
 
 export default defineEventHandler(async (event) => {
   const url = event.path
-  if (event.method !== 'GET' || url.startsWith('/api') || url.startsWith('/media')) return
+  if (event.method !== 'GET' || url.startsWith('/api') || url.startsWith('/media') || url.startsWith('/preview')) return
   const path = url.split('?')[0]
   const key = `${event.node.req.headers.host}:${path}`
   const rawTtl = Number(process.env.ROUTE_TTL ?? 300_000)

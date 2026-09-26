@@ -1,6 +1,7 @@
 import type { CollectionConfig, Field } from 'payload'
 import { publishedOnlyReadAccess } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
+import { buildPreviewURL } from '../utils/preview-url'
 import { seo } from './seo'
 
 // Минимальный адаптер rich text (MVP): в монорепо не установлен @payloadcms/richtext-lexical
@@ -21,6 +22,8 @@ export const Posts: CollectionConfig = {
   slug: 'posts',
   admin: {
     defaultColumns: ['title', 'slug', 'site', 'category'],
+    preview: (doc, { token }) =>
+      buildPreviewURL(process.env.NUXT_URL ?? 'http://localhost:3000', 'post', doc.slug as string | undefined, token),
   },
   access: {
     read: ({ req: { user, query } }) => publishedOnlyReadAccess(user, query),

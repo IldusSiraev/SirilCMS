@@ -2,12 +2,15 @@ import type { CollectionConfig, Field } from 'payload'
 import { BLOCKS, toPayloadBlockFields } from '@siril/blocks-definitions'
 import { publishedOnlyReadAccess } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
+import { buildPreviewURL } from '../utils/preview-url'
 import { seo } from './seo'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: {
     defaultColumns: ['title', 'slug', 'site'],
+    preview: (doc, { token }) =>
+      buildPreviewURL(process.env.NUXT_URL ?? 'http://localhost:3000', 'page', doc.slug as string | undefined, token),
   },
   access: {
     read: ({ req: { user, query } }) => publishedOnlyReadAccess(user, query),
