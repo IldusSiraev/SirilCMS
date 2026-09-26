@@ -7,8 +7,9 @@
   </div>
 </template>
 <script setup lang="ts">
-const { data } = await useAsyncData('posts-index', () =>
-  $fetch<{ docs: any[] }>('/api/posts?limit=50'))
+const host = useRequestURL().host
+const { data } = await useAsyncData(`posts-index:${host}`, () =>
+  $fetch<{ docs: any[] }>('/api/posts', { query: { limit: 50, host } }))
 const { data: siteData } = await useSite()
 const siteDomain = siteData.value?.site?.domain || useRuntimeConfig().public.SITE_DOMAIN
 const base = `https://${siteDomain}`

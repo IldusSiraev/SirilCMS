@@ -1,10 +1,14 @@
 import { payloadGet } from '../utils/payload'
+import { resolveSite } from '../utils/site-resolve'
 
 export default defineEventHandler(async (event) => {
-  const base = `https://${useRuntimeConfig().public.SITE_DOMAIN}`
+  const host = getRequestHost(event) ?? ''
+  const site = await resolveSite(host)
+  if (!site) throw createError({ statusCode: 404 })
+  const base = `https://${(site.domain as string | undefined) || host}`
   const [pages, posts] = await Promise.all([
-    payloadGet<{ docs: any[] }>('pages?limit=500&depth=1'),
-    payloadGet<{ docs: any[] }>('posts?limit=500'),
+    payloadGet<{ docs: any[] }>(`pages?where[site][equals]=${site.id}&limit=500&depth=1`),
+    payloadGet<{ docs: any[] }>(`posts?where[site][equals]=${site.id}&limit=500`),
   ])
   const urls = [
     ...pages.docs.map(p => `<url><loc>${p.slug === 'home' ? base : `${base}/${p.slug}`}</loc></url>`),

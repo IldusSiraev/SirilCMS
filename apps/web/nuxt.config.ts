@@ -11,4 +11,8 @@ export default defineNuxtConfig({
     },
   },
   build: { transpile: ['@siril/blocks-definitions'] },
+  // Мультисайт: локально тестируется через `curl -H "Host: <domain>"` с произвольными
+  // доменами — Vite dev-сервер по умолчанию блокирует незнакомые Host (DNS-rebinding
+  // защита), это только для `nuxt dev`, на прод-сборку (.output, без Vite) не влияет.
+  vite: { server: { allowedHosts: true } },
 })

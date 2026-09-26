@@ -66,6 +66,7 @@ export default tseslint.config(
         useRoute: 'readonly',
         useRuntimeConfig: 'readonly',
         useAsyncData: 'readonly',
+        useRequestURL: 'readonly',
         useError: 'readonly',
         createError: 'readonly',
         $fetch: 'readonly',
