@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
+  indexes: [{ unique: true, fields: ['site', 'slug'] }],
   admin: {
     defaultColumns: ['name', 'slug', 'site'],
   },
@@ -14,6 +15,7 @@ export const Categories: CollectionConfig = {
   fields: [
     { name: 'site', type: 'relationship', relationTo: 'sites', required: true },
     { name: 'name', type: 'text', required: true },
-    { name: 'slug', type: 'text', unique: true },
+    // Уникальность — составной индекс (site, slug) на уровне коллекции (см. `indexes` выше).
+    { name: 'slug', type: 'text' },
   ],
 }

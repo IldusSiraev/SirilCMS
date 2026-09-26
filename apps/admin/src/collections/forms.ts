@@ -3,6 +3,7 @@ import { toPayloadFormFields } from '@siril/blocks-definitions'
 
 export const Forms: CollectionConfig = {
   slug: 'forms',
+  indexes: [{ unique: true, fields: ['site', 'slug'] }],
   admin: {
     defaultColumns: ['name', 'slug'],
     description: 'Определение формы. Конструктор: /form-builder?form=<id>',
@@ -22,7 +23,8 @@ export const Forms: CollectionConfig = {
       // cell получает rowData (весь doc) → id для ссылки на конструктор
       admin: { components: { Cell: './src/admin-ui/form-builder-link' } },
     },
-    { name: 'slug', type: 'text', unique: true, admin: { description: 'POST /api/forms/<slug>/submit (T14)' } },
+    // Уникальность — составной индекс (site, slug) на уровне коллекции (см. `indexes` выше).
+    { name: 'slug', type: 'text', admin: { description: 'POST /api/forms/<slug>/submit (T14)' } },
     { name: 'successMessage', type: 'text', defaultValue: 'Спасибо! Заявка отправлена.' },
     {
       name: 'notifyEmails',
