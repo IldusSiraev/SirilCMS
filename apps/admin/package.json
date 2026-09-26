@@ -19,6 +19,7 @@
     "@payloadcms/db-postgres": "^3.90.1",
     "@payloadcms/next": "^3.90.1",
     "@payloadcms/translations": "^3.90.2",
+    "@payloadcms/ui": "^3.90.1",
     "@siril/blocks-definitions": "workspace:*",
     "next": "16.3.5",
     "nodemailer": "^10.0.10",
