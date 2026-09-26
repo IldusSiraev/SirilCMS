@@ -4,12 +4,22 @@ import type { BlockDef } from './types'
 
 const block: BlockDef = { type: 'hero', name: 'Hero', variants: [
   { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: 'Т' }, { name: 'caption', type: 'text', label: 'С' }] },
-  { id: 'split', name: 'Split', fields: [{ name: 'title', type: 'text', label: 'Т' }, { name: 'image', type: 'image', label: 'I' }] },
+  { id: 'split', name: 'Split', layout: 'split-right', fields: [{ name: 'title', type: 'text', label: 'Т' }, { name: 'image', type: 'image', label: 'I' }] },
 ]}
 
 it('первый элемент — select variant', () => {
   const fields = toPayloadBlockFields(block)
   expect(fields[0]).toMatchObject({ type: 'select', name: 'variant', options: [{ value: 'default', label: 'Default' }, { value: 'split', label: 'Split' }] })
+})
+it('variant — визуальный пикер: превью-SVG на variant, компонент подключён', () => {
+  const fields = toPayloadBlockFields(block)
+  const variant = fields[0] as { admin?: { custom?: { variantPreviews?: { value: string; label: string; svg: string }[] }; components?: { Field?: string } } }
+  expect(variant.admin?.components?.Field).toBe('./src/admin-ui/variant-picker')
+  const previews = variant.admin?.custom?.variantPreviews
+  expect(previews).toHaveLength(2)
+  expect(previews?.[0]).toMatchObject({ value: 'default', label: 'Default' })
+  expect(previews?.[0]?.svg).toContain('<svg')
+  expect(previews?.[1]?.svg).not.toBe(previews?.[0]?.svg)
 })
 it('union полей с зависимостью от variant', () => {
   const fields = toPayloadBlockFields(block)

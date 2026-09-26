@@ -3,38 +3,38 @@ import type { BlockDef, ThemeBlockConfig, ThemeDef } from './types'
 // Заполняется в T9–T12 (append-only). Точка расширения — только этот файл.
 export const BLOCKS: BlockDef[] = [
   { type: 'hero', name: 'Hero', description: 'Первый экран', variants: [
-    { id: 'default', name: 'Центр', fields: [
+    { id: 'default', name: 'Центр', layout: 'center', fields: [
       { name: 'title', type: 'text', label: 'Заголовок', required: true },
       { name: 'subtitle', type: 'richtext', label: 'Подзаголовок' },
       { name: 'buttonText', type: 'text', label: 'Кнопка' },
       { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
     ] },
-    { id: 'split', name: 'Сплит', fields: [
+    { id: 'split', name: 'Сплит', layout: 'split-right', fields: [
       { name: 'title', type: 'text', label: 'Заголовок', required: true },
       { name: 'subtitle', type: 'richtext', label: 'Подзаголовок' },
       { name: 'image', type: 'image', label: 'Изображение' },
     ] },
   ] },
   { type: 'text-image', name: 'Текст + изображение', variants: [
-    { id: 'default', name: 'Справа', fields: [
+    { id: 'default', name: 'Справа', layout: 'split-right', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'body', type: 'richtext', label: 'Текст' },
       { name: 'image', type: 'image', label: 'Изображение' },
     ] },
-    { id: 'split', name: 'Слева', fields: [
+    { id: 'split', name: 'Слева', layout: 'split-left', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'body', type: 'richtext', label: 'Текст' },
       { name: 'image', type: 'image', label: 'Изображение' },
     ] },
   ] },
   { type: 'features', name: 'Возможности', variants: [
-    { id: 'default', name: 'Сетка', fields: [
+    { id: 'default', name: 'Сетка', layout: 'grid', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'items', type: 'array-text', label: 'Пункты', maxItems: 12 },
     ] },
   ] },
   { type: 'pricing', name: 'Цены', variants: [
-    { id: 'default', name: 'Сетка', fields: [
+    { id: 'default', name: 'Сетка', layout: 'grid', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'plans', type: 'object-array', label: 'Тарифы', maxItems: 6, subfields: [
         { name: 'title', type: 'text', label: 'Тариф' },
@@ -47,13 +47,13 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
   { type: 'gallery', name: 'Галерея', variants: [
-    { id: 'default', name: 'Сетка', fields: [
+    { id: 'default', name: 'Сетка', layout: 'grid', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'images', type: 'image-array', label: 'Картинки', maxItems: 12 },
     ] },
   ]},
   { type: 'faq', name: 'FAQ', variants: [
-    { id: 'default', name: 'Список', fields: [
+    { id: 'default', name: 'Список', layout: 'list', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'items', type: 'object-array', label: 'Вопросы', maxItems: 20, subfields: [
         { name: 'question', type: 'text', label: 'Вопрос', required: true },
@@ -62,7 +62,7 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
   { type: 'testimonials', name: 'Отзывы', variants: [
-    { id: 'default', name: 'Сетка карточек', fields: [
+    { id: 'default', name: 'Сетка карточек', layout: 'grid', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'items', type: 'object-array', label: 'Отзывы', maxItems: 9, subfields: [
         { name: 'quote', type: 'richtext', label: 'Цитата' },
@@ -73,7 +73,7 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
   { type: 'team', name: 'Команда', variants: [
-    { id: 'default', name: 'Сетка', fields: [
+    { id: 'default', name: 'Сетка', layout: 'grid', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'members', type: 'object-array', label: 'Люди', maxItems: 12, subfields: [
         { name: 'name', type: 'text', label: 'Имя', required: true },
@@ -84,7 +84,7 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
   { type: 'portfolio-grid', name: 'Портфолио', variants: [
-    { id: 'default', name: 'Сетка', fields: [
+    { id: 'default', name: 'Сетка', layout: 'grid', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'items', type: 'object-array', label: 'Работы', maxItems: 24, subfields: [
         { name: 'title', type: 'text', label: 'Название', required: true },
@@ -94,13 +94,13 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
   { type: 'cta', name: 'CTA', variants: [
-    { id: 'default', name: 'Центр', fields: [
+    { id: 'default', name: 'Центр', layout: 'center', fields: [
       { name: 'title', type: 'text', label: 'Заголовок', required: true },
       { name: 'body', type: 'richtext', label: 'Текст' },
       { name: 'buttonText', type: 'text', label: 'Кнопка' },
       { name: 'buttonLink', type: 'link', label: 'Ссылка кнопки' },
     ] },
-    { id: 'banner', name: 'Баннер с фоном', fields: [
+    { id: 'banner', name: 'Баннер с фоном', layout: 'banner', fields: [
       { name: 'title', type: 'text', label: 'Заголовок', required: true },
       { name: 'body', type: 'richtext', label: 'Текст' },
       { name: 'image', type: 'image', label: 'Фоновое изображение' },
@@ -109,7 +109,7 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
   { type: 'contact', name: 'Контакты', variants: [
-    { id: 'default', name: 'Карточка', fields: [
+    { id: 'default', name: 'Карточка', layout: 'list', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'email', type: 'email', label: 'Email' },
       { name: 'phone', type: 'text', label: 'Телефон' },
@@ -119,19 +119,19 @@ export const BLOCKS: BlockDef[] = [
     ] },
   ]},
   { type: 'post-list', name: 'Посты: список', variants: [
-    { id: 'default', name: 'Список', fields: [
+    { id: 'default', name: 'Список', layout: 'list', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'limit', type: 'number', label: 'Сколько', placeholder: '6' },
     ] },
   ]},
   { type: 'post-grid', name: 'Посты: сетка', variants: [
-    { id: 'default', name: 'Сетка', fields: [
+    { id: 'default', name: 'Сетка', layout: 'grid', fields: [
       { name: 'title', type: 'text', label: 'Заголовок' },
       { name: 'limit', type: 'number', label: 'Сколько', placeholder: '9' },
     ] },
   ]},
   { type: 'form-block', name: 'Форма', variants: [
-    { id: 'default', name: 'Форма обратной связи', fields: [
+    { id: 'default', name: 'Форма обратной связи', layout: 'list', fields: [
       { name: 'form', type: 'form', label: 'Форма', required: true },
     ] },
   ]},

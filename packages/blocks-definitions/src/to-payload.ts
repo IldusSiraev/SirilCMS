@@ -1,5 +1,6 @@
 import type { BlockDef, BlockField, PayloadField } from './types'
 import { FORM_FIELD_TYPES } from './form-fields'
+import { variantPreviewSvg } from './variant-preview'
 
 // Минимальный rich-text адаптер (MVP, без внешних deps; паттерн posts.ts T4):
 // string `editor: 'true'` крашится в Payload 3 (editor.validate is not a function)
@@ -42,6 +43,13 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
     type: 'select', name: 'variant', label: 'Вариант',
     options: def.variants.map(v => ({ value: v.id, label: v.name })),
     defaultValue: def.variants[0]!.id,
+    admin: {
+      // Визуальный пикер вместо select — превью-SVG на вариант (wireframe, не рендер реального блока).
+      custom: {
+        variantPreviews: def.variants.map(v => ({ value: v.id, label: v.name, svg: variantPreviewSvg(v.layout ?? 'center') })),
+      },
+      components: { Field: './src/admin-ui/variant-picker' },
+    },
   }
   return [variant, ...fields]
 }
