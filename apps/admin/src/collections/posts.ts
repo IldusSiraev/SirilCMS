@@ -21,6 +21,7 @@ const bodyField = {
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
+  indexes: [{ unique: true, fields: ['site', 'slug'] }],
   admin: {
     defaultColumns: ['title', 'slug', 'site', 'category'],
     preview: (doc, { token }) =>
@@ -51,7 +52,7 @@ export const Posts: CollectionConfig = {
     {
       name: 'slug',
       type: 'text',
-      unique: true,
+      // Уникальность — составной индекс (site, slug) на уровне коллекции (см. `indexes` выше).
       hooks: { beforeDuplicate: [({ value }) => makeDuplicateSlug(value)] },
     },
     { name: 'locale', type: 'text', defaultValue: 'ru' },
