@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { resolveSiteId } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 
 export const SiteContent: CollectionConfig = {
@@ -16,7 +17,7 @@ export const SiteContent: CollectionConfig = {
   hooks: {
     afterChange: [
       async (args) => {
-        publishHook('site', args.doc.id as number)
+        publishHook('site-content', args.doc.id as number, resolveSiteId(args.doc))
       },
     ],
   },

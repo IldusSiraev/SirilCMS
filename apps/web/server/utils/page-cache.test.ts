@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clearCache, getCache, setCache } from './page-cache'
+import { clearCache, clearCacheForHost, getCache, setCache } from './page-cache'
 describe('page-cache', () => {
   it('возвращает значение в пределах TTL', () => {
     clearCache(); setCache('a', 'x', 60_000)
@@ -21,5 +21,16 @@ describe('page-cache', () => {
   it('изоляция ключей', () => {
     clearCache(); setCache('a', 'x', 60_000)
     expect(getCache('b')).toBeNull(); clearCache()
+  })
+  it('clearCacheForHost чистит только записи этого хоста', () => {
+    clearCache()
+    setCache('site-a.test:/', 'a-home', 60_000)
+    setCache('site-a.test:/about', 'a-about', 60_000)
+    setCache('site-b.test:/', 'b-home', 60_000)
+    clearCacheForHost('site-a.test')
+    expect(getCache('site-a.test:/')).toBeNull()
+    expect(getCache('site-a.test:/about')).toBeNull()
+    expect(getCache('site-b.test:/')).toBe('b-home')
+    clearCache()
   })
 })

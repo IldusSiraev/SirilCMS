@@ -29,7 +29,7 @@ Mono-repo (pnpm workspaces):
 
 - **Публичные чтения — без auth.** Web-сервер ходит в Payload API без токенов; draft-фильтр — server-side (published-only). Исключение — `/preview/*`: форвардит JWT редактора (см. §3.4), те же `access.read`-правила, новых обходов нет.
 - **Кэш страниц** — middleware `apps/web/server/middleware/cache.ts` (HTML, TTL 5 мин, хедер `x-siril-cache`). `/preview/*` из кэша исключён.
-- **Purge**: payload-хук `apps/admin/src/utils/publish-hook.ts` (afterChange, fire-and-forget `POST {NUXT_URL}/api/purge` c `Bearer PURGE_TOKEN`). **draft-save не чистит кэш** (проверка параметра `draft`), publish чистит.
+- **Purge**: payload-хук `apps/admin/src/utils/publish-hook.ts` (afterChange, fire-and-forget `POST {NUXT_URL}/api/purge` c `Bearer PURGE_TOKEN`, телом `{ siteId }`). **draft-save не чистит кэш** (проверка параметра `draft`), publish чистит. Purge — per-site: чистит только кэш хоста опубликованного сайта, не всю установку (без `siteId`/если домен сайта не резолвится — fallback на полную очистку).
 - **Роль owner** — единственный полный доступ; `editor` (Клиент) — только свой site (`canScope`, `apps/admin/src/access/site-scope.ts`).
 
 ---

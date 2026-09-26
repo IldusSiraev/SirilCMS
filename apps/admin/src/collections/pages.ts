@@ -1,6 +1,6 @@
 import type { CollectionConfig, Field } from 'payload'
 import { BLOCKS, toPayloadBlockFields } from '@siril/blocks-definitions'
-import { publishedOnlyReadAccess } from '../access/site-scope'
+import { publishedOnlyReadAccess, resolveSiteId } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { buildPreviewURL } from '../utils/preview-url'
 import { makeDuplicateSlug } from '../utils/duplicate-slug'
@@ -29,7 +29,7 @@ export const Pages: CollectionConfig = {
         // draft-save не меняет опубликованное → без purge (fire-and-forget)
         const draftParam = args.req.query?.draft
         if (draftParam === true || draftParam === 'true') return
-        publishHook('page', args.doc.id as number)
+        publishHook('page', args.doc.id as number, resolveSiteId(args.doc))
       },
     ],
   },

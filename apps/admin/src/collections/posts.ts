@@ -1,5 +1,5 @@
 import type { CollectionConfig, Field } from 'payload'
-import { publishedOnlyReadAccess } from '../access/site-scope'
+import { publishedOnlyReadAccess, resolveSiteId } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { buildPreviewURL } from '../utils/preview-url'
 import { makeDuplicateSlug } from '../utils/duplicate-slug'
@@ -42,7 +42,7 @@ export const Posts: CollectionConfig = {
         // draft-save не меняет опубликованное → без purge (fire-and-forget)
         const draftParam = args.req.query?.draft
         if (draftParam === true || draftParam === 'true') return
-        publishHook('post', args.doc.id as number)
+        publishHook('post', args.doc.id as number, resolveSiteId(args.doc))
       },
     ],
   },
