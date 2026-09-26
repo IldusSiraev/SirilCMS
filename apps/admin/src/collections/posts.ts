@@ -2,6 +2,7 @@ import type { CollectionConfig, Field } from 'payload'
 import { publishedOnlyReadAccess } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { buildPreviewURL } from '../utils/preview-url'
+import { makeDuplicateSlug } from '../utils/duplicate-slug'
 import { seo } from './seo'
 
 // Минимальный адаптер rich text (MVP): в монорепо не установлен @payloadcms/richtext-lexical
@@ -47,7 +48,12 @@ export const Posts: CollectionConfig = {
   fields: [
     { name: 'site', type: 'relationship', relationTo: 'sites', required: true },
     { name: 'title', type: 'text', required: true },
-    { name: 'slug', type: 'text', unique: true },
+    {
+      name: 'slug',
+      type: 'text',
+      unique: true,
+      hooks: { beforeDuplicate: [({ value }) => makeDuplicateSlug(value)] },
+    },
     { name: 'locale', type: 'text', defaultValue: 'ru' },
     { name: 'excerpt', type: 'textarea' },
     bodyField,
