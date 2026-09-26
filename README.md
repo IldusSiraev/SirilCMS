@@ -80,7 +80,7 @@ pnpm typecheck                         # tsc/nuxt typecheck
 Prereq: `docker` с compose; в корне в `.env` заполнены `POSTGRES_PASSWORD`, `PAYLOAD_SECRET` (32+ символов), `SITE_DOMAIN`.
 
 ```sh
-make -C infra up       # сборка + поднимает postgres, admin, web, caddy
+make -C infra up       # тянет образы из GHCR (IMAGE_TAG в .env, default latest), поднимает postgres, admin, web, caddy
 make -C infra ps       # статус
 make -C infra logs     # логи
 make -C infra new-site # инструкция: новый сайт = новый сервер (мультисайт на одном сервере — см. docs/roadmap.md)

@@ -37,10 +37,10 @@ openssl rand -hex 16   # → в POSTGRES_PASSWORD и в POSTGRES_DB_URI
 ```bash
 make -C infra up
 # без make (из корня repo):
-docker compose -f infra/docker-compose.prod.yml --env-file .env up -d --build
+docker compose -f infra/docker-compose.prod.yml --env-file .env up -d --pull always
 ```
 
-Сборка 5–15 минут (pull base-образов + pnpm install в двух образах). Вывод: контейнеры `postgres / admin / web / caddy`, все `healthy`/`running`. Перед стартом admin отработает one-shot `migrate` (прикладывает миграции Payload и выходит 0) — это нормально.
+Образы `admin`/`web`/`migrate` — готовые из GHCR (`ghcr.io/ildussiraev/sirilcms-*`, версия — `IMAGE_TAG` в `.env`, по умолчанию `latest`), сборка на сервере клиента не нужна. Вывод: контейнеры `postgres / admin / web / caddy`, все `healthy`/`running`. Перед стартом admin отработает one-shot `migrate` (прикладывает миграции Payload и выходит 0) — это нормально.
 
 | Сервис | Доступ | Роль |
 |---|---|---|
@@ -84,7 +84,7 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 | Статус | `make -C infra ps` |
 | Логи | `make -C infra logs <service>` (web/admin/caddy/postgres) |
 | Рестарт сервиса | `docker compose -f infra/docker-compose.prod.yml --env-file .env restart web` |
-| Обновление кода | `git pull && make -C infra up` (пересоберёт образы, поднимет) |
+| Обновление версии | задать `IMAGE_TAG=vX.Y.Z` в `.env` (или оставить `latest`) → `make -C infra up` (пуллит образы, применит миграции, поднимет) |
 | Бэкап БД | `cd infra && POSTGRES_DB_URI="postgresql://payload:***@postgres:5432/payload" make backup` → `infra/backups/<date-time>.sql.gz` (авто-очистка >30 дн) |
 | Восстановление | `gunzip < f.sql.gz \| docker compose -f infra/docker-compose.prod.yml --env-file .env exec -i postgres psql -U payload payload` |
 | Новый сайт | `make -C infra new-site` — печатает инструкцию: новый сайт = новый сервер |
