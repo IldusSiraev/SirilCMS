@@ -24,6 +24,12 @@ export const Forms: CollectionConfig = {
     },
     { name: 'slug', type: 'text', unique: true, admin: { description: 'POST /api/forms/<slug>/submit (T14)' } },
     { name: 'successMessage', type: 'text', defaultValue: 'Спасибо! Заявка отправлена.' },
+    {
+      name: 'notifyEmails',
+      type: 'array',
+      admin: { description: 'Доп. получатели уведомлений о заявках (в дополнение к Sites → Contacts → Email)' },
+      fields: [{ name: 'email', type: 'email', required: true }],
+    },
     { name: 'fields', type: 'array', fields: toPayloadFormFields() as Field[] },
   ],
 }

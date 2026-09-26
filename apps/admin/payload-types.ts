@@ -157,6 +157,9 @@ export interface Site {
     smtpPort?: number | null;
     smtpUser?: string | null;
     smtpPass?: string | null;
+    /**
+     * ID счётчика Яндекс.Метрики (число). Публично читаемо — подставляется в <head> сайта.
+     */
     analyticsId?: string | null;
   };
   logo?: (number | null) | Media;
@@ -441,6 +444,15 @@ export interface Form {
    */
   slug?: string | null;
   successMessage?: string | null;
+  /**
+   * Доп. получатели уведомлений о заявках (в дополнение к Sites → Contacts → Email)
+   */
+  notifyEmails?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
   fields?:
     | {
         name: string;
@@ -560,6 +572,18 @@ export interface FormSubmission {
       }[]
     | null;
   ip?: string | null;
+  /**
+   * Статус доставки уведомлений (заполняется автоматически)
+   */
+  notifications?:
+    | {
+        channel: 'email' | 'telegram';
+        recipient: string;
+        status: 'sent' | 'failed';
+        error?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1024,6 +1048,12 @@ export interface FormsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   successMessage?: T;
+  notifyEmails?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
   fields?:
     | T
     | {
@@ -1053,6 +1083,15 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
         id?: T;
       };
   ip?: T;
+  notifications?:
+    | T
+    | {
+        channel?: T;
+        recipient?: T;
+        status?: T;
+        error?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

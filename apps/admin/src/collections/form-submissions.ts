@@ -30,5 +30,16 @@ export const FormSubmissions: CollectionConfig = {
       { name: 'value', type: 'text' },
     ] },
     { name: 'ip', type: 'text' },
+    {
+      name: 'notifications',
+      type: 'array',
+      admin: { readOnly: true, description: 'Статус доставки уведомлений (заполняется автоматически)' },
+      fields: [
+        { name: 'channel', type: 'select', options: ['email', 'telegram'], required: true },
+        { name: 'recipient', type: 'text', required: true },
+        { name: 'status', type: 'select', options: ['sent', 'failed'], required: true },
+        { name: 'error', type: 'text' },
+      ],
+    },
   ],
 }
