@@ -172,8 +172,16 @@ jobs:
         include:
           - image: admin
             dockerfile: infra/docker/admin.Dockerfile
+            target: ''
           - image: web
             dockerfile: infra/docker/web.Dockerfile
+            target: ''
+          # admin's runtime image is a Next.js standalone build — no node_modules/payload/bin.js,
+          # no src/migrations, no ts-loader script. `pnpm --filter @siril/admin migrate` needs the
+          # full pre-build stage instead, published as its own (much larger) image.
+          - image: admin-migrate
+            dockerfile: infra/docker/admin.Dockerfile
+            target: build
     steps:
       - uses: actions/checkout@v4
 
@@ -195,6 +203,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
+          target: ${{ matrix.target }}
           push: true
           tags: |
             ${{ steps.image.outputs.name }}:${{ github.ref_name }}

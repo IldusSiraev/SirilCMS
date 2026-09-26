@@ -2,7 +2,7 @@
 ENV_FILE ?= ../.env
 
 up:
-	docker compose -f docker-compose.prod.yml --env-file $(ENV_FILE) up -d --build
+	docker compose -f docker-compose.prod.yml --env-file $(ENV_FILE) up -d --pull always
 ps:
 	docker compose -f docker-compose.prod.yml --env-file $(ENV_FILE) ps
 logs:

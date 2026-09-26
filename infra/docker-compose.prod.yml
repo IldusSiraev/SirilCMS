@@ -13,10 +13,7 @@ services:
       timeout: 5s
       retries: 10
   migrate:
-    build:
-      context: ..
-      dockerfile: infra/docker/admin.Dockerfile
-      target: build
+    image: ghcr.io/ildussiraev/sirilcms-admin-migrate:${IMAGE_TAG:-latest}
     command: pnpm --filter @siril/admin migrate
     env_file: ${ENV_FILE:-../.env}
     environment:
@@ -25,9 +22,7 @@ services:
       postgres:
         condition: service_healthy
   admin:
-    build:
-      context: ..
-      dockerfile: infra/docker/admin.Dockerfile
+    image: ghcr.io/ildussiraev/sirilcms-admin:${IMAGE_TAG:-latest}
     env_file: ${ENV_FILE:-../.env}
     restart: unless-stopped
     environment:
@@ -44,10 +39,7 @@ services:
       migrate:
         condition: service_completed_successfully
   web:
-    build:
-      context: ..
-      dockerfile: infra/docker/web.Dockerfile
-      args: { PAYLOAD_URL: 'http://admin:3001' }
+    image: ghcr.io/ildussiraev/sirilcms-web:${IMAGE_TAG:-latest}
     env_file: ${ENV_FILE:-../.env}
     restart: unless-stopped
     environment:
