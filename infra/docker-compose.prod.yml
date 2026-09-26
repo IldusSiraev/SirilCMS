@@ -47,10 +47,12 @@ services:
     build:
       context: ..
       dockerfile: infra/docker/web.Dockerfile
-      args: { PAYLOAD_URL: 'http://admin:3001', NUXT_PUBLIC_MEDIA_BASE: 'https://admin.${SITE_DOMAIN:?SITE_DOMAIN is required}' }
+      args: { PAYLOAD_URL: 'http://admin:3001' }
     env_file: ${ENV_FILE:-../.env}
     restart: unless-stopped
-    environment: { PAYLOAD_URL: 'http://admin:3001' }
+    environment:
+      PAYLOAD_URL: 'http://admin:3001'
+      NUXT_PUBLIC_MEDIA_BASE: ${NUXT_PUBLIC_MEDIA_BASE:-https://admin.${SITE_DOMAIN:?SITE_DOMAIN is required}}
     depends_on: [ admin ]
   caddy:
     image: caddy:2

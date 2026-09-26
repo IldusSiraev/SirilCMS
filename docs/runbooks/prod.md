@@ -99,7 +99,7 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 | `POSTGRES_PASSWORD must be set` | `.env` — пустой/не задан `POSTGRES_PASSWORD`; путь `--env-file .env` = **root** (make из root, `make -C infra up` подставляет `--env-file ../.env`) |
 | `SITE_DOMAIN is required` | нет `SITE_DOMAIN` в `.env` |
 | `caddy` 502 | `web` не healthy → `make ps`, `make logs web`; проверить `PAYLOAD_URL=http://admin:3001` (compose задаёт сам) |
-| Media (картинки) не грузятся | media URL = `https://admin.<domain>/api/media/file/…` (запечен в build `NUXT_PUBLIC_MEDIA_BASE`); DNS `admin.*` должен резолвиться; пересобрать web после изменения |
+| Media (картинки) не грузятся | media URL = `https://admin.<domain>/api/media/file/…` (`NUXT_PUBLIC_MEDIA_BASE` — runtime-переменная web, по умолчанию derives из `SITE_DOMAIN`; можно переопределить явно в `.env`); DNS `admin.*` должен резолвиться; изменить `.env` и `make -C infra up` (рестарт, без пересборки) |
 | 503 от Let's Encrypt | порты 80/443 не публичны или DNS A не указывает на сервер; staging: `docker compose run --rm caddy caddy cert-expiring ...` / домены временно в `tls internal` |
 | Admin не стартует | `make logs admin` — типично `PAYLOAD_SECRET` < 32 символов |
 | Изменения в контенте видны с задержкой | HTML-кэш web: TTL 5 мин (env `ROUTE_TTL` в web, сек). Нормально: публичация из админки шлёт purge (`POST web/api/purge`, Bearer `PURGE_TOKEN`) — страница обносится мгновенно. Если не обносится: заголовок `x-siril-cache: HIT` + проверьте `NUXT_URL=http://web:3000` в admin (иначе purge молча падает) |

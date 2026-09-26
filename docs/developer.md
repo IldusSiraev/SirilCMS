@@ -91,7 +91,7 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 
 ### 3.6 Медиа (Media)
 
-Аплоады в admin. На web — абсолютные URL через `NUXT_PUBLIC_MEDIA_BASE` (dev: `http://localhost:3001`, prod: `https://admin.<domain>`), хелпер `apps/web/app/utils/media.ts`.
+Аплоады в admin. На web — абсолютные URL через `NUXT_PUBLIC_MEDIA_BASE` (dev: `http://localhost:3001`, prod: `https://admin.<domain>`), хелпер `apps/web/app/utils/media.ts`. Runtime-переменная (Nitro `applyEnv`, `infra/docker-compose.prod.yml` → `web.environment`) — не build-arg, менять и рестартовать без пересборки образа.
 
 ### 3.7 Формы (Forms / Form-submissions)
 

@@ -53,7 +53,7 @@
 
 Цель: установка и обновление у клиента без сборки на его сервере и без ручных шагов.
 
-- [ ] **Один универсальный образ web.** `NUXT_PUBLIC_MEDIA_BASE` передаётся как build-arg (`infra/docker-compose.prod.yml`, сервис `web`) — домен клиента зашит в образ. Перевести в runtime-конфиг (`runtimeConfig.public`, переопределение через env при старте).
+- [x] **Один универсальный образ web.** `NUXT_PUBLIC_MEDIA_BASE` передавался как build-arg — домен клиента был зашит в образ, пересборка при смене домена. Перенесено в `web.environment` (`infra/docker-compose.prod.yml`), derives из `SITE_DOMAIN`, переопределяемо через `.env` без пересборки. Технически Nuxt/Nitro уже поддерживал runtime-override публичного `runtimeConfig` через `applyEnv` (проверено в скомпилированном `nitro.mjs`: ищет `NITRO_PUBLIC_*`, потом `NUXT_PUBLIC_*`) — проблема была только в том, что compose никогда не прокидывал переменную в `environment:` контейнера, только в build-arg. Изменений в `nuxt.config.ts` не потребовалось.
 - [ ] Аудит остальных build-time значений в `infra/docker/*.Dockerfile` — всё клиентское должно задаваться через env при запуске.
 - [ ] Публикация образов `admin`/`web` в GHCR из CI по git-тегу (`vX.Y.Z`), semver.
 - [ ] Prod-compose для клиента на `image:` вместо `build:`; версия — одна переменная в `.env`.
