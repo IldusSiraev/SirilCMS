@@ -100,6 +100,7 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 - Форма = коллекция `forms` с полем `fields[]` (типы — `packages/blocks-definitions/src/form-fields.ts` — от text до honeypot/consent).
 - Вставка формы на страницу — блок `form-block` (выбор формы).
 - Отправка — публичный endpoint web; записи в `form-submissions`.
+- Уведомления о заявке (`apps/admin/src/utils/notify.ts`, hook на `form-submissions.afterChange`) — email (HTML-шаблон + текст) на `Forms.notifyEmails` (доп. получатели формы) объединённые с `Sites.contacts.email`, плюс Telegram (`Sites.contacts.telegram` + `TELEGRAM_BOT_TOKEN`). Статус каждой попытки доставки — в `FormSubmissions.notifications` (readOnly, `sent`/`failed` + текст ошибки).
 - Выгрузка: CSV-endpoint `apps/admin/src/endpoints/submissions-csv.ts` (registered через `endpoints` в payload.config.ts).
 
 ### 3.8 Резервные копии / prod
