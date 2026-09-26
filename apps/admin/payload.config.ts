@@ -19,6 +19,12 @@ import { submissionsCsv } from './src/endpoints/submissions-csv'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+try {
+  process.loadEnvFile(path.resolve(dirname, '../../.env'))
+} catch {
+  // no root .env (e.g. prod containers get env vars injected directly) — ignore
+}
+
 export default buildConfig({
   admin: {
     importMap: {
