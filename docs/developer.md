@@ -146,7 +146,7 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 | `page` | `relationship` → pages |
 | `form` | `relationship` → forms |
 
-- **Схема БД**: `pages.sections` — Payload-поле `blocks`; за каждый блок строится `slug: def.type` с **union-полями всех variant** (каждое поле помечено `admin.dependencies: variant in [...]`). ⚠️ `dependencies` — не настоящий ключ Payload admin (`node_modules/payload/dist/fields/config/types.d.ts` его не знает), Payload его молча игнорирует: в UI редактора видны поля **всех** вариантов сразу, а не только выбранного (проверено вживую, T13-и-позже блоков это касается всех). Данные лишних полей просто не читаются вёрсткой невыбранного варианта, но остаются в БД и в форме — контент-менеджера это может путать. Новые поля/блоки = **новая миграция**.
+- **Схема БД**: `pages.sections` — Payload-поле `blocks`; за каждый блок строится `slug: def.type` с **union-полями всех variant** (каждое поле помечено `admin.condition: (data, siblingData) => owners.includes(siblingData.variant)` — настоящий Payload admin-ключ, `siblingData` содержит `variant` того же блока). В UI редактора показаны только поля выбранного варианта, остальные скрыты и не сохраняются. Новые поля/блоки = **новая миграция**.
 
 ### Шаг 2. Миграция
 
