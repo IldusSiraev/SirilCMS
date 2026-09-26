@@ -12,23 +12,29 @@
 
 ## 1. Развёртывание
 
+**Чеклист первой установки:**
+
+- [ ] `git clone` + `make -C infra init SITE_DOMAIN=...` — генерирует `.env` со случайными секретами
+- [ ] проверить/дозаполнить `.env` вручную, если нужно (см. таблицу ниже)
+- [ ] `make -C infra up` (§2)
+- [ ] создать первого owner **сразу после подъёма**, до публикации сайта (§2.1)
+- [ ] закрыть хост-порт `3001` в файрволе (§2.1)
+- [ ] smoke-проверка (§3)
+
 ```bash
 git clone <repo> /srv/sirilcms && cd /srv/sirilcms
-cp .env.example .env
+make -C infra init SITE_DOMAIN=client.example.com
 ```
 
-Заполнить `.env` (production-блок + 3 ключа):
+`infra/scripts/init-env.sh` копирует `.env.example` → `.env` и подставляет случайные `PAYLOAD_SECRET`, `PURGE_TOKEN`, `POSTGRES_PASSWORD` (и `POSTGRES_DB_URI` с тем же паролем, нужен только для `backup.sh`) через `openssl rand -hex`; отказывается перезаписать уже существующий `.env`. Без `SITE_DOMAIN=...` — впишите домен в `.env` вручную перед подъёмом. Без make — тот же скрипт напрямую: `bash infra/scripts/init-env.sh client.example.com`.
 
-```bash
-openssl rand -hex 16   # → в POSTGRES_PASSWORD и в POSTGRES_DB_URI
-```
-
-| Ключ | Значение |
+| Ключ | Откуда берётся |
 |---|---|
-| `SITE_DOMAIN` | `client.example.com` (guard compose: без него build не стартует) |
-| `POSTGRES_PASSWORD` | сгенерированный пароль (обязателен, guard `:?set POSTGRES_PASSWORD`) |
-| `POSTGRES_DB_URI` | `postgresql://payload:***@postgres:5432/payload` (нужен для `backup.sh`) |
-| `PAYLOAD_SECRET` | **32+ символов**, свой (openssl rand -hex 24) |
+| `SITE_DOMAIN` | аргумент `init`, либо вручную в `.env` (guard compose: без него `up` не стартует) |
+| `POSTGRES_PASSWORD` | генерируется `init` (обязателен, guard `:?set POSTGRES_PASSWORD`) |
+| `POSTGRES_DB_URI` | генерируется `init` (нужен только при ручном запуске `backup.sh` — `make backup` его не читает из `.env` автоматически, см. §4) |
+| `PAYLOAD_SECRET` | генерируется `init`, **32+ символов** |
+| `PURGE_TOKEN` | генерируется `init` — секрет между admin и web для `/api/purge`, дефолт из `.env.example` (`dev-purge-token`) в проде недопустим |
 
 `POSTGRES_USER`/`POSTGRES_DB` можно оставить `payload` (default в compose).
 

@@ -78,9 +78,10 @@ pnpm typecheck                         # tsc/nuxt typecheck
 
 ## Деплой (Docker)
 
-Prereq: `docker` с compose; в корне в `.env` заполнены `POSTGRES_PASSWORD`, `PAYLOAD_SECRET` (32+ символов), `SITE_DOMAIN`.
+Prereq: `docker` с compose.
 
 ```sh
+make -C infra init SITE_DOMAIN=client.example.com   # генерирует .env со случайными секретами
 make -C infra up       # тянет образы из GHCR (IMAGE_TAG в .env, default latest), поднимает postgres, admin, web, caddy
 make -C infra ps       # статус
 make -C infra logs     # логи
@@ -88,5 +89,7 @@ make -C infra new-site # инструкция: новый сайт = новый 
 ```
 
 Бэкап БД: `cd infra && POSTGRES_DB_URI=postgresql://... make backup` → `infra/backups/*.sql.gz` (авто-очистка > 30 дней).
+
+Полный чеклист первой установки (включая обязательное создание owner сразу после подъёма) — [docs/runbooks/prod.md](docs/runbooks/prod.md).
 
 Локальное демо без домена: в `.env` — `SITE_DOMAIN=localhost` и `NUXT_PUBLIC_MEDIA_BASE=http://localhost:3001` (без реального `admin.*`-домена по умолчанию туда не достучаться); админка доступна на `http://localhost:3001` (порт пробрасывается `3001:3001` в compose). `NUXT_PUBLIC_MEDIA_BASE` — runtime-переменная (не build-arg), пересобирать `web` не нужно — только `make -C infra up` заново. С реальным доменом Caddy сам выпустит Let's Encrypt (80/443).
