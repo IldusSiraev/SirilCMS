@@ -18,7 +18,7 @@ export const Sites: CollectionConfig = {
   hooks: {
     afterChange: [
       async (args) => {
-        publishHook('site', args.doc.id as number)
+        publishHook('site', args.doc.id as number, args.doc.id as number)
       },
     ],
   },

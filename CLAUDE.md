@@ -67,7 +67,7 @@ Rules that must not be violated:
 
 - Public reads carry no auth token; the published/draft filter is enforced server-side in the web app. Exception: `/preview/*` routes forward the editor's own Payload JWT (from `admin.preview`'s `token`, `apps/admin/src/collections/{pages,posts}.ts`) to read drafts — same `access.read` rules apply, no new bypass.
 - Page cache: `apps/web/server/middleware/cache.ts` (HTML, 5 min TTL, `x-siril-cache` header). `/preview/*` is excluded from this cache — never cache draft content.
-- Purge: `apps/admin/src/utils/publish-hook.ts` (afterChange hook, fire-and-forget `POST {NUXT_URL}/api/purge` with `Bearer PURGE_TOKEN`). Draft saves do **not** purge — only publish does.
+- Purge: `apps/admin/src/utils/publish-hook.ts` (afterChange hook, fire-and-forget `POST {NUXT_URL}/api/purge` with `Bearer PURGE_TOKEN`, body `{ siteId }`). Draft saves do **not** purge — only publish does. Purge is per-site: clears only the published site's cache, not the whole install (falls back to a full purge if `siteId` is missing or its domain doesn't resolve).
 - Role `owner` has full access; `editor` is restricted to their own site via `canScope` in `apps/admin/src/access/site-scope.ts`.
 - The first user created in an empty DB can self-register without auth — if created without explicit `role: owner` it becomes `editor`, leaving no admin. Seed always sets `role: owner` explicitly for the first user.
 

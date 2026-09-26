@@ -8,6 +8,10 @@ export function clearSiteCache() {
   cache.clear()
 }
 
+export function clearSiteCacheForHost(host: string) {
+  cache.delete(host)
+}
+
 export default defineEventHandler(async (event) => {
   const host = String(getQuery(event).host ?? getRequestHost(event) ?? '')
   const cached = cache.get(host)

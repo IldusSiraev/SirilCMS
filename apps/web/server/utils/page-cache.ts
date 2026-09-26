@@ -22,3 +22,10 @@ export function getCache(key: string): string | null {
 export function clearCache() {
   m.clear()
 }
+
+export function clearCacheForHost(host: string) {
+  const prefix = `${host}:`
+  for (const key of m.keys()) {
+    if (key.startsWith(prefix)) m.delete(key)
+  }
+}
