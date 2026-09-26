@@ -55,7 +55,6 @@ export const Posts: CollectionConfig = {
       // Уникальность — составной индекс (site, slug) на уровне коллекции (см. `indexes` выше).
       hooks: { beforeDuplicate: [({ value }) => makeDuplicateSlug(value)] },
     },
-    { name: 'locale', type: 'text', defaultValue: 'ru' },
     { name: 'excerpt', type: 'textarea' },
     bodyField,
     { name: 'cover', type: 'upload', relationTo: 'media' },

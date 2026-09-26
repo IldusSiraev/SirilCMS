@@ -4,8 +4,8 @@ import { getTheme, getBlock } from './registry'
 import type { BlockDef, ThemeDef } from './types'
 
 const block: BlockDef = { type: 'hero', name: 'Hero', variants: [
-  { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: 'Т' }] },
-  { id: 'split', name: 'Split', fields: [{ name: 'title', type: 'text', label: 'Т' }, { name: 'image', type: 'image', label: 'I' }] },
+  { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }] },
+  { id: 'split', name: 'Split', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }, { name: 'image', type: 'image', label: { ru: 'I', en: 'I' } }] },
 ]}
 const theme: ThemeDef = {
   id: 't', name: 'T', tokens: { '--c-primary': '#000' },

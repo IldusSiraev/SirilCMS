@@ -18,7 +18,7 @@ useSeoMeta({
   title: 'Блог',
   description: 'Посты',
 })
-useHead({ link: [{ rel: 'canonical', href: `${base}/blog` }] })
+useHead({ htmlAttrs: { lang: siteData.value?.site?.locale ?? 'ru' }, link: [{ rel: 'canonical', href: `${base}/blog` }] })
 </script>
 <style>
 .blog-index { padding: 2rem; max-width: 72rem; margin: 0 auto; }
