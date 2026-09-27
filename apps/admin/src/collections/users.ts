@@ -38,13 +38,15 @@ export const Users: CollectionConfig = {
     {
       name: 'name',
       type: 'text',
+      label: { ru: 'Имя', en: 'Name' },
     },
     {
       name: 'role',
       type: 'select',
+      label: { ru: 'Роль', en: 'Role' },
       options: [
-        { value: 'owner', label: 'Владелец' },
-        { value: 'editor', label: 'Клиент' },
+        { value: 'owner', label: { ru: 'Владелец', en: 'Owner' } },
+        { value: 'editor', label: { ru: 'Клиент', en: 'Client' } },
       ],
       defaultValue: 'editor',
     },
@@ -52,6 +54,7 @@ export const Users: CollectionConfig = {
       name: 'site',
       type: 'relationship',
       relationTo: 'sites',
+      label: { ru: 'Сайт', en: 'Site' },
     },
   ],
 }

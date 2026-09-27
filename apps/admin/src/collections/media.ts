@@ -41,6 +41,10 @@ function resolveSiteId(site: unknown): number | string {
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  labels: {
+    singular: { ru: 'Медиафайл', en: 'Media' },
+    plural: { ru: 'Медиа', en: 'Media' },
+  },
   access: {
     read: () => true,
     readVersions: () => false,
@@ -61,15 +65,18 @@ export const Media: CollectionConfig = {
       name: 'site',
       type: 'relationship',
       relationTo: 'sites',
+      label: { ru: 'Сайт', en: 'Site' },
       required: true,
     },
     {
       name: 'alt',
       type: 'text',
+      label: { ru: 'Alt-текст', en: 'Alt text' },
     },
     {
       name: 'caption',
       type: 'text',
+      label: { ru: 'Подпись', en: 'Caption' },
     },
   ],
   hooks: {
