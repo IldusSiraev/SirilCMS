@@ -119,6 +119,58 @@ jobs:
             exit 1
           fi
 
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: payload
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: payload
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U payload"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PAYLOAD_SECRET: ci-secret-at-least-32-characters-long
+      PAYLOAD_DB_URI: postgresql://payload:dev@localhost:5432/payload
+      PURGE_TOKEN: ci-e2e-purge-token
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply migrations to a clean database
+        run: pnpm --filter @siril/admin migrate
+
+      - name: Install Playwright's Chromium
+        run: pnpm --filter e2e exec playwright install --with-deps chromium
+
+      - name: Run E2E tests (builds admin + web, starts both, runs the golden-path spec)
+        run: pnpm --filter e2e test:e2e
+
+      - name: Upload Playwright trace on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-trace
+          path: e2e/test-results/
+          retention-days: 7
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -162,7 +214,7 @@ jobs:
   publish:
     name: Publish ${{ matrix.image }} image
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [lint, typecheck, test, migrations, build]
+    needs: [lint, typecheck, test, migrations, e2e, build]
     runs-on: ubuntu-latest
     permissions:
       contents: read
