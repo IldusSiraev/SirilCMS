@@ -11,6 +11,7 @@ SirilCMS — headless CMS for landing sites: page builder from blocks + themes +
 | `apps/web` | Public site: Nuxt 4 (SSR/Nitro), cache, purge API | 3000 |
 | `apps/admin` | Builder: Payload 3 on Next.js 16, PostgreSQL | 3001 |
 | `packages/blocks-definitions` | SSOT: block/theme/form-field contracts (types, registry, Payload mapper, resolve) | — |
+| `e2e` | Playwright golden-path spec: create page in admin → publish → verify on site → verify cache purge | — |
 | `infra` | docker-compose (dev/prod), Caddy, scripts, Makefile | 80/443 (prod) |
 | `docs` | developer guide, runbooks (dev/prod), specs/plans | — |
 
@@ -37,6 +38,15 @@ Single-workspace test runs (all use vitest):
 pnpm --filter @siril/blocks-definitions test
 pnpm --filter @siril/admin test
 pnpm --filter @siril/web test
+```
+
+E2E (Playwright, separate from `pnpm test` — needs a real Postgres, builds+starts both apps, not run as part of the fast unit-test loop):
+
+```bash
+docker run -d --rm -p 5432:5432 -e POSTGRES_USER=payload -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=payload postgres:16
+PAYLOAD_DB_URI=postgresql://payload:dev@localhost:5432/payload PAYLOAD_SECRET=<32+ chars> pnpm --filter @siril/admin migrate
+pnpm --filter e2e exec playwright install --with-deps chromium   # once
+PAYLOAD_DB_URI=postgresql://payload:dev@localhost:5432/payload pnpm --filter e2e test:e2e
 ```
 
 Block/theme changes require a Payload migration:
