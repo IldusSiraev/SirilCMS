@@ -16,11 +16,16 @@ const minimalRichText = {
 const bodyField = {
   name: 'body',
   type: 'richText' as const,
+  label: { ru: 'Текст', en: 'Body' },
   editor: minimalRichText,
 } as unknown as Field
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
+  labels: {
+    singular: { ru: 'Пост', en: 'Post' },
+    plural: { ru: 'Посты', en: 'Posts' },
+  },
   indexes: [{ unique: true, fields: ['site', 'slug'] }],
   admin: {
     defaultColumns: ['title', 'slug', 'site', 'category'],
@@ -47,19 +52,19 @@ export const Posts: CollectionConfig = {
     ],
   },
   fields: [
-    { name: 'site', type: 'relationship', relationTo: 'sites', required: true },
-    { name: 'title', type: 'text', required: true },
+    { name: 'site', type: 'relationship', relationTo: 'sites', label: { ru: 'Сайт', en: 'Site' }, required: true },
+    { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' }, required: true },
     {
       name: 'slug',
       type: 'text',
+      label: { ru: 'Слаг', en: 'Slug' },
       // Уникальность — составной индекс (site, slug) на уровне коллекции (см. `indexes` выше).
       hooks: { beforeDuplicate: [({ value }) => makeDuplicateSlug(value)] },
     },
-    { name: 'locale', type: 'text', defaultValue: 'ru' },
-    { name: 'excerpt', type: 'textarea' },
+    { name: 'excerpt', type: 'textarea', label: { ru: 'Анонс', en: 'Excerpt' } },
     bodyField,
-    { name: 'cover', type: 'upload', relationTo: 'media' },
-    { name: 'category', type: 'relationship', relationTo: 'categories' },
+    { name: 'cover', type: 'upload', relationTo: 'media', label: { ru: 'Обложка', en: 'Cover' } },
+    { name: 'category', type: 'relationship', relationTo: 'categories', label: { ru: 'Категория', en: 'Category' } },
     seo(),
   ],
 }

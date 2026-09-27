@@ -19,7 +19,7 @@ const { data } = await useAsyncData(`preview-post:${route.params.slug}`, () =>
 const post = computed(() => data.value?.post)
 if (!post.value) throw createError({ statusCode: 404, message: 'Not found' })
 const postCover = computed(() => mediaUrl(post.value?.cover))
-useHead({ meta: [{ name: 'robots', content: 'noindex' }] })
+useHead({ htmlAttrs: { lang: siteData.value?.site?.locale ?? 'ru' }, meta: [{ name: 'robots', content: 'noindex' }] })
 </script>
 <style>
 .post { padding: 2rem; max-width: 48rem; margin: 0 auto; }

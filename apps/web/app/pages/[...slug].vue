@@ -29,5 +29,5 @@ useSeoMeta({
   ogImage: mediaUrl(seo?.ogImage) ?? undefined,
   robots: seo?.noindex ? 'noindex' : undefined,
 })
-useHead({ htmlAttrs: { lang: 'ru' }, link: [{ rel: 'canonical', href: canonical }] })
+useHead({ htmlAttrs: { lang: data.value?.site?.locale ?? 'ru' }, link: [{ rel: 'canonical', href: canonical }] })
 </script>

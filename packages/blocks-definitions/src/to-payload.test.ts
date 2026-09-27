@@ -3,8 +3,8 @@ import { toPayloadBlockFields, toPayloadFormFields } from './to-payload'
 import type { BlockDef } from './types'
 
 const block: BlockDef = { type: 'hero', name: 'Hero', variants: [
-  { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: 'Т' }, { name: 'caption', type: 'text', label: 'С' }] },
-  { id: 'split', name: 'Split', layout: 'split-right', fields: [{ name: 'title', type: 'text', label: 'Т' }, { name: 'image', type: 'image', label: 'I' }] },
+  { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }, { name: 'caption', type: 'text', label: { ru: 'С', en: 'C' } }] },
+  { id: 'split', name: 'Split', layout: 'split-right', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }, { name: 'image', type: 'image', label: { ru: 'I', en: 'I' } }] },
 ]}
 
 it('первый элемент — select variant', () => {

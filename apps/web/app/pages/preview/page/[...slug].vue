@@ -19,5 +19,5 @@ const page = pageRes.value?.page
 if (!page) throw createError({ statusCode: 404, message: 'Not found' })
 
 const sections = (page.sections ?? []) as any[]
-useHead({ htmlAttrs: { lang: 'ru' }, meta: [{ name: 'robots', content: 'noindex' }] })
+useHead({ htmlAttrs: { lang: data.value?.site?.locale ?? 'ru' }, meta: [{ name: 'robots', content: 'noindex' }] })
 </script>

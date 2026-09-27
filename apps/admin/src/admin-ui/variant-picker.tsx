@@ -1,6 +1,7 @@
 'use client'
 
-import { useField } from '@payloadcms/ui'
+import { useField, useTranslation } from '@payloadcms/ui'
+import { getTranslation } from '@payloadcms/translations'
 
 // Визуальный пикер варианта блока — заменяет select на карточки с превью-SVG
 // (wireframe варианта, см. packages/blocks-definitions/src/variant-preview.ts).
@@ -10,16 +11,18 @@ import { useField } from '@payloadcms/ui'
 type VariantPreview = { value: string; label: string; svg: string }
 
 type Props = {
-  field: { label?: string; admin?: { custom?: { variantPreviews?: VariantPreview[] } } }
+  field: { label?: Record<string, string> | string; admin?: { custom?: { variantPreviews?: VariantPreview[] } } }
   path: string
 }
 
 export default function VariantPickerField({ field, path }: Props) {
   const { setValue, value } = useField<string>({ path })
+  const { i18n } = useTranslation()
   const previews = field.admin?.custom?.variantPreviews ?? []
+  const label = field.label ? getTranslation(field.label, i18n) : 'Вариант'
   return (
     <div className="field-type variant-picker">
-      <label className="field-label">{field.label ?? 'Вариант'}</label>
+      <label className="field-label">{label}</label>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
         {previews.map((p) => {
           const selected = value === p.value

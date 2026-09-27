@@ -4,6 +4,10 @@ import { notifySubmission } from '../utils/notify'
 
 export const FormSubmissions: CollectionConfig = {
   slug: 'form-submissions',
+  labels: {
+    singular: { ru: 'Заявка', en: 'Submission' },
+    plural: { ru: 'Заявки', en: 'Submissions' },
+  },
   admin: {
     defaultColumns: ['form', 'ip', 'createdAt'],
     description: 'Заявки: read-only (создаёт web)',
@@ -23,22 +27,23 @@ export const FormSubmissions: CollectionConfig = {
     ],
   },
   fields: [
-    { name: 'site', type: 'relationship', relationTo: 'sites', required: true },
-    { name: 'form', type: 'relationship', relationTo: 'forms', required: true },
-    { name: 'values', type: 'array', fields: [
-      { name: 'name', type: 'text' },
-      { name: 'value', type: 'text' },
+    { name: 'site', type: 'relationship', relationTo: 'sites', label: { ru: 'Сайт', en: 'Site' }, required: true },
+    { name: 'form', type: 'relationship', relationTo: 'forms', label: { ru: 'Форма', en: 'Form' }, required: true },
+    { name: 'values', type: 'array', label: { ru: 'Значения', en: 'Values' }, fields: [
+      { name: 'name', type: 'text', label: { ru: 'Имя', en: 'Name' } },
+      { name: 'value', type: 'text', label: { ru: 'Значение', en: 'Value' } },
     ] },
-    { name: 'ip', type: 'text' },
+    { name: 'ip', type: 'text', label: { ru: 'IP', en: 'IP' } },
     {
       name: 'notifications',
       type: 'array',
+      label: { ru: 'Уведомления', en: 'Notifications' },
       admin: { readOnly: true, description: 'Статус доставки уведомлений (заполняется автоматически)' },
       fields: [
-        { name: 'channel', type: 'select', options: ['email', 'telegram'], required: true },
-        { name: 'recipient', type: 'text', required: true },
-        { name: 'status', type: 'select', options: ['sent', 'failed'], required: true },
-        { name: 'error', type: 'text' },
+        { name: 'channel', type: 'select', label: { ru: 'Канал', en: 'Channel' }, options: ['email', 'telegram'], required: true },
+        { name: 'recipient', type: 'text', label: { ru: 'Получатель', en: 'Recipient' }, required: true },
+        { name: 'status', type: 'select', label: { ru: 'Статус', en: 'Status' }, options: ['sent', 'failed'], required: true },
+        { name: 'error', type: 'text', label: { ru: 'Ошибка', en: 'Error' } },
       ],
     },
   ],

@@ -5,10 +5,10 @@ export const seo = (name: string = 'seo'): Field => ({
   type: 'group',
   label: 'SEO',
   fields: [
-    { name: 'title', type: 'text', label: 'Title' },
-    { name: 'description', type: 'textarea', label: 'Description' },
-    { name: 'ogImage', type: 'upload', relationTo: 'media' },
-    { name: 'canonical', type: 'text' },
-    { name: 'noindex', type: 'checkbox' },
+    { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' } },
+    { name: 'description', type: 'textarea', label: { ru: 'Описание', en: 'Description' } },
+    { name: 'ogImage', type: 'upload', relationTo: 'media', label: { ru: 'OG-изображение', en: 'Og Image' } },
+    { name: 'canonical', type: 'text', label: { ru: 'Канонический URL', en: 'Canonical' } },
+    { name: 'noindex', type: 'checkbox', label: { ru: 'Не индексировать', en: 'Noindex' } },
   ],
 })

@@ -142,7 +142,7 @@ export interface Site {
   name: string;
   slug?: string | null;
   domain?: string | null;
-  locale?: string | null;
+  locale?: ('ru' | 'en') | null;
   /**
    * Переключение темы — мгновенное (данные). Блоки/варианты, не поддержанные темой, отрисовываются по fallback-варианту.
    */
@@ -225,7 +225,6 @@ export interface Page {
   site: number | Site;
   title: string;
   slug?: string | null;
-  locale?: string | null;
   sections?:
     | (
         | {
@@ -490,7 +489,6 @@ export interface Post {
   site: number | Site;
   title: string;
   slug?: string | null;
-  locale?: string | null;
   excerpt?: string | null;
   body?:
     | {
@@ -773,7 +771,6 @@ export interface PagesSelect<T extends boolean = true> {
   site?: T;
   title?: T;
   slug?: T;
-  locale?: T;
   sections?:
     | T
     | {
@@ -979,7 +976,6 @@ export interface PostsSelect<T extends boolean = true> {
   site?: T;
   title?: T;
   slug?: T;
-  locale?: T;
   excerpt?: T;
   body?: T;
   cover?: T;

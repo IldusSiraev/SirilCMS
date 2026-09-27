@@ -40,7 +40,7 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
     return { ...toPayloadField(f), admin: { condition: (_data: unknown, siblingData: Record<string, unknown>) => owners.includes(siblingData?.variant as string) } }
   })
   const variant = {
-    type: 'select', name: 'variant', label: 'Вариант',
+    type: 'select', name: 'variant', label: { ru: 'Вариант', en: 'Variant' },
     options: def.variants.map(v => ({ value: v.id, label: v.name })),
     defaultValue: def.variants[0]!.id,
     admin: {
@@ -57,11 +57,11 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
 // Строки для forms.fields (Payload array) — consumer T13: { name: 'fields', type: 'array', fields: toPayloadFormFields() }
 export function toPayloadFormFields(): PayloadField[] {
   return [
-    { name: 'name', type: 'text', label: 'Имя (ключ)', required: true },
-    { name: 'label', type: 'text', label: 'Подпись', required: true },
+    { name: 'name', type: 'text', label: { ru: 'Имя (ключ)', en: 'Name (key)' }, required: true },
+    { name: 'label', type: 'text', label: { ru: 'Подпись', en: 'Label' }, required: true },
     { name: 'type', type: 'select', options: FORM_FIELD_TYPES.map(t => ({ value: t, label: t })) },
-    { name: 'required', type: 'checkbox', label: 'Обязательное', defaultValue: false },
-    { name: 'placeholder', type: 'text', label: 'Placeholder' },
-    { name: 'options', type: 'textarea', label: 'Опции (одна на строку)' },
+    { name: 'required', type: 'checkbox', label: { ru: 'Обязательное', en: 'Required' }, defaultValue: false },
+    { name: 'placeholder', type: 'text', label: { ru: 'Placeholder', en: 'Placeholder' } },
+    { name: 'options', type: 'textarea', label: { ru: 'Опции (одна на строку)', en: 'Options (one per line)' } },
   ]
 }
