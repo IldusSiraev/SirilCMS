@@ -1,4 +1,4 @@
-// Контракты — единые типы пакета @siril/blocks-definitions (список: план, раздел «Контракты» T2)
+// Контракты — единые типы пакета @siril/contracts (список: план, раздел «Контракты» T2)
 
 export type BlockFieldType = 'text'|'email'|'richtext'|'number'|'boolean'|'select'|'image'|'link'|'array-text'|'image-array'|'object-array'|'page'|'form'
 export type LocalizedLabel = Record<string, string>

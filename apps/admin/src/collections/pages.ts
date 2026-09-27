@@ -1,5 +1,5 @@
 import type { CollectionConfig, Field } from 'payload'
-import { BLOCKS, toPayloadBlockFields } from '@siril/blocks-definitions'
+import { BLOCKS, toPayloadBlockFields } from '@siril/contracts'
 import { publishedOnlyReadAccess, resolveSiteId } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { buildPreviewURL } from '../utils/preview-url'

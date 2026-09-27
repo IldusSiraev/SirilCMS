@@ -2,8 +2,8 @@
   <component :is="resolved" :block="block" :theme-id="themeId" />
 </template>
 <script setup lang="ts">
-import type { BlockDef } from '@siril/blocks-definitions'
-import { getBlock, getTheme, resolveVariant } from '@siril/blocks-definitions'
+import type { BlockDef } from '@siril/contracts'
+import { getBlock, getTheme, resolveVariant } from '@siril/contracts'
 import { getBlockComponent } from '../blocks/registry'
 
 const props = defineProps<{ block: any; themeId: string }>()

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { THEMES } from '@siril/blocks-definitions'
+import { THEMES } from '@siril/contracts'
 import { isOwner } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { decryptField, encryptField } from '../utils/field-encryption'

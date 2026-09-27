@@ -6,7 +6,7 @@
   </article>
 </template>
 <script setup lang="ts">
-import { getTheme } from '@siril/blocks-definitions'
+import { getTheme } from '@siril/contracts'
 const route = useRoute()
 const token = String(route.query.token ?? '')
 const { data: siteData } = await useSite()

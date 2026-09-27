@@ -11,7 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@siril/blocks-definitions": "workspace:*",
+    "@siril/contracts": "workspace:*",
     "nuxt": "^4.5.2",
     "vitest": "^5.0.1",
     "vue": "^3.5.43",
