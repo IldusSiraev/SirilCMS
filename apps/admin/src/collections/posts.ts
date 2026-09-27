@@ -1,24 +1,18 @@
 import type { CollectionConfig, Field } from 'payload'
+import { lexicalHTMLField } from '@payloadcms/richtext-lexical'
 import { publishedOnlyReadAccess, resolveSiteId } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { buildPreviewURL } from '../utils/preview-url'
 import { makeDuplicateSlug } from '../utils/duplicate-slug'
 import { seo } from './seo'
 
-// Минимальный адаптер rich text (MVP): в монорепо не установлен @payloadcms/richtext-lexical
-// (не добавляем новые зависимости); адаптер хранит JSON-документ без доп. валидации.
-// Полноценный редактор + админ-компоненты — след. задача (см. task-4 report).
-const minimalRichText = {
-  sanitize: (value: unknown) => value,
-  validate: () => true,
-}
-
-const bodyField = {
+const bodyField: Field = {
   name: 'body',
-  type: 'richText' as const,
+  type: 'richText',
   label: { ru: 'Текст', en: 'Body' },
-  editor: minimalRichText,
-} as unknown as Field
+}
+// Готовый HTML соседним полем — web рендерит через v-html без своей lexical-зависимости.
+const bodyHtmlField = lexicalHTMLField({ lexicalFieldName: 'body', htmlFieldName: 'bodyHtml' })
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -63,6 +57,7 @@ export const Posts: CollectionConfig = {
     },
     { name: 'excerpt', type: 'textarea', label: { ru: 'Анонс', en: 'Excerpt' } },
     bodyField,
+    bodyHtmlField,
     { name: 'cover', type: 'upload', relationTo: 'media', label: { ru: 'Обложка', en: 'Cover' } },
     { name: 'category', type: 'relationship', relationTo: 'categories', label: { ru: 'Категория', en: 'Category' } },
     seo(),

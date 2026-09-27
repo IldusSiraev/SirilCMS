@@ -2,13 +2,6 @@ import type { BlockDef, BlockField, PayloadField } from './types'
 import { FORM_FIELD_TYPES } from './form-fields'
 import { variantPreviewSvg } from './variant-preview'
 
-// Минимальный rich-text адаптер (MVP, без внешних deps; паттерн posts.ts T4):
-// string `editor: 'true'` крашится в Payload 3 (editor.validate is not a function)
-export const minimalRichTextEditor = {
-  sanitize: (value: unknown) => value,
-  validate: () => true,
-}
-
 const TYPE_MAP: Record<BlockField['type'], string> = {
   text: 'text', email: 'email', richtext: 'richText', number: 'number',
   boolean: 'checkbox', select: 'select', image: 'upload', link: 'text',
@@ -28,7 +21,6 @@ export function toPayloadField(f: BlockField): PayloadField {
     }
   }
   if (f.type === 'select') base.options = f.options
-  if (f.type === 'richtext') base.editor = minimalRichTextEditor
   if (f.type === 'image') { base.relationTo = 'media'; base.multiple = false }
   if (f.type === 'page') base.relationTo = 'pages'
   if (f.type === 'form') base.relationTo = 'forms'

@@ -230,11 +230,22 @@ export interface Page {
         | {
             variant?: ('default' | 'split') | null;
             title?: string | null;
-            subtitle?:
-              | {
+            subtitle?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
                   [k: string]: unknown;
-                }[]
-              | null;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            subtitleHtml?: string | null;
             buttonText?: string | null;
             buttonLink?: string | null;
             image?: (number | null) | Media;
@@ -245,11 +256,22 @@ export interface Page {
         | {
             variant?: ('default' | 'split') | null;
             title?: string | null;
-            body?:
-              | {
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
                   [k: string]: unknown;
-                }[]
-              | null;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            bodyHtml?: string | null;
             image?: (number | null) | Media;
             id?: string | null;
             blockName?: string | null;
@@ -275,11 +297,22 @@ export interface Page {
               | {
                   title?: string | null;
                   price?: string | null;
-                  description?:
-                    | {
+                  description?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
                         [k: string]: unknown;
-                      }[]
-                    | null;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  descriptionHtml?: string | null;
                   buttonText?: string | null;
                   buttonLink?: string | null;
                   featured?: boolean | null;
@@ -305,8 +338,21 @@ export interface Page {
               | {
                   question: string;
                   answer: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
                     [k: string]: unknown;
-                  }[];
+                  };
+                  answerHtml?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -319,11 +365,22 @@ export interface Page {
             title?: string | null;
             items?:
               | {
-                  quote?:
-                    | {
+                  quote?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
                         [k: string]: unknown;
-                      }[]
-                    | null;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  quoteHtml?: string | null;
                   author?: string | null;
                   role?: string | null;
                   avatar?: (number | null) | Media;
@@ -368,11 +425,22 @@ export interface Page {
         | {
             variant?: ('default' | 'banner') | null;
             title?: string | null;
-            body?:
-              | {
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
                   [k: string]: unknown;
-                }[]
-              | null;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            bodyHtml?: string | null;
             buttonText?: string | null;
             buttonLink?: string | null;
             image?: (number | null) | Media;
@@ -494,11 +562,22 @@ export interface Post {
   title: string;
   slug?: string | null;
   excerpt?: string | null;
-  body?:
-    | {
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
         [k: string]: unknown;
-      }[]
-    | null;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  bodyHtml?: string | null;
   cover?: (number | null) | Media;
   category?: (number | null) | Category;
   seo?: {
@@ -784,6 +863,7 @@ export interface PagesSelect<T extends boolean = true> {
               variant?: T;
               title?: T;
               subtitle?: T;
+              subtitleHtml?: T;
               buttonText?: T;
               buttonLink?: T;
               image?: T;
@@ -796,6 +876,7 @@ export interface PagesSelect<T extends boolean = true> {
               variant?: T;
               title?: T;
               body?: T;
+              bodyHtml?: T;
               image?: T;
               id?: T;
               blockName?: T;
@@ -825,6 +906,7 @@ export interface PagesSelect<T extends boolean = true> {
                     title?: T;
                     price?: T;
                     description?: T;
+                    descriptionHtml?: T;
                     buttonText?: T;
                     buttonLink?: T;
                     featured?: T;
@@ -852,6 +934,7 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     question?: T;
                     answer?: T;
+                    answerHtml?: T;
                     id?: T;
                   };
               id?: T;
@@ -866,6 +949,7 @@ export interface PagesSelect<T extends boolean = true> {
                 | T
                 | {
                     quote?: T;
+                    quoteHtml?: T;
                     author?: T;
                     role?: T;
                     avatar?: T;
@@ -913,6 +997,7 @@ export interface PagesSelect<T extends boolean = true> {
               variant?: T;
               title?: T;
               body?: T;
+              bodyHtml?: T;
               buttonText?: T;
               buttonLink?: T;
               image?: T;
@@ -983,6 +1068,7 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   excerpt?: T;
   body?: T;
+  bodyHtml?: T;
   cover?: T;
   category?: T;
   seo?:

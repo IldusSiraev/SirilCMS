@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -32,6 +33,10 @@ export default buildConfig({
     },
   },
   collections: [Sites, Media, Users, Pages, Posts, Categories, SiteContent, Forms, FormSubmissions],
+  // Дефолт для всех richText-полей (posts.body, richtext-поля блоков) — реальный WYSIWYG
+  // вместо MVP-заглушки (см. docs/developer.md §rich text). Явный editor на поле не задаём —
+  // используют этот дефолт.
+  editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {
       connectionString: process.env.PAYLOAD_DB_URI ?? '',

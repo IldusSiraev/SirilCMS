@@ -1,6 +1,22 @@
 import { getPayload } from 'payload'
 import config from '../../payload.config'
 
+// Минимальный валидный документ lexicalEditor() (root.children — обязателен для richText-полей,
+// см. payload.config.ts editor: lexicalEditor()).
+function richTextParagraph(text: string) {
+  return {
+    root: {
+      type: 'root',
+      children: [{
+        type: 'paragraph',
+        children: [{ type: 'text', text, detail: 0, format: 0, mode: 'normal', style: '', version: 1 }],
+        direction: 'ltr' as const, format: '' as const, indent: 0, version: 1,
+      }],
+      direction: 'ltr' as const, format: '' as const, indent: 0, version: 1,
+    },
+  }
+}
+
 async function seed() {
   const payload = await getPayload({ config })
   try {
@@ -60,7 +76,7 @@ async function seed() {
           site: site.id,
           title: `Пост ${i}`,
           slug: `post-${i}`,
-          body: [{ type: 'paragraph', children: [{ type: 'text', text: `Текст поста ${i}…` }] }],
+          body: richTextParagraph(`Текст поста ${i}…`),
           category: null,
           _status: 'published',
         },

@@ -50,6 +50,15 @@ it('deprecated поле — admin.readOnly + двуязычное описани
   expect(old.admin?.description?.en).toContain('Deprecated')
 })
 
+it('richtext-поле не задаёт свой editor — использует дефолтный из payload.config.ts', () => {
+  const b: BlockDef = { type: 'z', name: 'Z', variants: [
+    { id: 'default', name: 'Default', fields: [{ name: 'body', type: 'richtext', label: { ru: 'Т', en: 'T' } }] },
+  ] }
+  const fields = toPayloadBlockFields(b)
+  const body = fields.find(f => f.name === 'body') as { editor?: unknown }
+  expect(body.editor).toBeUndefined()
+})
+
 it('deprecated вариант — попадает в variantPreviews с флагом deprecated', () => {
   const b: BlockDef = { type: 'y', name: 'Y', variants: [
     { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }] },

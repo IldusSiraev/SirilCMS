@@ -3,7 +3,7 @@
     <h2>{{ block.title }}</h2>
     <div class="features-grid">
       <div v-for="(item, idx) in items" :key="idx" class="feature-card">
-        <RichText :value="item" />
+        {{ item }}
       </div>
     </div>
   </section>

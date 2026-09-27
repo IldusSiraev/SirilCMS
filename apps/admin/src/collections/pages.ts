@@ -4,6 +4,7 @@ import { publishedOnlyReadAccess, resolveSiteId } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { buildPreviewURL } from '../utils/preview-url'
 import { makeDuplicateSlug } from '../utils/duplicate-slug'
+import { withRichTextHtml } from '../utils/with-richtext-html'
 import { seo } from './seo'
 
 export const Pages: CollectionConfig = {
@@ -57,7 +58,7 @@ export const Pages: CollectionConfig = {
       label: { ru: 'Секции', en: 'Sections' },
       blocks: BLOCKS.map(def => ({
         slug: def.type,
-        fields: toPayloadBlockFields(def) as Field[],
+        fields: withRichTextHtml(toPayloadBlockFields(def) as Field[]),
       })),
     },
     seo(),
