@@ -1,7 +1,7 @@
 <template>
   <section class="cta-block" :style="tokens">
     <h2 class="cta-title">{{ block.title }}</h2>
-    <div class="cta-body"><RichText :value="block.body" /></div>
+    <div class="cta-body"><RichText :value="block.bodyHtml" /></div>
     <NuxtLink v-if="block.buttonText" :to="block.buttonLink || '/'" class="btn" :target="isExternal(block.buttonLink) ? '_blank' : undefined" :rel="isExternal(block.buttonLink) ? 'noopener' : undefined">{{ block.buttonText }}</NuxtLink>
   </section>
 </template>

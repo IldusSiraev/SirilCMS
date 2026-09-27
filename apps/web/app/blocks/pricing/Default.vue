@@ -5,7 +5,7 @@
       <div v-for="(p, idx) in plans" :key="idx" class="pricing-card" :class="{ 'pricing-card-featured': p.featured }">
         <div class="pricing-plan-title">{{ p.title }}</div>
         <div class="pricing-price">{{ p.price }}</div>
-        <div class="pricing-desc"><RichText :value="p.description" /></div>
+        <div class="pricing-desc"><RichText :value="p.descriptionHtml" /></div>
         <NuxtLink v-if="p.buttonText && p.buttonLink" class="pricing-btn" :to="p.buttonLink" :target="isExternal(p.buttonLink) ? '_blank' : undefined">{{ p.buttonText }}</NuxtLink>
       </div>
     </div>

@@ -3,7 +3,7 @@
     <img :src="imgSrc" v-if="imgSrc" class="text-image-img">
     <div class="text-image-copy">
       <h2>{{ block.title }}</h2>
-      <div class="text-image-body"><RichText :value="block.body" /></div>
+      <div class="text-image-body"><RichText :value="block.bodyHtml" /></div>
     </div>
   </section>
 </template>

@@ -135,7 +135,7 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 | Тип в контракте | Payload-тип (генерится `to-payload.ts`) |
 |---|---|
 | `text`, `email`, `number` | `text`/`email`/`number` |
-| `richtext` | `richText` (с `minimalRichTextEditor` — не `editor:'true'`, а то crash) |
+| `richtext` | `richText` (дефолтный `lexicalEditor()` из `payload.config.ts`) + соседнее вычисляемое `<name>Html` (см. §6, «Rich-text») |
 | `boolean` | `checkbox` |
 | `select` | `select` (+`options`) |
 | `image` | `upload` (media, single) |
@@ -164,7 +164,7 @@ pnpm --filter @siril/admin migrate             # применить
 ```vue
 <template>
   <section class="quote" :style="tokens">
-    <blockquote><RichText :value="block.text" /></blockquote>
+    <blockquote><RichText :value="block.textHtml" /></blockquote>
     <cite v-if="block.author">{{ block.author }}</cite>
   </section>
 </template>
@@ -177,7 +177,7 @@ const tokens = Object.fromEntries(Object.entries(getTheme(props.themeId).tokens)
 
 - Пропсы: `block` (данные строки блока) + `themeId`.
 - Токены темы — `:style` с `getTheme(themeId).tokens` (см. `hero/Default.vue`).
-- Rich-text — `<RichText :value>`; картинки — через `mediaUrl()`; внутренние ссылки — `NuxtLink`.
+- Rich-text — `<RichText :value="block.<name>Html">` (готовый HTML, не сырой JSON — см. §6); картинки — через `mediaUrl()`; внутренние ссылки — `NuxtLink`.
 - CSS компонента — локальный `<style>` (в SFC это нормально; запрет §7.1 — про `<style>` внутри `<template>`).
 
 ### Шаг 4. Темы (при желании)
@@ -294,17 +294,23 @@ pnpm dev:all     # создать страницу в admin с новым бло
    (dev: blocking overlay; build: тег молча отбрасывается). Динамический_CSS в head —
    через `useHead({ style: [{ innerHTML }] })` (пример: layout default.vue).
 2. **Rich-text**: `editor: 'true'` (строка) в Payload 3 → crash `editor.validate is not a function`.
-   Использовать `minimalRichTextEditor` из `to-payload.ts`.
-3. **Первый admin**: `role: owner` ставится автоматически хуком (§3.1) — но первым успевает тот, кто первым дернёт `POST /api/users` в пустой БД, так что создавайте его сразу после деплоя.
-4. **Draft ≠ publish**: draft-save не чистит кэш (это осознанно). Если кэш «просрочен» —
+   Дефолтный редактор задан один раз в `payload.config.ts` (`editor: lexicalEditor()`) — поля
+   контракта (`type: 'richtext'`) editor не переопределяют.
+3. **`@payloadcms/richtext-lexical` — версия ТОЧНО как у `payload`** (без `^`), иначе pnpm
+   ставит две копии `@payloadcms/ui` (richtext-lexical тянет свою, payload/next — свою) →
+   React-контекст (`useConfig()`) разъезжается между копиями → `Cannot destructure property
+   'config' of useConfig(...) as it is undefined`, страница редактирования падает целиком.
+   Проверка: `pnpm why @payloadcms/ui` — должна быть ровно одна версия.
+4. **Первый admin**: `role: owner` ставится автоматически хуком (§3.1) — но первым успевает тот, кто первым дернёт `POST /api/users` в пустой БД, так что создавайте его сразу после деплоя.
+5. **Draft ≠ publish**: draft-save не чистит кэш (это осознанно). Если кэш «просрочен» —
    опубликовать версию или `POST /api/purge`.
-5. **Тема без CSS-файла**: layout падает только если отсутствует `themes/default/tokens.css`
+6. **Тема без CSS-файла**: layout падает только если отсутствует `themes/default/tokens.css`
    (build-time check). Новая тема без `tokens.css` → молча fallback на default-файл.
-6. **Windows/PS 5.1**: `pnpm` может быть вне PATH → `& "$env:APPDATA\npm\pnpm.cmd" …`.
-7. **Admin `/`** — плейсхолдер, админка на **`/admin`**.
-8. **Placeholder** — если компонент блока нет (или `blockType` не в `BLOCKS`), рендерится
+7. **Windows/PS 5.1**: `pnpm` может быть вне PATH → `& "$env:APPDATA\npm\pnpm.cmd" …`.
+8. **Admin `/`** — плейсхолдер, админка на **`/admin`**.
+9. **Placeholder** — если компонент блока нет (или `blockType` не в `BLOCKS`), рендерится
    `apps/web/app/blocks/Placeholder.vue`, а не crash.
-9. **Payload баг: `aria-label="[object Object]"` на inline-кнопках "добавить related doc"** —
+10. **Payload баг: `aria-label="[object Object]"` на inline-кнопках "добавить related doc"** —
    `DocumentDrawerToggler` (`@payloadcms/ui/dist/elements/DocumentDrawer/index.js`) строит
    `aria-label` через `t(..., { label: collectionConfig?.labels.singular })`, не резолвя
    `labels.singular` через `getTranslation()` — а у нас (после i18n лейблов, см. §5) это

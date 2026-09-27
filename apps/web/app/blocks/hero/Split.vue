@@ -2,7 +2,7 @@
   <section class="hero hero--split" :style="tokens">
     <div class="hero-copy">
       <h1>{{ block.title }}</h1>
-      <div class="hero-sub"><RichText :value="block.subtitle" /></div>
+      <div class="hero-sub"><RichText :value="block.subtitleHtml" /></div>
     </div>
     <img :src="imgSrc" v-if="imgSrc" class="hero-img">
   </section>

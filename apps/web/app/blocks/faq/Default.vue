@@ -4,7 +4,7 @@
     <div class="faq-list">
       <details v-for="(i, idx) in items" :key="idx" class="faq-item">
         <summary class="faq-question">{{ i.question }}</summary>
-        <div class="faq-answer"><RichText :value="i.answer" /></div>
+        <div class="faq-answer"><RichText :value="i.answerHtml" /></div>
       </details>
     </div>
   </section>

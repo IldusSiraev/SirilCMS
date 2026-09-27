@@ -1,10 +1,10 @@
 <template>
-  <div class="rt" v-html="html" />
+  <div class="rt" v-html="value ?? ''" />
 </template>
 <script setup lang="ts">
-import { lexicalToHtml } from '~/utils/lexical-to-html'
-const props = defineProps<{ value: any }>()
-const html = computed(() => lexicalToHtml(props.value))
+// value — готовый HTML из <name>Html-поля (см. apps/admin/src/utils/with-richtext-html.ts,
+// lexicalHTMLField): Payload сам сериализует lexical-документ, web ничего не парсит.
+defineProps<{ value?: string | null }>()
 </script>
 <style>
 .rt > :first-child { margin-top: 0; }

@@ -1,7 +1,7 @@
 <template>
   <section class="hero" :style="tokens">
     <h1>{{ block.title }}</h1>
-    <div class="hero-sub"><RichText :value="block.subtitle" /></div>
+    <div class="hero-sub"><RichText :value="block.subtitleHtml" /></div>
     <NuxtLink v-if="block.buttonText" :to="block.buttonLink || '/contact'" class="btn">{{ block.buttonText }}</NuxtLink>
   </section>
 </template>

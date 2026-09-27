@@ -2,7 +2,7 @@
   <article v-if="post" class="post" :style="tokens">
     <h1>{{ post.title }}</h1>
     <img v-if="postCover" :src="postCover" class="post-cover" />
-    <RichText :value="post.body" />
+    <RichText :value="post.bodyHtml" />
   </article>
 </template>
 <script setup lang="ts">

@@ -3,7 +3,7 @@
     <h2 class="testimonials-title">{{ block.title }}</h2>
     <div class="testimonials-grid">
       <div v-for="(i, idx) in items" :key="idx" class="testimonial-card">
-        <div class="testimonial-quote"><RichText :value="i.quote" /></div>
+        <div class="testimonial-quote"><RichText :value="i.quoteHtml" /></div>
         <div class="testimonial-author">
           <img v-if="i.avatar" :src="mediaUrl(i.avatar) ?? undefined" :alt="i.author || ''" class="testimonial-avatar">
           <div>
