@@ -1,4 +1,5 @@
 import { getCache, setCache } from '../utils/page-cache'
+import { recordCacheHit, recordCacheMiss } from '../utils/metrics'
 
 function toBuf(v: unknown): Buffer {
   if (Buffer.isBuffer(v)) return v
@@ -16,10 +17,12 @@ export default defineEventHandler(async (event) => {
   const ttl = Number.isFinite(rawTtl) && rawTtl > 0 ? rawTtl : 300_000
   const cached = getCache(key)
   if (cached) {
+    recordCacheHit()
     setHeader(event, 'content-type', 'text/html; charset=utf-8')
     setHeader(event, 'x-siril-cache', 'HIT')
     return cached
   }
+  recordCacheMiss()
   setHeader(event, 'x-siril-cache', 'MISS')
   const res = event.node.res as unknown as {
     statusCode: number

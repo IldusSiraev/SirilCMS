@@ -91,7 +91,7 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 | Логи | `make -C infra logs <service>` (web/admin/caddy/postgres) |
 | Рестарт сервиса | `docker compose -f infra/docker-compose.prod.yml --env-file .env restart web` |
 | Обновление версии | см. §4.1 |
-| Бэкап БД | `cd infra && POSTGRES_DB_URI="postgresql://payload:***@postgres:5432/payload" make backup` → `infra/backups/<date-time>.sql.gz` (авто-очистка >30 дн) |
+| Бэкап БД | `cd infra && POSTGRES_DB_URI="postgresql://payload:***@postgres:5432/payload" make backup` → `infra/backups/<date-time>.sql.gz` (авто-очистка >30 дн). Провал — Telegram-алерт, если заданы `TELEGRAM_BOT_TOKEN` + `ALERT_TELEGRAM_CHAT_ID` (в `.env`, подхватываются скриптом автоматически) |
 | Восстановление | `gunzip < f.sql.gz \| docker compose -f infra/docker-compose.prod.yml --env-file .env exec -i postgres psql -U payload payload` |
 | Новый сайт | `make -C infra new-site` — печатает инструкцию: новый сайт = новый сервер |
 | Другой env-файл (staging и т.п.) | `make -C infra up ENV_FILE=../.env.staging` (тот же флаг у `ps`/`logs`/`smoke`) |
@@ -140,11 +140,11 @@ make -C infra up
 | Media (картинки) не грузятся | media URL = `https://admin.<domain>/api/media/file/…` (`NUXT_PUBLIC_MEDIA_BASE` — runtime-переменная web, по умолчанию derives из `SITE_DOMAIN`; можно переопределить явно в `.env`); DNS `admin.*` должен резолвиться; изменить `.env` и `make -C infra up` (рестарт, без пересборки) |
 | 503 от Let's Encrypt | порты 80/443 не публичны или DNS A не указывает на сервер; staging: `docker compose run --rm caddy caddy cert-expiring ...` / домены временно в `tls internal` |
 | Admin не стартует | `make logs admin` — типично `PAYLOAD_SECRET` < 32 символов |
-| Изменения в контенте видны с задержкой | HTML-кэш web: TTL 5 мин (env `ROUTE_TTL` в web, сек). Нормально: публичация из админки шлёт purge (`POST web/api/purge`, Bearer `PURGE_TOKEN`) — страница обносится мгновенно. Если не обносится: заголовок `x-siril-cache: HIT` + проверьте `NUXT_URL=http://web:3000` в admin (иначе purge молча падает) |
+| Изменения в контенте видны с задержкой | HTML-кэш web: TTL 5 мин (env `ROUTE_TTL` в web, сек). Нормально: публичация из админки шлёт purge (`POST web/api/purge`, Bearer `PURGE_TOKEN`) — страница обносится мгновенно. Если не обносится: заголовок `x-siril-cache: HIT` + проверьте `NUXT_URL=http://web:3000` в admin; провал purge теперь пишется в лог admin (`console.error('[purge] ...')`, было полностью тихо) |
 
 ## 6. Что **не** входит в v1 (carry-overs)
 
 - Первый user в пустой БД всё ещё self-register без auth (гонка «кто первый») — хук лишь гарантирует, что это будет `owner`, а не `editor`; создать админа до публикации остаётся обязательным
 - `admin:3001` host-порт — закрыть файрволом (см. §2)
-- Автоматические бэкапы (cron) — `make backup` запускать вручную/через cron
+- Автоматические бэкапы (расписание, cron) — `make backup` по-прежнему запускать вручную/через cron самостоятельно; провал самого запуска теперь алертит в Telegram (см. §4), но планировщик — забота оператора
 - Multi-tenancy на одном домене — v1 модель: 1 домен = 1 сайт на своём сервере (см. [docs/roadmap.md](../roadmap.md))
