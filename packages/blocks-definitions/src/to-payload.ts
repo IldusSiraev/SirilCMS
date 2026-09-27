@@ -18,6 +18,15 @@ const TYPE_MAP: Record<BlockField['type'], string> = {
 
 export function toPayloadField(f: BlockField): PayloadField {
   const base: PayloadField = { name: f.name, type: TYPE_MAP[f.type], label: f.label, required: !!f.required }
+  if (f.deprecated) {
+    base.admin = {
+      readOnly: true,
+      description: {
+        ru: 'Устарело — оставлено для обратной совместимости, не использовать в новом контенте',
+        en: 'Deprecated — kept for backward compatibility, do not use for new content',
+      },
+    }
+  }
   if (f.type === 'select') base.options = f.options
   if (f.type === 'richtext') base.editor = minimalRichTextEditor
   if (f.type === 'image') { base.relationTo = 'media'; base.multiple = false }
@@ -37,7 +46,14 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
   const union = [...new Map(all.map(f => [f.name, f] as [string, BlockField])).values()]
   const fields = union.map(f => {
     const owners = def.variants.filter(v => v.fields.some(x => x.name === f.name)).map(v => v.id)
-    return { ...toPayloadField(f), admin: { condition: (_data: unknown, siblingData: Record<string, unknown>) => owners.includes(siblingData?.variant as string) } }
+    const payloadField = toPayloadField(f)
+    return {
+      ...payloadField,
+      admin: {
+        ...(payloadField.admin as Record<string, unknown> | undefined),
+        condition: (_data: unknown, siblingData: Record<string, unknown>) => owners.includes(siblingData?.variant as string),
+      },
+    }
   })
   const variant = {
     type: 'select', name: 'variant', label: { ru: 'Вариант', en: 'Variant' },
@@ -46,7 +62,7 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
     admin: {
       // Визуальный пикер вместо select — превью-SVG на вариант (wireframe, не рендер реального блока).
       custom: {
-        variantPreviews: def.variants.map(v => ({ value: v.id, label: v.name, svg: variantPreviewSvg(v.layout ?? 'center') })),
+        variantPreviews: def.variants.map(v => ({ value: v.id, label: v.name, svg: variantPreviewSvg(v.layout ?? 'center'), deprecated: v.deprecated })),
       },
       components: { Field: './src/admin-ui/variant-picker' },
     },

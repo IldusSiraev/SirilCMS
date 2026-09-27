@@ -9,6 +9,7 @@ import * as migration_20260924_070111 from './20260924_070111';
 import * as migration_20260926_085712 from './20260926_085712';
 import * as migration_20260926_105237 from './20260926_105237';
 import * as migration_20260926_180447_i18n_labels_site_locale from './20260926_180447_i18n_labels_site_locale';
+import * as migration_20260927_073049_contact_hours_field from './20260927_073049_contact_hours_field';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20260926_180447_i18n_labels_site_locale.up,
     down: migration_20260926_180447_i18n_labels_site_locale.down,
-    name: '20260926_180447_i18n_labels_site_locale'
+    name: '20260926_180447_i18n_labels_site_locale',
+  },
+  {
+    up: migration_20260927_073049_contact_hours_field.up,
+    down: migration_20260927_073049_contact_hours_field.down,
+    name: '20260927_073049_contact_hours_field'
   },
 ];

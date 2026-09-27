@@ -8,7 +8,7 @@ import { getTranslation } from '@payloadcms/translations'
 // Полная замена admin.components.Field не получает value/onChange пропами
 // (это API внутренних под-компонентов select-поля) — состояние читаем/пишем
 // через useField, как и любой другой кастомный Field-компонент Payload.
-type VariantPreview = { value: string; label: string; svg: string }
+type VariantPreview = { value: string; label: string; svg: string; deprecated?: boolean }
 
 type Props = {
   field: { label?: Record<string, string> | string; admin?: { custom?: { variantPreviews?: VariantPreview[] } } }
@@ -20,6 +20,7 @@ export default function VariantPickerField({ field, path }: Props) {
   const { i18n } = useTranslation()
   const previews = field.admin?.custom?.variantPreviews ?? []
   const label = field.label ? getTranslation(field.label, i18n) : 'Вариант'
+  const deprecatedNote = i18n.language === 'ru' ? 'устарело' : 'deprecated'
   return (
     <div className="field-type variant-picker">
       <label className="field-label">{label}</label>
@@ -42,6 +43,7 @@ export default function VariantPickerField({ field, path }: Props) {
                 cursor: 'pointer',
                 border: selected ? '2px solid #2563eb' : '1px solid #d1d5db',
                 background: selected ? '#eff6ff' : '#fff',
+                opacity: p.deprecated ? 0.5 : 1,
               }}
             >
               <img
@@ -51,7 +53,7 @@ export default function VariantPickerField({ field, path }: Props) {
                 height={72}
                 style={{ borderRadius: 4, display: 'block' }}
               />
-              <span style={{ fontSize: 12 }}>{p.label}</span>
+              <span style={{ fontSize: 12 }}>{p.label}{p.deprecated ? ` (${deprecatedNote})` : ''}</span>
             </button>
           )
         })}

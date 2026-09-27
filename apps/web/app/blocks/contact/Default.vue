@@ -5,7 +5,9 @@
       <li v-if="block.email"><a :href="'mailto:' + block.email">{{ block.email }}</a></li>
       <li v-if="block.phone"><a :href="'tel:' + block.phone">{{ block.phone }}</a></li>
       <li v-if="block.address">{{ block.address }}</li>
-      <li v-if="block.workHours">{{ block.workHours }}</li>
+      <!-- hours заменил workHours (см. docs/developer.md §«Версионирование контрактов блоков») —
+           workHours как фоллбэк на переходный период, для контента, ещё не тронутого миграцией. -->
+      <li v-if="block.hours || block.workHours">{{ block.hours || block.workHours }}</li>
       <li v-if="block.mapLink"><a :href="block.mapLink" target="_blank" rel="noopener">Открыть на карте</a></li>
     </ul>
   </section>

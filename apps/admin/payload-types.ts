@@ -386,6 +386,10 @@ export interface Page {
             email?: string | null;
             phone?: string | null;
             address?: string | null;
+            hours?: string | null;
+            /**
+             * Deprecated — kept for backward compatibility, do not use for new content
+             */
             workHours?: string | null;
             mapLink?: string | null;
             id?: string | null;
@@ -923,6 +927,7 @@ export interface PagesSelect<T extends boolean = true> {
               email?: T;
               phone?: T;
               address?: T;
+              hours?: T;
               workHours?: T;
               mapLink?: T;
               id?: T;
