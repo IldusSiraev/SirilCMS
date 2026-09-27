@@ -114,7 +114,10 @@ export const BLOCKS: BlockDef[] = [
       { name: 'email', type: 'email', label: { ru: 'Email', en: 'Email' } },
       { name: 'phone', type: 'text', label: { ru: 'Телефон', en: 'Phone' } },
       { name: 'address', type: 'text', label: { ru: 'Адрес', en: 'Address' } },
-      { name: 'workHours', type: 'text', label: { ru: 'Часы работы', en: 'Working hours' } },
+      // Пример из docs/developer.md §«Версионирование контрактов блоков»: workHours → hours
+      // (рабочий образец процесса deprecate+migrate). workHours НЕ удалять — старые данные/клиенты.
+      { name: 'hours', type: 'text', label: { ru: 'Часы работы', en: 'Working hours' } },
+      { name: 'workHours', type: 'text', label: { ru: 'Часы работы (старое поле)', en: 'Working hours (old field)' }, deprecated: true },
       { name: 'mapLink', type: 'link', label: { ru: 'Ссылка на карту', en: 'Map link' } },
     ] },
   ]},

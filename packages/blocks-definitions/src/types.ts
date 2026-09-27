@@ -2,9 +2,11 @@
 
 export type BlockFieldType = 'text'|'email'|'richtext'|'number'|'boolean'|'select'|'image'|'link'|'array-text'|'image-array'|'object-array'|'page'|'form'
 export type LocalizedLabel = Record<string, string>
-export interface BlockField  { name: string; type: BlockFieldType; label: LocalizedLabel; required?: boolean; placeholder?: string; options?: {value:string;label:string}[]; maxItems?: number; subfields?: BlockField[] }
+// deprecated — не удалять поле/вариант (сломает уже сохранённые данные и старые клиентские инсталляции
+// после дистрибуции), только пометить. См. docs/developer.md §«Версионирование контрактов блоков».
+export interface BlockField  { name: string; type: BlockFieldType; label: LocalizedLabel; required?: boolean; placeholder?: string; options?: {value:string;label:string}[]; maxItems?: number; subfields?: BlockField[]; deprecated?: boolean }
 export type VariantLayout = 'center' | 'split-left' | 'split-right' | 'banner' | 'grid' | 'list'
-export interface BlockVariantDef { id: string; name: string; fields: BlockField[]; layout?: VariantLayout }   // variants[0] = дефолт; layout — для превью-картинки в админке (см. variant-preview.ts), по умолчанию 'center'
+export interface BlockVariantDef { id: string; name: string; fields: BlockField[]; layout?: VariantLayout; deprecated?: boolean }   // variants[0] = дефолт; layout — для превью-картинки в админке (см. variant-preview.ts), по умолчанию 'center'
 export interface BlockDef { type: string; name: string; description?: string; variants: BlockVariantDef[] }
 
 export interface ThemeBlockConfig { enabled: boolean; variants?: string[]; defaultVariant?: string }

@@ -38,3 +38,26 @@ it('toPayloadFormFields — type: select с 11 опциями', () => {
   expect(type?.type).toBe('select')
   expect(type?.options).toHaveLength(11)
 })
+
+it('deprecated поле — admin.readOnly + двуязычное описание', () => {
+  const b: BlockDef = { type: 'x', name: 'X', variants: [
+    { id: 'default', name: 'Default', fields: [{ name: 'old', type: 'text', label: { ru: 'Старое', en: 'Old' }, deprecated: true }] },
+  ] }
+  const fields = toPayloadBlockFields(b)
+  const old = fields.find(f => f.name === 'old') as { admin?: { readOnly?: boolean; description?: { ru: string; en: string } } }
+  expect(old.admin?.readOnly).toBe(true)
+  expect(old.admin?.description?.ru).toContain('Устарело')
+  expect(old.admin?.description?.en).toContain('Deprecated')
+})
+
+it('deprecated вариант — попадает в variantPreviews с флагом deprecated', () => {
+  const b: BlockDef = { type: 'y', name: 'Y', variants: [
+    { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }] },
+    { id: 'old-style', name: 'Old style', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }], deprecated: true },
+  ] }
+  const fields = toPayloadBlockFields(b)
+  const variant = fields[0] as { admin?: { custom?: { variantPreviews?: { value: string; deprecated?: boolean }[] } } }
+  const previews = variant.admin?.custom?.variantPreviews ?? []
+  expect(previews.find(p => p.value === 'default')?.deprecated).toBeFalsy()
+  expect(previews.find(p => p.value === 'old-style')?.deprecated).toBe(true)
+})
