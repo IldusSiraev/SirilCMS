@@ -28,8 +28,8 @@ Mono-repo (pnpm workspaces):
 Ключевые правила (не нарушать):
 
 - **Публичные чтения — без auth.** Web-сервер ходит в Payload API без токенов; draft-фильтр — server-side (published-only). Исключение — `/preview/*`: форвардит JWT редактора (см. §3.4), те же `access.read`-правила, новых обходов нет.
-- **Кэш страниц** — middleware `apps/web/server/middleware/cache.ts` (HTML, TTL 5 мин, хедер `x-siril-cache`). `/preview/*` из кэша исключён.
-- **Purge**: payload-хук `apps/admin/src/utils/publish-hook.ts` (afterChange, fire-and-forget `POST {NUXT_URL}/api/purge` c `Bearer PURGE_TOKEN`, телом `{ siteId }`). **draft-save не чистит кэш** (проверка параметра `draft`), publish чистит. Purge — per-site: чистит только кэш хоста опубликованного сайта, не всю установку (без `siteId`/если домен сайта не резолвится — fallback на полную очистку).
+- **Кэш страниц** — middleware `apps/web/server/middleware/cache.ts` (HTML, TTL 5 мин, хедер `x-siril-cache`). `/preview/*` из кэша исключён. Счётчики hit/miss (in-memory, `apps/web/server/utils/metrics.ts`, сбрасываются при рестарте) — `GET /api/metrics` (Prometheus text format, без авторизации, как `/api/health`).
+- **Purge**: payload-хук `apps/admin/src/utils/publish-hook.ts` (afterChange, fire-and-forget `POST {NUXT_URL}/api/purge` c `Bearer PURGE_TOKEN`, телом `{ siteId }`). **draft-save не чистит кэш** (проверка параметра `draft`), publish чистит. Purge — per-site: чистит только кэш хоста опубликованного сайта, не всю установку (без `siteId`/если домен сайта не резолвится — fallback на полную очистку). Провал (сеть, не-2xx) логируется в admin через `console.error('[purge] ...')` — было полностью тихим (`.catch(() => {})`).
 - **Роль owner** — единственный полный доступ; `editor` (Клиент) — только свой site (`canScope`, `apps/admin/src/access/site-scope.ts`).
 
 ---
@@ -271,6 +271,15 @@ pnpm dev:all     # создать страницу в admin с новым бло
 7. **Admin `/`** — плейсхолдер, админка на **`/admin`**.
 8. **Placeholder** — если компонент блока нет (или `blockType` не в `BLOCKS`), рендерится
    `apps/web/app/blocks/Placeholder.vue`, а не crash.
+9. **Payload баг: `aria-label="[object Object]"` на inline-кнопках "добавить related doc"** —
+   `DocumentDrawerToggler` (`@payloadcms/ui/dist/elements/DocumentDrawer/index.js`) строит
+   `aria-label` через `t(..., { label: collectionConfig?.labels.singular })`, не резолвя
+   `labels.singular` через `getTranslation()` — а у нас (после i18n лейблов, см. §5) это
+   `Record<'ru'|'en', string>`, не строка. Видимый текст кнопки не затронут (соседний
+   компонент `AddNewRelation` резолвит правильно) — баг только в атрибуте, доступный
+   только screen-reader'ам. Апстрим-баг Payload 3.90.1, не наш код (наш `StaticLabel`
+   usage валиден по их же типам). Не патчим (`pnpm patch` от версии к версии не стоит
+   свеч ради a11y-мелочи) — ждём фикса апстрим.
 
 ---
 
