@@ -10,5 +10,9 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // runtime/ — код Nuxt-app: автоимпорты (useSite, useHead, $fetch, ...) и `#build`-импорты
+  // не типизируются plain tsc (нет nuxt prepare в пакете) — типизируется `nuxt typecheck`
+  // из apps/web после T11 (там модуль подключается в nuxt.config).
+  "exclude": ["src/runtime"]
 }

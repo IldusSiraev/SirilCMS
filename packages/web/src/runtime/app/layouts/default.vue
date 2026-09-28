@@ -26,23 +26,31 @@
 </template>
 <script setup lang="ts">
 import { yandexMetrikaTag } from '../utils/analytics'
+import { moduleThemes, projectThemes } from '#build/siril/theme-styles.gen.mjs'
 
 const { data } = await useSite()
 // Тема — данные CMS (T12): токены встраиваем <style> из ?raw текущей темы;
 // ?raw + инлайн — чтобы в head не грузились <link> на ВСЕ темы (чужая тема выигрывала бы каскад).
-// Неизвестный id / провал загрузки → default.
 // CSS в <style> — доверенный (2 файла в репозитории); сюда НЕ передавать пользовательский контент (breakout </style>).
+// Два источника — шаблон T9 #build/siril/theme-styles.gen.mjs: project-глоб (root /themes/*)
+// и module-темы (fs-embed, ключи — id). Приоритет: проект > модуль.
+// Неизвестный id / провал загрузки → default; default в обоих источниках отсутствует — throw.
 const themeId = (data.value?.site?.theme ?? 'default') as string
-const themeCssModules = import.meta.glob('../../themes/*/tokens.css', { query: '?raw', import: 'default' }) as Record<string, () => Promise<string>>
-const themeCssModule = (id: string) => Object.entries(themeCssModules).find(([p]) => p.includes(`/${id}/tokens.css`))
-const defaultModule = themeCssModule('default')
-if (!defaultModule) throw new Error('themes/default/tokens.css not found in build')
-const selected = themeCssModule(themeId) ?? defaultModule
+const projectTheme = (id: string) =>
+  Object.entries(projectThemes).find(([p]) => p.endsWith(`/${id}/tokens.css`))?.[1] as
+    | (() => Promise<string>)
+    | undefined
+const moduleTheme = (id: string): string | undefined => moduleThemes[id]
+const toLoader = (css: string | (() => Promise<string>) | undefined): (() => Promise<string>) | undefined =>
+  css == null ? undefined : typeof css === 'function' ? css : () => Promise.resolve(css)
+const defaultLoad = toLoader(projectTheme('default')) ?? toLoader(moduleTheme('default'))
+if (!defaultLoad) throw new Error('themes/default/tokens.css not found in build')
+const selected = toLoader(projectTheme(themeId) ?? moduleTheme(themeId)) ?? defaultLoad
 let tokensCss = ''
 try {
-  tokensCss = await selected[1]()
+  tokensCss = await selected()
 } catch {
-  tokensCss = await defaultModule[1]()
+  tokensCss = await defaultLoad()
 }
 // Токены в <head> через unhead: <style> в шаблоне client-компонента запрещён vite:vue
 // (в dev — hard error, в client-сборке тег молча отбрасывался и тема терялась после гидратации).

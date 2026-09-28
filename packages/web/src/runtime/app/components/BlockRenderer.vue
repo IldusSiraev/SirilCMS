@@ -4,7 +4,7 @@
 <script setup lang="ts">
 import type { BlockDef } from '@siril/contracts'
 import { getBlock, getTheme, resolveVariant } from '@siril/contracts'
-import { getBlockComponent } from '../blocks/registry'
+import { getBlockComponent } from '#build/siril/block-registry.gen.mjs'
 
 const props = defineProps<{ block: any; themeId: string }>()
 const type = props.block.blockType ?? props.block.type
