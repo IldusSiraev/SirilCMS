@@ -1023,7 +1023,7 @@ git commit -m "feat(web): @siril/web nuxt module skeleton (S0.1 mechanism)"
 - Consumes: S0.1 механизм, merge-примитивы, `@siril/contracts`.
 - Produces: runtime с блоками/страницами/роутами; `#siril-block-registry` (generated) с dual-glob (модуль + `~/app/blocks` проекта, oверлей: проект > модуль).
 
-- [ ] **Step 1: git mv (все файлы)**
+- [x] **Step 1: git mv (все файлы)**
 
 ```bash
 git mv apps/web/app/components packages/web/src/runtime/app/components
@@ -1039,7 +1039,7 @@ git rm packages/web/src/runtime/app/blocks/registry.ts
 
 (Относительные импорты внутри runtime не меняются. Импорт `@siril/contracts` — Task 4 уже переименовал.)
 
-- [ ] **Step 2: Dual-glob блок-registrы — addTemplate в module.ts**
+- [x] **Step 2: Dual-glob блок-registrы — addTemplate в module.ts**
 
 Добавить в `module.ts` (рядом с theme-шаблоном):
 
@@ -1061,7 +1061,7 @@ addTemplate({
 
 (Точные имена/путь шаблона — по S0.1-паттерну, если там другой механизм записи; dual-glob merge — проект > модуль через spread order. `placeholder` — явный import, не glob, чтобы не зависеть от order.)
 
-- [ ] **Step 3: Theme dual-glob в layout**
+- [x] **Step 3: Theme dual-glob в layout**
 
 `packages/web/src/runtime/app/layouts/default.vue` — заменить текущий `import.meta.glob('../../themes/*/tokens.css', …)` (строка 36) на импорт двух глобов из generated (или 2 `import.meta.glob` прямо в файле: относительный — модульные темы, `~/themes` — проектные (если S0.1 подтвердил alias-glob), else — generated):
 
@@ -1076,14 +1076,14 @@ if (!selected) throw new Error('themes/default/tokens.css not found in build')
 
 (Логика fallback на default и throw не известному — 1:1 текущей, строки 37–40.)
 
-- [ ] **Step 4: Проверка сборки runtime (unit + typecheck пакета)**
+- [x] **Step 4: Проверка сборки runtime (unit + typecheck пакета)**
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" --filter @siril/web test   # media/analytics тесты переехали
 & "$env:APPDATA\npm\pnpm.cmd" typecheck
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A
