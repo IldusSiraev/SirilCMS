@@ -903,7 +903,7 @@ git commit -m "refactor(admin): reference app on @siril/admin (sirilAdminConfig,
 - Consumes: механизм S0.1 (decision-док: точный `module.ts`), merge-примитивы (Task 5) — не в скелете (включаются при наполнении, Task 10/11).
 - Produces: Nuxt-модуль с опциями `siril: { blocks?: Record<string, BlockDef>; themes?: ThemeDef[] }`; runtime-слои регистрируются по S0.1-механизму.
 
-- [ ] **Step 1: package.json**
+- [x] **Step 1: package.json**
 
 `packages/web/package.json`:
 
@@ -924,7 +924,7 @@ git commit -m "refactor(admin): reference app on @siril/admin (sirilAdminConfig,
 }
 ```
 
-- [ ] **Step 2: module.ts — из S0.1 (1:1 decision-док)**
+- [x] **Step 2: module.ts — из S0.1 (1:1 decision-док)**
 
 Вставить код-образец из `docs/superpowers/spikes/2026-09-27-s0-1-nuxt-overlay.md` с изменением meta/имён:
 
@@ -957,7 +957,7 @@ export default defineNuxtModule<SirilModuleOptions>({
 
 Если S0.1 подтвердил alias-glob `~/themes` — использовать его вместо абсолютного пути (короче).
 
-- [ ] **Step 3: Smoke-тест** (setup не падает, alias зарегистрирован):
+- [x] **Step 3: Smoke-тест** (setup не падает, alias зарегистрирован):
 
 `packages/web/src/module.test.ts`:
 
@@ -997,7 +997,7 @@ export function mergeOptions(options: SirilModuleOptions) {
 
 (Тип `BLOCKS` в контрактах — `Record<string, BlockDef>`? если нет — cast, как в тесте выше; зафиксировать точный тип в Task 10.)
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add packages/web pnpm-lock.yaml
