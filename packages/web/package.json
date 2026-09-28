@@ -1,0 +1,24 @@
+{
+  "name": "@siril/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "exports": { ".": "./src/module.ts" },
+  "main": "./src/module.ts",
+  "types": "./src/module.ts",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.0.0",
+    "@siril/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "nuxt": "^4.5.2",
+    "typescript": "^5.6.0",
+    "vitest": "^5.0.1"
+  }
+}
