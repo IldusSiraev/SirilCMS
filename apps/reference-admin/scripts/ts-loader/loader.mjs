@@ -4,7 +4,7 @@ export async function resolve(specifier, context, next) {
   try {
     return await next(specifier, context)
   } catch (err) {
-    if (err?.code === 'ERR_MODULE_NOT_FOUND' && typeof specifier === 'string' && specifier.startsWith('.') && !specifier.endsWith('.ts')) {
+    if ((err?.code === 'ERR_MODULE_NOT_FOUND' || err?.code === 'ERR_UNSUPPORTED_DIR_IMPORT') && typeof specifier === 'string' && specifier.startsWith('.') && !specifier.endsWith('.ts')) {
       try {
         return await next(`${specifier}.ts`, context)
       } catch {

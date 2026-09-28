@@ -14,8 +14,8 @@ export default tseslint.config(
       '**/.next/**',
       '**/.output/**',
       '**/dist/**',
-      'apps/admin/payload-types.ts',
-      'apps/admin/scripts/**',
+      'apps/reference-admin/payload-types.ts',
+      'apps/reference-admin/scripts/**',
     ],
   },
   js.configs.recommended,
@@ -84,7 +84,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/admin/**/*.{ts,tsx}', 'packages/admin/**/*.{ts,tsx}'],
+    files: ['apps/reference-admin/**/*.{ts,tsx}', 'packages/admin/**/*.{ts,tsx}'],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
     },

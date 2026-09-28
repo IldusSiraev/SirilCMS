@@ -7,7 +7,7 @@ const SLUG = 'e2e-test-page'
 
 // Roadmap "E2E-тесты": создать страницу в админке → проверить на сайте → опубликовать → проверить purge кэша.
 // Runs against a fresh, empty Postgres (see playwright.config.ts webServer + CI workflow) — the first
-// user created self-registers as owner (apps/admin/src/utils/first-user.ts), no seed data involved.
+// user created self-registers as owner (packages/admin/src/utils/first-user.ts), no seed data involved.
 test('create a page in admin, publish it, verify it renders on the site, verify cache purge', async ({ page, request, baseURL }) => {
   // --- bootstrap: first owner + a Site matching the web app's host ---
   await request.post(`${ADMIN}/api/users`, {
@@ -59,7 +59,7 @@ test('create a page in admin, publish it, verify it renders on the site, verify 
   ])
   expect(patchResponse.ok()).toBe(true)
 
-  // publishHook's purge call is fire-and-forget (apps/admin/src/utils/publish-hook.ts) — it may
+  // publishHook's purge call is fire-and-forget (packages/admin/src/utils/publish-hook.ts) — it may
   // land a moment after the PATCH response, so poll rather than asserting on the very next request.
   let afterRepublish: Awaited<ReturnType<typeof request.get>> | undefined
   await expect.poll(async () => {

@@ -26,7 +26,7 @@ export const Forms: CollectionConfig = {
       label: { ru: 'Название', en: 'Name' },
       required: true,
       // cell получает rowData (весь doc) → id для ссылки на конструктор
-      admin: { components: { Cell: './src/admin-ui/form-builder-link' } },
+      admin: { components: { Cell: './admin-ui/form-builder-link' } },
     },
     // Уникальность — составной индекс (site, slug) на уровне коллекции (см. `indexes` выше).
     { name: 'slug', type: 'text', label: { ru: 'Слаг', en: 'Slug' }, admin: { description: 'POST /api/forms/<slug>/submit (T14)' } },

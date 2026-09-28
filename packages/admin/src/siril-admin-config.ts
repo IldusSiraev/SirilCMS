@@ -4,7 +4,7 @@ import { Categories } from './collections/categories'
 import { Forms } from './collections/forms'
 import { FormSubmissions } from './collections/form-submissions'
 import { Media } from './collections/media'
-import { Pages } from './collections/pages'
+import { makePages } from './collections/pages'
 import { Posts } from './collections/posts'
 import { Sites } from './collections/sites'
 import { SiteContent } from './collections/site-content'
@@ -20,6 +20,7 @@ type SirilProject = {
   collections?: CollectionConfig[]
   endpoints?: Endpoint[]
   hooks?: Record<string, Hook | Hook[]>
+  adminUiBase?: string
 }
 
 export function sirilAdminConfig(_project: SirilProject = {}): {
@@ -27,13 +28,12 @@ export function sirilAdminConfig(_project: SirilProject = {}): {
   endpoints: Endpoint[]
   hooks: Record<string, Hook | Hook[]>
 } {
-  // Core-списки — 1:1 с текущим apps/admin/payload.config.ts (порядок сохранён).
+  // Core-списки — 1:1 с текущим apps/reference-admin/payload.config.ts (порядок сохранён).
   // `seo` — это поле (collections/seo), не коллекция: в конфиг не входит.
-  const coreCollections: CollectionConfig[] = [Sites, Media, Users, Pages, Posts, Categories, SiteContent, Forms, FormSubmissions]
+  const { collections = [], endpoints = [], hooks = {}, adminUiBase } = _project
+  const coreCollections: CollectionConfig[] = [Sites, Media, Users, makePages({ adminUiBase }), Posts, Categories, SiteContent, Forms, FormSubmissions]
   const coreEndpoints: Endpoint[] = [submissionsCsv]
   const coreHooks: Record<string, Hook | Hook[]> = {}
-
-  const { collections = [], endpoints = [], hooks = {} } = _project
   return {
     collections: [...coreCollections, ...collections],
     endpoints: [...coreEndpoints, ...endpoints],

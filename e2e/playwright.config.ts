@@ -24,7 +24,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'pnpm --filter @siril/admin build && pnpm --filter @siril/admin start',
+      command: 'pnpm --filter @siril/reference-admin build && pnpm --filter @siril/reference-admin start',
       url: `http://localhost:${ADMIN_PORT}/admin/login`,
       cwd: '..',
       timeout: 180_000,

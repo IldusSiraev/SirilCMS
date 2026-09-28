@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# synced Payload migrations (SSOT: packages/admin/src/migrations — copied by scripts/migrations-sync.mjs)
+/src/migrations/*
+!/src/migrations/.gitkeep

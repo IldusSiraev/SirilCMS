@@ -5,4 +5,4 @@ node_modules
 .output
 .nuxt
 backups
-apps/admin/.next
+apps/reference-admin/.next
