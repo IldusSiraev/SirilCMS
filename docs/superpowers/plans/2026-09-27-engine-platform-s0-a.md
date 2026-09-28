@@ -785,7 +785,7 @@ git commit -m "refactor(admin): move core collections/hooks/endpoints/admin-ui/m
 - Consumes: `sirilAdminConfig` (Task 7), механизм S0.2 (decision-док), механизм S0.1b (decision-док).
 - Produces: референс-админка, собранная на пакете; rename `@siril/reference-admin`.
 
-- [ ] **Step 1: Тонкий payload.config**
+- [x] **Step 1: Тонкий payload.config**
 
 `apps/admin/payload.config.ts` (заменить полностью):
 
@@ -829,14 +829,14 @@ export default buildConfig({
 
 (Варианты в шаблоне `...siril` расписать явно: `collections: siril.collections, endpoints: siril.endpoints, hooks: siril.hooks` — не расползаться.)
 
-- [ ] **Step 2: importMap — по S0.2**
+- [x] **Step 2: importMap — по S0.2**
 
 По decision-доку S0.2:
 - если `baseDir` → каталог пакета: `importMap: { baseDir: path.resolve(dirname, '../../packages/admin/src') }` (workspace) + `adminUiBase = './admin-ui'` (Task 5) — передать в `sirilAdminConfig({ adminUiBase: './admin-ui' })` (расширить сигнатуру Task 7/6 этим опциональным полем — 1 строка).
 - строковые пути `admin.components` в контрактах — остаются `${adminUiBase}/variant-picker` (Task 5).
 - Сгенерировать: `& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-admin generate:importmap` (имя фильтра — ПОСЛЕ rename в Step 4; для промежуточной генерации — до rename) → убедиться, что `app/(payload)/admin/importMap.js` импортирует из `packages/admin` (workspace-симлинк). Commit-ится.
 
-- [ ] **Step 3: Migration-механизм — по S0.1b**
+- [x] **Step 3: Migration-механизм — по S0.1b**
 
 - **Вариант A (есть `migrations.dir`):** `payload.config.ts` → `migrations: { dir: path.resolve(dirname, '../../packages/admin/src/migrations') }`; `apps/admin/src/migrations/` — только `.gitkeep`. CI drift-check (ниже) — на каталог `packages/admin/src/migrations`.
 - **Вариант B (copy-синхронизация):** `apps/admin/scripts/migrations-sync.mjs`:
@@ -861,7 +861,7 @@ console.log('migrations synced from @siril/admin → src/migrations')
 
 `package.json` референса: `"migrations:sync": "node scripts/migrations-sync.mjs"`; `migrate` script не меняется (dir по умолчанию = `src/migrations`). CI drift-check → на `apps/admin/src/migrations` (не меняется).
 
-- [ ] **Step 4: Rename приложения + фильтры**
+- [x] **Step 4: Rename приложения + фильтры**
 
 ```bash
 # package.json apps/admin: "name": "@siril/reference-admin"
@@ -871,7 +871,7 @@ console.log('migrations synced from @siril/admin → src/migrations')
 - `.github/workflows/ci.yml`: все `--filter @siril/admin` → `--filter @siril/reference-admin` (migrations job: `migrate`, `migrate:generate`; drift-check git path — по Step 3 вариант)
 - `package.json` root: `"seed": "pnpm --filter @siril/reference-admin seed"`
 
-- [ ] **Step 5: Полная проверка**
+- [x] **Step 5: Полная проверка**
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" install
@@ -887,7 +887,7 @@ $env:PAYLOAD_DB_URI='postgresql://payload:dev@localhost:5433/payload'
 
 Ожидание: migrate применяет core-миграции (из пакета), seed создаёт демо-контент. (dev-сервер + ручной логин — Task 13 gate.)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -A
