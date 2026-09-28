@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest'
 import { toPayloadBlockFields, toPayloadFormFields } from './to-payload'
+import { BLOCKS } from './registry'
 import type { BlockDef } from './types'
 
 const block: BlockDef = { type: 'hero', name: 'Hero', variants: [
@@ -20,6 +21,12 @@ it('variant — визуальный пикер: превью-SVG на variant, 
   expect(previews?.[0]).toMatchObject({ value: 'default', label: 'Default' })
   expect(previews?.[0]?.svg).toContain('<svg')
   expect(previews?.[1]?.svg).not.toBe(previews?.[0]?.svg)
+})
+it('adminUiBase rebase-ит путь компонента', () => {
+  const hero = BLOCKS.find(b => b.type === 'hero')!
+  const fields = toPayloadBlockFields(hero, { adminUiBase: './admin-ui' })
+  const variant = fields[0] as { admin?: { components?: { Field?: string } } }
+  expect(variant.admin?.components?.Field).toBe('./admin-ui/variant-picker')
 })
 it('union полей — admin.condition показывает поле только для варианта-владельца', () => {
   const fields = toPayloadBlockFields(block)

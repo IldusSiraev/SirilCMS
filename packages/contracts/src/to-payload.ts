@@ -33,7 +33,8 @@ export function toPayloadField(f: BlockField): PayloadField {
   return base
 }
 
-export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
+export function toPayloadBlockFields(def: BlockDef, opts: { adminUiBase?: string } = {}): PayloadField[] {
+  const base = opts.adminUiBase ?? './src/admin-ui'
   const all = def.variants.flatMap(v => v.fields)
   const union = [...new Map(all.map(f => [f.name, f] as [string, BlockField])).values()]
   const fields = union.map(f => {
@@ -56,7 +57,7 @@ export function toPayloadBlockFields(def: BlockDef): PayloadField[] {
       custom: {
         variantPreviews: def.variants.map(v => ({ value: v.id, label: v.name, svg: variantPreviewSvg(v.layout ?? 'center'), deprecated: v.deprecated })),
       },
-      components: { Field: './src/admin-ui/variant-picker' },
+      components: { Field: `${base}/variant-picker` },
     },
   }
   return [variant, ...fields]
