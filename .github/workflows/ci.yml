@@ -113,12 +113,21 @@ jobs:
         run: |
           pnpm --filter @siril/reference-admin migrations:sync
           echo "n" | pnpm --filter @siril/reference-admin migrate:generate -- --name ci_schema_drift_check
-          if [ -n "$(git status --porcelain apps/reference-admin/src/migrations/)" ]; then
-            echo "::error::Collection schema doesn't match the latest migration. Run 'pnpm --filter @siril/reference-admin migrate:generate' locally and commit the generated migration."
-            git status --porcelain apps/reference-admin/src/migrations/
-            git diff -- apps/reference-admin/src/migrations/
-            exit 1
-          fi
+          # App-side migration copies are gitignored, so a git-status check would be a silent no-op:
+          # compare on disk instead. Drift = a migration in the app dir missing from the package (SSOT).
+          set -euo pipefail
+          drift=0
+          for f in apps/reference-admin/src/migrations/*.ts; do
+            [ -e "$f" ] || continue
+            base="$(basename "$f")"
+            case "$base" in index|template) continue ;; esac
+            if [ ! -f "packages/admin/src/migrations/$base" ]; then
+              echo "::error::Schema drift: migration '$base' was generated in the app but is missing from packages/admin/src/migrations (the SSOT). Commit the migration to the package and re-run 'pnpm --filter @siril/reference-admin migrations:sync' — never commit the app-side copy (it is gitignored)."
+              echo "$base"
+              drift=1
+            fi
+          done
+          [ "$drift" -eq 0 ] || exit 1
 
   e2e:
     name: E2E
