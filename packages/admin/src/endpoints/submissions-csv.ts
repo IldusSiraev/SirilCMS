@@ -1,5 +1,6 @@
 import type { Endpoint } from 'payload'
-import type { Form, FormSubmission } from '../../payload-types'
+// payload-types.ts генерируется в apps/admin (typescript.outputFile в payload.config.ts)
+import type { Form, FormSubmission } from '../../../../apps/admin/payload-types'
 
 // Экспорт заявок в CSV: BOM + UTF-8, CRLF, экранирование ", колонки = label'ы полей формы.
 // Контракт Payload 3.90 (проверено в dist): Web Request/Response, req.payload — local API, req.user — через auth стратегии.

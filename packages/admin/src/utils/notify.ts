@@ -1,5 +1,6 @@
 import type { BasePayload } from 'payload'
-import type { Form, FormSubmission, Site } from '../../payload-types'
+// payload-types.ts генерируется в apps/admin (typescript.outputFile в payload.config.ts)
+import type { Form, FormSubmission, Site } from '../../../../apps/admin/payload-types'
 
 export function buildNotificationText(formName: string, values: { name?: string | null; value?: string | null }[]): string {
   return `Заявка (${formName}): ${values.map((v) => `${v.name}: ${v.value}`).join(' | ')}`

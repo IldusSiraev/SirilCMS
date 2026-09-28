@@ -6,16 +6,18 @@ import { fileURLToPath } from 'url'
 import { en } from '@payloadcms/translations/languages/en'
 import { ru } from '@payloadcms/translations/languages/ru'
 
-import { Categories } from './src/collections/categories'
-import { FormSubmissions } from './src/collections/form-submissions'
-import { Forms } from './src/collections/forms'
-import { Media } from './src/collections/media'
-import { Pages } from './src/collections/pages'
-import { Posts } from './src/collections/posts'
-import { Sites } from './src/collections/sites'
-import { SiteContent } from './src/collections/site-content'
-import { Users } from './src/collections/users'
-import { submissionsCsv } from './src/endpoints/submissions-csv'
+import {
+  Categories,
+  FormSubmissions,
+  Forms,
+  Media,
+  Pages,
+  Posts,
+  SiteContent,
+  Sites,
+  Users,
+  submissionsCsv,
+} from '@siril/admin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

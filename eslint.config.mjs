@@ -34,7 +34,7 @@ export default tseslint.config(
   {
     // migrate:generate scaffolds up(/down)({ payload, req }) for every migration;
     // most don't use both params and we don't hand-edit generated files for lint.
-    files: ['apps/admin/src/migrations/**'],
+    files: ['packages/admin/src/migrations/**'],
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
     },
@@ -84,7 +84,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/admin/**/*.{ts,tsx}'],
+    files: ['apps/admin/**/*.{ts,tsx}', 'packages/admin/**/*.{ts,tsx}'],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
     },
