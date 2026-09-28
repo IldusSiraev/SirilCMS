@@ -32,7 +32,7 @@ export default defineConfig({
       env: { ...env, PORT: String(ADMIN_PORT) },
     },
     {
-      command: 'pnpm --filter @siril/web build && pnpm --filter @siril/web start',
+      command: 'pnpm --filter @siril/reference-web build && pnpm --filter @siril/reference-web start',
       url: `http://localhost:${WEB_PORT}/api/health`,
       cwd: '..',
       timeout: 180_000,

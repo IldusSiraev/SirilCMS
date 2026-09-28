@@ -40,7 +40,7 @@ const projectTheme = (id: string) =>
   Object.entries(projectThemes).find(([p]) => p.endsWith(`/${id}/tokens.css`))?.[1] as
     | (() => Promise<string>)
     | undefined
-const moduleTheme = (id: string): string | undefined => moduleThemes[id]
+const moduleTheme = (id: string): string | undefined => (moduleThemes as Record<string, string>)[id]
 const toLoader = (css: string | (() => Promise<string>) | undefined): (() => Promise<string>) | undefined =>
   css == null ? undefined : typeof css === 'function' ? css : () => Promise.resolve(css)
 const defaultLoad = toLoader(projectTheme('default')) ?? toLoader(moduleTheme('default'))

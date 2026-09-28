@@ -4,7 +4,7 @@
   "packageManager": "pnpm@11.24.0",
   "scripts": {
     "dev:pg": "node infra/scripts/dev-pg.mjs",
-    "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/web dev\" \"pnpm --filter @siril/reference-admin dev\"",
+    "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/reference-web dev\" \"pnpm --filter @siril/reference-admin dev\"",
     "seed": "pnpm --filter @siril/reference-admin seed",
     "test": "pnpm -r --no-bail test",
     "lint": "eslint .",

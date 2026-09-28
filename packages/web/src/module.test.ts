@@ -37,4 +37,12 @@ describe('block registry template', () => {
     )
     expect(src).toContain('export function getBlockComponent(type, variant)')
   })
+
+  it('project filter: Placeholder.vue и ключи без "/" (не <type>/...) вырезаются из registry (T10 review)', () => {
+    const src = blockRegistryContents(runtimeDir)
+    // rekey-результат эквивалентен Placeholder.vue (fallback, не block type) или без "/" — entry пропускается
+    expect(src).toContain("k !== 'Placeholder.vue'")
+    expect(src).toContain("k.includes('/')")
+    expect(src).toContain('isBlockKey(rekeyProject(path))')
+  })
 })

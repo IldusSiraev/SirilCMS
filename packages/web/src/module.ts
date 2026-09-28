@@ -17,6 +17,9 @@ export default defineNuxtModule<SirilModuleOptions>({
         config: {
           rootDir: runtimeDir,
           srcDir: join(runtimeDir, 'app'),
+          // kit getLayerDirectories resolves layer server as resolve(srcDir, serverDir || 'server');
+          // runtime/server sits beside runtime/app (not under it), so it must be set explicitly
+          serverDir: join(runtimeDir, 'server'),
         },
         cwd: runtimeDir,
         configFile: '',
@@ -88,9 +91,12 @@ export function blockRegistryContents(runtimeDir: string): string {
     "const projectBlocks = import.meta.glob('/app/blocks/**/*.vue')",
     '// glob keys are root-relative with the leading "/" dropped (S0.1: /themes/... -> "themes/...")',
     "const rekeyProject = (k) => k.replace(/^\\/?app\\/blocks\\//, '')",
+    '// filter project entries by rekey result: must be <type>/<Variant>.vue — drop Placeholder.vue (a fallback, not a block type)',
+    '// and bare files picked up directly under app/blocks (rekey result without "/" is not a block key)',
+    "const isBlockKey = (k) => k !== 'Placeholder.vue' && k.includes('/')",
     'const merged = {',
     '  ...moduleBlocks,',
-    '  ...Object.fromEntries(Object.entries(projectBlocks).map(([path, loader]) => [rekeyProject(path), loader])),',
+    '  ...Object.fromEntries(Object.entries(projectBlocks).filter(([path]) => isBlockKey(rekeyProject(path))).map(([path, loader]) => [rekeyProject(path), loader])),',
     '}',
     '',
     'export function getBlockComponent(type, variant) {',
