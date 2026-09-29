@@ -66,7 +66,7 @@ curl -X POST https://admin.client.example.com/api/users \
   -d '{"name":"Owner","email":"you@client.example.com","password":"<напр-32-сигла-или-сгенер-пароль>","role":"owner"}'
 ```
 
-`role: owner` можно не передавать — хук (`apps/admin/src/collections/users.ts`) принудительно ставит `owner` первому пользователю в пустой БД, что бы ни пришло в запросе.
+`role: owner` можно не передавать — хук (`packages/admin/src/collections/users.ts`) принудительно ставит `owner` первому пользователю в пустой БД, что бы ни пришло в запросе.
 
 ⚠️ Остаточный риск: пока в БД нет ни одного user, `POST /api/users` анонимный — **кто первым создаст пользователя, тот и станет owner** (хук гарантирует, что это будет owner, но не то, что это будете вы). Создать админа **до того, как сайт попадёт в интернет/поисковики**, и закрыть хост-порт 3001.
 
@@ -104,7 +104,7 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 
 1. DNS: A-запись нового домена → тот же IP сервера (админка у мультисайта общая — `admin.{$SITE_DOMAIN}` без изменений, новый `admin.*`-поддомен не нужен).
 2. В `.env`: добавить домен в `SITE_DOMAINS` (пробел-разделённый список; если переменной ещё нет — по умолчанию равна `SITE_DOMAIN`, т.е. один существующий домен): `SITE_DOMAINS="client.example.com new-client.example.com"`.
-3. В админке — `Sites → Create`, `domain` = **точно** `new-client.example.com` (по этому полю web резолвит сайт по `Host`, см. `apps/web/server/utils/site-resolve.ts`); плюс `Site Content` (навигация/футер) для нового сайта — иначе публичные запросы на его хост будут падать в fallback/404.
+3. В админке — `Sites → Create`, `domain` = **точно** `new-client.example.com` (по этому полю web резолвит сайт по `Host`, см. `packages/web/src/runtime/server/utils/site-resolve.ts`); плюс `Site Content` (навигация/футер) для нового сайта — иначе публичные запросы на его хост будут падать в fallback/404.
 4. `docker compose -f infra/docker-compose.prod.yml --env-file .env restart caddy` (или `make -C infra up`) — Caddy перечитает `SITE_DOMAINS`, запросит новый TLS-сертификат.
 5. Смоук: `curl -sI https://new-client.example.com` — TLS должен выпуститься автоматически (Let's Encrypt), как при первом домене.
 
@@ -126,7 +126,7 @@ make -C infra up
 #           && docker compose -f infra/docker-compose.prod.yml --env-file .env up -d
 ```
 
-Миграции Payload применяются автоматически: one-shot сервис `migrate` стартует перед `admin` при каждом `up` и выполняет `pnpm --filter @siril/admin migrate` (образ `admin-migrate`, см. §2) — ручной шаг не нужен. Если миграция в новой версии breaking (несовместима со старыми данными без ручных действий) — сверяться с release notes/`CHANGELOG.md` (см. [docs/roadmap.md](../roadmap.md)) перед обновлением на минорную/мажорную версию.
+Миграции Payload применяются автоматически: one-shot сервис `migrate` стартует перед `admin` при каждом `up` и выполняет `pnpm --filter @siril/reference-admin migrate` (образ `admin-migrate`, см. §2) — ручной шаг не нужен. Если миграция в новой версии breaking (несовместима со старыми данными без ручных действий) — сверяться с release notes/`CHANGELOG.md` (см. [docs/roadmap.md](../roadmap.md)) перед обновлением на минорную/мажорную версию.
 
 Если `migrate` упал (exit ≠ 0) — `admin` не стартует (`depends_on: service_completed_successfully`), сайт продолжает работать на старой версии `web`/`admin` до ручного вмешательства. Откат: вернуть предыдущий `IMAGE_TAG` в `.env`, `make -C infra up`; если миграция уже частично применилась — восстановить БД из бэкапа шага 1 (`gunzip < f.sql.gz | ... psql`, см. таблицу выше) **до** отката образов.
 

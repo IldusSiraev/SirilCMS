@@ -4,7 +4,7 @@ Headless CMS для лендинг-сайтов: **конструктор стр
 
 ## Возможности
 
-- **Блоки** — 14 типов (hero, текст+изображение, возможности, тарифы, галерея, FAQ, отзывы, команда, портфолио, CTA, контакты, список/сетка постов, форма), каждый с вариантами компоновки. Единый источник правды контрактов — пакет `@siril/blocks-definitions` (SSOT): по контракту **автоматически** генерируются поля формы в админке (Payload) и резолвится вёрстка на сайте.
+- **Блоки** — 14 типов (hero, текст+изображение, возможности, тарифы, галерея, FAQ, отзывы, команда, портфолио, CTA, контакты, список/сетка постов, форма), каждый с вариантами компоновки. Единый источник правды контрактов — пакет `@siril/contracts` (SSOT): по контракту **автоматически** генерируются поля формы в админке (Payload) и резолвится вёрстка на сайте.
 - **Темы** — `default` (teal) и `mono` (ч/б, serif). Переключение темы в админке (`Sites → theme`) — **изменение данных, применяется мгновенно**, без деплоя. Неподдерживаемые темой блоки/варианты рендерятся по fallback (контент не теряется).
 - **Формы** — конструктор полей (text → honeypot/consent), заявки в БД, публичный submit с rate-limit, CSV-экспорт.
 - **Контент** — страницы (любой лендинг = набор блоков), блог (посты + категории), медиа-библиотека, SEO-поля на каждое сущность.
@@ -16,9 +16,11 @@ Headless CMS для лендинг-сайтов: **конструктор стр
 
 | Путь | Роль | Порт |
 |---|---|---|
-| `apps/web` | Публичный сайт: **Nuxt 4** (SSR, Nitro), кэш, purge-API | 3000 |
-| `apps/admin` | Конструктор: **Payload 3** на **Next.js 16**, PostgreSQL | 3001 |
-| `packages/blocks-definitions` | SSOT: контракты блоков/тем/форм-полей (типы, реестр, маппер в Payload, resolve) | — |
+| `packages/contracts` | `@siril/contracts` — SSOT: контракты блоков/тем/форм-полей (типы, реестр, `to-payload.ts`, `resolve.ts`) | — |
+| `packages/web` | `@siril/web` — Nuxt-модуль: runtime UI (блоки, layout) + server middleware/кэш/purge-API | — |
+| `packages/admin` | `@siril/admin` — Payload-расширение: collections/endpoints/access/admin-ui + канонические миграции | — |
+| `apps/reference-web` | `@siril/reference-web` — публичный сайт: тонкое референс-приложение **Nuxt 4** (SSR, Nitro) | 3000 |
+| `apps/reference-admin` | `@siril/reference-admin` — конструктор: тонкое приложение **Payload 3** на **Next.js 16**, PostgreSQL | 3001 |
 | `infra` | `docker-compose` (dev/prod), Caddy, сценарии (dev-pg, make-цели) | 80/443 (prod) |
 | `docs` | Гайды: developer, runbooks (dev/prod), specs/plans | — |
 
@@ -35,13 +37,14 @@ Headless CMS для лендинг-сайтов: **конструктор стр
 ## Структура
 
 ```
-apps/web/app/            # layout (nav/footer + CSS темы), страницы (index/[...slug]/blog/404)
-apps/web/app/blocks/     # вёрстка блоков: <type>/<Variant>.vue (регистрация — glob, без реестра)
-apps/web/themes/<id>/    # tokens.css темы (raw, внедряется в <head> через useHead)
-apps/web/server/api|middleware|utils   # /api/page, /api/site, кэш, rate-limit, media
-apps/admin/src/collections   # pages, posts, media, forms, form-submissions, sites, site-content, users, categories
-apps/admin/src/migrations    # миграции Payload
-apps/admin/app/{design,form-builder}   # custom-страницы админки (/design, /form-builder)
+packages/contracts/src/              # SSOT: registry.ts, to-payload.ts, resolve.ts, form-fields.ts
+packages/web/src/runtime/app/        # runtime UI: блоки <type>/<Variant>.vue, layouts, страницы (index/[...slug]/blog/404)
+packages/web/src/runtime/themes/<id>/    # tokens.css темы (внедряется в <head> через useHead)
+packages/web/src/runtime/server/     # /api/page, /api/site, кэш, rate-limit, media
+packages/admin/src/                  # collections, endpoints, access, utils, admin-ui
+packages/admin/src/migrations        # канонические миграции Payload
+apps/reference-web/app/{blocks,themes}/    # project-overlay: переопределения блоков/тем (проект сильнее модуля)
+apps/reference-admin/                # payload.config.ts, seed; custom-страницы app/{design,form-builder} (/design, /form-builder)
 ```
 
 ## Быстрый старт (dev)
@@ -52,7 +55,7 @@ apps/admin/app/{design,form-builder}   # custom-страницы админки 
 pnpm install
 Copy-Item .env.example .env            # PS (Linux/macOS: cp)
 pnpm dev:pg                            # Postgres (docker :5432 или внешний :5433)
-pnpm --filter @siril/admin migrate     # миграции
+pnpm --filter @siril/reference-admin migrate   # миграции
 pnpm seed                              # демо-контент (идемпотентно)
 pnpm dev:all                           # web :3000 + admin :3001
 pnpm test                              # 62 теста

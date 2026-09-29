@@ -54,8 +54,9 @@ export default tseslint.config(
       globals: {
         ...globals.browser,
         // Nuxt/Vue auto-imports (no explicit import statements) + this app's
-        // own auto-imported composables/utils (apps/web/app/composables,
-        // apps/web/app/utils). No @nuxt/eslint module — hand-maintained list;
+        // own auto-imported composables/utils (packages/web/src/runtime/app/composables,
+        // packages/web/src/runtime/app/utils; project overlay apps/reference-web/app/*).
+        // No @nuxt/eslint module — hand-maintained list;
         // extend it if a new auto-import shows up as a false no-undef.
         ref: 'readonly',
         reactive: 'readonly',
