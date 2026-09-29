@@ -1181,7 +1181,7 @@ git commit -m "refactor(web): thin reference app on @siril/web module"
 **Interfaces:**
 - Проверка spec §9 A-критериев.
 
-- [ ] **Step 1: Чистый install + полный прогон**
+- [x] **Step 1: Чистый install + полный прогон**
 
 ```bash
 Remove-Item -Recurse -Force node_modules
@@ -1194,7 +1194,7 @@ Remove-Item -Recurse -Force node_modules
 
 Ожидание: всё зелёное; `pnpm test` — все юнит-тесты (62+3 новых) PASSED.
 
-- [ ] **Step 2: dev:all + ручные проверки**
+- [x] **Step 2: dev:all + ручные проверки**
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" dev:all
@@ -1207,7 +1207,7 @@ curl -s http://localhost:3001/admin/login   # — HTML логина
 
 Ожидание: страницы рендерятся, блоки — из runtime модуля, темы — из runtime.
 
-- [ ] **Step 3: E2E (Playwright, чистый pg 5432)**
+- [x] **Step 3: E2E (Playwright, чистый pg 5432)**
 
 ```bash
 docker run -d --rm --name e2epg -p 5432:5432 -e POSTGRES_USER=payload -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=payload postgres:16
@@ -1219,7 +1219,7 @@ $env:PAYLOAD_SECRET='e2e-secret-at-least-32-characters-long'
 
 Ожидание: golden-path (create page → publish → site → purge) PASSED.
 
-- [ ] **Step 4: Drift-check (локально, как CI)**
+- [x] **Step 4: Drift-check (локально, как CI)**
 
 ```bash
 echo "n" | & "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-admin migrate:generate -- --name local_drift
@@ -1228,7 +1228,7 @@ if (git status --porcelain packages/admin/src/migrations/ apps/admin/src/migrati
 
 (Путь — по механизму S0.1b (Step 3 Task 8).) Ожидание: "No drift".
 
-- [ ] **Step 5: Финальный commit (если были фиксы)**
+- [x] **Step 5: Финальный commit (если были фиксы)**
 
 ```bash
 git add -A
