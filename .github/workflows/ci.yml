@@ -107,27 +107,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply all migrations to a clean database
-        run: pnpm --filter @siril/reference-admin migrations:sync && pnpm --filter @siril/reference-admin migrate
+        run: pnpm --filter @siril/reference-admin migrate
 
       - name: Check for schema drift (collection change without a matching migration)
         run: |
           set -euo pipefail
-          pnpm --filter @siril/reference-admin migrations:sync
+          # migrate:generate writes straight into packages/admin/src/migrations (pinned migrationDir),
+          # so a fresh untracked/modified file there is the drift signal.
           echo "n" | pnpm --filter @siril/reference-admin migrate:generate -- --name ci_schema_drift_check
-          # App-side migration copies are gitignored, so a git-status check would be a silent no-op:
-          # compare on disk instead. Drift = a migration in the app dir missing from the package (SSOT).
-          drift=0
-          for f in apps/reference-admin/src/migrations/*.ts; do
-            [ -e "$f" ] || continue
-            base="$(basename "$f")"
-            case "$base" in index.ts|template.ts) continue ;; esac
-            if [ ! -f "packages/admin/src/migrations/$base" ]; then
-              echo "::error::Schema drift: migration '$base' was generated in the app but is missing from packages/admin/src/migrations (the SSOT). Commit the migration to the package and re-run 'pnpm --filter @siril/reference-admin migrations:sync' — never commit the app-side copy (it is gitignored)."
-              echo "$base"
-              drift=1
-            fi
-          done
-          [ "$drift" -eq 0 ] || exit 1
+          if [ -n "$(git status --porcelain packages/admin/src/migrations)" ]; then
+            git status --porcelain packages/admin/src/migrations
+            echo "::error::Schema drift: 'migrate:generate' produced changes in packages/admin/src/migrations — a collection changed without a matching committed migration. Commit the new migration to the package."
+            exit 1
+          fi
 
   e2e:
     name: E2E
@@ -165,7 +157,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply migrations to a clean database
-        run: pnpm --filter @siril/reference-admin migrations:sync && pnpm --filter @siril/reference-admin migrate
+        run: pnpm --filter @siril/reference-admin migrate
 
       - name: Install Playwright's Chromium
         run: pnpm --filter e2e exec playwright install --with-deps chromium
@@ -238,9 +230,10 @@ jobs:
           - image: web
             dockerfile: infra/docker/web.Dockerfile
             target: ''
-          # admin's runtime image is a Next.js standalone build — no node_modules/payload/bin.js,
-          # no src/migrations, no ts-loader script. `pnpm --filter @siril/reference-admin migrate` needs the
-          # full pre-build stage instead, published as its own (much larger) image.
+          # admin's runtime image is a Next.js standalone build — no node_modules/payload/bin.js
+          # (the payload CLI) and no app ts-loader script needed to run the package's TS.
+          # `pnpm --filter @siril/reference-admin migrate` needs the full pre-build stage instead,
+          # published as its own (much larger) image.
           - image: admin-migrate
             dockerfile: infra/docker/admin.Dockerfile
             target: build
