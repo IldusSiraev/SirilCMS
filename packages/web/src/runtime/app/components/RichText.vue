@@ -2,7 +2,7 @@
   <div class="rt" v-html="value ?? ''" />
 </template>
 <script setup lang="ts">
-// value — готовый HTML из <name>Html-поля (см. apps/admin/src/utils/with-richtext-html.ts,
+// value — готовый HTML из <name>Html-поля (см. packages/admin/src/utils/with-richtext-html.ts,
 // lexicalHTMLField): Payload сам сериализует lexical-документ, web ничего не парсит.
 defineProps<{ value?: string | null }>()
 </script>

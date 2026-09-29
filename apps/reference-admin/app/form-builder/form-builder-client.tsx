@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-// 11 типов полей формы; источник списка: packages/blocks-definitions/src/form-fields.ts (FORM_FIELD_TYPES)
+// 11 типов полей формы; источник списка: packages/contracts/src/form-fields.ts (FORM_FIELD_TYPES)
 const TYPES = [
   'text', 'email', 'tel', 'textarea', 'select', 'checkbox',
   'checkbox-group', 'date', 'file', 'consent', 'honeypot',

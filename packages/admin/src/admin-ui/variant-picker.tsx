@@ -4,7 +4,7 @@ import { useField, useTranslation } from '@payloadcms/ui'
 import { getTranslation } from '@payloadcms/translations'
 
 // Визуальный пикер варианта блока — заменяет select на карточки с превью-SVG
-// (wireframe варианта, см. packages/blocks-definitions/src/variant-preview.ts).
+// (wireframe варианта, см. packages/contracts/src/variant-preview.ts).
 // Полная замена admin.components.Field не получает value/onChange пропами
 // (это API внутренних под-компонентов select-поля) — состояние читаем/пишем
 // через useField, как и любой другой кастомный Field-компонент Payload.
