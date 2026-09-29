@@ -1243,15 +1243,15 @@ git commit -m "chore: phase A gate — all green"
 
 **Interfaces:** (нет)
 
-- [ ] **Step 1: Обновить CLAUDE.md**
+- [x] **Step 1: Обновить CLAUDE.md**
 
 Таблица: строка `packages/blocks-definitions` → `packages/contracts (@siril/contracts)`; добавить строки `packages/web (@siril/web — Nuxt module)`, `packages/admin (@siril/admin — Payload extension)`; `apps/web`/`apps/admin` → "reference: @siril/reference-web / @siril/reference-admin".Команды: `pnpm --filter @siril/contracts test` и т.д.
 
-- [ ] **Step 2: README + developer.md**
+- [x] **Step 2: README + developer.md**
 
 `README.md:7,21`: path и имя пакета. `docs/developer.md`: все вхождения `packages/blocks-definitions` → `packages/contracts` (rg + replace), §4 шаг 1 — путь registry.
 
-- [ ] **Step 3: CHANGELOG**
+- [x] **Step 3: CHANGELOG**
 
 В `CHANGELOG.md` в секцию `[Unreleased]` (или создать `## [0.1.0] - 2026-09-27`):
 
@@ -1261,7 +1261,7 @@ git commit -m "chore: phase A gate — all green"
 - Lockstep-версия пакетов: 0.1.0.
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add -A
