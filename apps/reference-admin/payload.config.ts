@@ -34,6 +34,9 @@ export default buildConfig({
   // используют этот дефолт.
   editor: lexicalEditor(),
   db: postgresAdapter({
+    // Canonical migrations live in @siril/admin — pinned explicitly because Payload's default
+    // dir is CWD-relative and the app-local dir is git-ignored.
+    migrationDir: path.resolve(dirname, '../../packages/admin/src/migrations'),
     pool: {
       connectionString: process.env.PAYLOAD_DB_URI ?? '',
     },
