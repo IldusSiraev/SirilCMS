@@ -2,7 +2,7 @@
 ENV_FILE ?= ../.env
 
 init:
-	bash scripts/init-env.sh $(SITE_DOMAIN)
+	bash scripts/init-env.sh $(SITE_DOMAIN) $(OWNER_EMAIL)
 
 up:
 	docker compose -f docker-compose.prod.yml --env-file $(ENV_FILE) up -d --pull always
