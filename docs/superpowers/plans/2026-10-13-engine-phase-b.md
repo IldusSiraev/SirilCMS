@@ -32,7 +32,7 @@ Phase A перенёс файлы, но центральное обещание 
 - [x] **B3. web:** опции модуля → gen-template + плагины; приоритет `app/themes/<id>/tokens.css` проекта над модульной; тест модуля.
 - [x] **B4. example-проект** `examples/minimal-project`: 1 блок (контракт + SFC), 1 тема (ThemeDef + tokens.css), 1 коллекция; сборка `nuxt build` + загрузка payload config + `migrate:generate` без падений; CI-джоб.
 - [x] **B5. docs:** `docs/extension-api.md` (стабильно / нестабильно, пример каждой строки §4), конвенция «не копировать core-файлы» (+ скрипт-проверка), компат-таблица.
-- [ ] **B6. релиз:** lockstep-скрипт (`scripts/release.mjs`: бамп версий всех `@siril/*`, CHANGELOG-проверка, тег), CI-workflow публикации в GitHub Packages (dry-run в PR).
+- [x] **B6. релиз:** lockstep-скрипт (`scripts/release.mjs`: бамп версий всех `@siril/*`, CHANGELOG-проверка, тег), CI-workflow публикации в GitHub Packages (dry-run в PR).
 
 ## Вне объёма B
 

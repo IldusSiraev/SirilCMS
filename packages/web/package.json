@@ -1,10 +1,13 @@
 {
   "name": "@siril/web",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
-  "exports": { ".": "./src/module.ts" },
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./src/module.ts"
+  },
   "main": "./src/module.ts",
   "types": "./src/module.ts",
   "scripts": {
@@ -20,5 +23,18 @@
     "nuxt": "^4.5.2",
     "typescript": "^5.6.0",
     "vitest": "^5.0.1"
+  },
+  "files": [
+    "src",
+    "!src/**/*.test.ts"
+  ],
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IldusSiraev/SirilCMS.git",
+    "directory": "packages/web"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

@@ -2,14 +2,34 @@
   "name": "@siril/contracts",
   "version": "0.1.0",
   "type": "module",
-  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.mjs" } },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "unbuild",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": { "typescript": "^5.6.0", "unbuild": "^3.5.0", "vitest": "^3.0.0" }
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "unbuild": "^3.5.0",
+    "vitest": "^3.0.0"
+  },
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IldusSiraev/SirilCMS.git",
+    "directory": "packages/contracts"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
 }
