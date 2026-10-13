@@ -1,5 +1,7 @@
 packages:
   - "apps/*"
+  - "examples/*"
+  - "examples/*/*"
   - "packages/*"
   - "e2e"
 allowBuilds:

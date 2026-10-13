@@ -173,6 +173,73 @@ jobs:
           path: e2e/test-results/
           retention-days: 7
 
+  example-project:
+    name: Example project (extension API)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: payload
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: payload
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U payload"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PAYLOAD_SECRET: ci-secret-at-least-32-characters-long
+      PAYLOAD_DB_URI: postgresql://payload:dev@localhost:5432/payload
+      PAYLOAD_URL: http://localhost:3001
+      PURGE_TOKEN: ci-example-purge-token
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync core migrations into the project and apply (core series + project series)
+        run: |
+          pnpm --filter @siril/example-admin migrations:sync
+          pnpm --filter @siril/example-admin migrate
+
+      - name: Drift check (project schema == committed project migrations)
+        run: |
+          dir=examples/minimal-project/admin/src/migrations
+          before=$(ls $dir | wc -l)
+          echo "n" | pnpm --filter @siril/example-admin migrate:generate
+          if [ "$(ls $dir | wc -l)" != "$before" ]; then
+            echo "::error::Example project schema drift: commit a new project migration"
+            exit 1
+          fi
+
+      - name: Build example admin and web
+        run: |
+          pnpm --filter @siril/example-admin build
+          pnpm --filter @siril/example-web build
+
+      - name: Start both and verify the extension API end-to-end
+        run: |
+          (cd examples/minimal-project/admin && pnpm start > /tmp/admin.log 2>&1 &)
+          (cd examples/minimal-project/web && pnpm start > /tmp/web.log 2>&1 &)
+          for i in $(seq 1 40); do curl -sf -o /dev/null http://localhost:3001/api/users/me && curl -sf -o /dev/null http://localhost:3000/api/health && break; sleep 3; done
+          node examples/minimal-project/scripts/verify.mjs
+
+      - name: Server logs on failure
+        if: failure()
+        run: tail -n 80 /tmp/admin.log /tmp/web.log || true
+
   build:
     name: Build
     runs-on: ubuntu-latest

@@ -1,7 +1,10 @@
 import { fileURLToPath } from 'node:url'
-import { describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { mergeOptions } from './module-options'
-import { blockRegistryContents } from './module'
+import { blockRegistryContents, projectBlocksMap, projectThemesMap, themeStylesContents } from './module'
 
 describe('module options', () => {
   it('пустые опции — core', () => {
@@ -26,9 +29,9 @@ describe('block registry template', () => {
     expect(src).toMatch(/import Placeholder from '[^']+(\/|\\)Placeholder\.vue'/)
   })
 
-  it('project-glob root-relative + merge с приоритетом проекта + контракт getBlockComponent', () => {
+  it('проектные блоки (fs-scan) + merge с приоритетом проекта + контракт getBlockComponent', () => {
     const src = blockRegistryContents(runtimeDir)
-    expect(src).toContain("import.meta.glob('/app/blocks/**/*.vue')")
+    expect(src).toContain('const projectBlocks = {}')
     // rekey к форме <type>/<Variant>.vue + spread-порядок: проект РАСШИРЯЕТ module (project wins)
     expect(src).toContain('const rekeyProject = (k) => k.replace(')
     expect(src).toContain("app\\/blocks\\/")
@@ -57,5 +60,40 @@ describe('registry template', () => {
   it('пустые опции — пустые массивы', async () => {
     const { registryContents } = await import('./module')
     expect(registryContents({})).toContain('export default {"blocks":[],"themes":[]}')
+  })
+})
+
+describe('project fs-scan (блоки и темы проекта)', () => {
+  const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
+  const root = mkdtempSync(join(tmpdir(), 'siril-proj-'))
+  const srcDir = join(root, 'app')
+  mkdirSync(join(srcDir, 'blocks', 'cases'), { recursive: true })
+  writeFileSync(join(srcDir, 'blocks', 'cases', 'Card.vue'), '<template><div/></template>')
+  writeFileSync(join(srcDir, 'blocks', 'Placeholder.vue'), '<template><div/></template>')
+  mkdirSync(join(root, 'themes', 'client'), { recursive: true })
+  writeFileSync(join(root, 'themes', 'client', 'tokens.css'), ':root{}')
+  mkdirSync(join(root, 'themes', 'empty'), { recursive: true })
+  afterAll(() => rmSync(root, { recursive: true, force: true }))
+
+  it('блоки: ключ app/blocks/<type>/<Variant>.vue → absolute import; файлы в корне blocks игнорируются', () => {
+    const map = projectBlocksMap(srcDir)
+    expect(map).toContain('"app/blocks/cases/Card.vue": () => import(')
+    expect(map).not.toContain('Placeholder')
+    expect(map).not.toContain('\\')
+  })
+  it('блоки: нет каталога — пустой объект', () => {
+    expect(projectBlocksMap(join(root, 'nope'))).toBe('{}')
+    expect(projectBlocksMap(undefined)).toBe('{}')
+  })
+  it('темы: /themes/<id>/tokens.css → ?raw-загрузчик; каталог без tokens.css пропущен', () => {
+    const map = projectThemesMap(root)
+    expect(map).toContain('"/themes/client/tokens.css": () => import(')
+    expect(map).toContain('tokens.css?raw')
+    expect(map).not.toContain('/themes/empty')
+  })
+  it('собранный registry содержит проектные блоки', () => {
+    const src = blockRegistryContents(runtimeDir, srcDir)
+    expect(src).toContain('"app/blocks/cases/Card.vue"')
+    expect(themeStylesContents(runtimeDir, root)).toContain('"/themes/client/tokens.css"')
   })
 })

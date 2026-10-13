@@ -1,0 +1,8 @@
+/* siril-example-client-theme */
+:root {
+  --c-primary: #b91c1c;
+  --c-bg: #fffbeb;
+  --c-text: #1c1917;
+  --radius: 1rem;
+}
+body { background: var(--c-bg); color: var(--c-text); }
