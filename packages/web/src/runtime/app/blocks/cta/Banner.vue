@@ -12,7 +12,7 @@ import { getTheme } from '@siril/contracts'
 const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
-const imgSrc = computed(() => mediaUrl(props.block.image))
+const imgSrc = computed(() => mediaUrl(props.block.image, 'lg'))
 const bannerStyle = computed(() => ({
   ...tokens,
   backgroundImage: imgSrc.value ? `url(${imgSrc.value})` : undefined,

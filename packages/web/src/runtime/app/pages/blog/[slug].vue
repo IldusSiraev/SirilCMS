@@ -20,7 +20,7 @@ const { data } = await useAsyncData(`post:${host}:${route.params.slug}`, () =>
   $fetch<{ post: any }>(`/api/post/${encodeURIComponent(String(route.params.slug))}`, { query: { host } }))
 const post = computed(() => data.value?.post)
 if (!post.value) throw createError({ statusCode: 404, message: 'Not found' })
-const postCover = computed(() => mediaUrl(post.value?.cover))
+const postCover = computed(() => mediaUrl(post.value?.cover, 'lg'))
 const seo: any = post.value?.seo
 const slug = String(route.params.slug)
 const canonical = seo?.canonical && /^https?:\/\/.+/.test(seo.canonical) ? seo.canonical : `${base}/blog/${slug}`

@@ -179,7 +179,7 @@ const tokens = Object.fromEntries(Object.entries(getTheme(props.themeId).tokens)
 
 - Пропсы: `block` (данные строки блока) + `themeId`.
 - Токены темы — `:style` с `getTheme(themeId).tokens` (см. `hero/Default.vue`).
-- Rich-text — `<RichText :value="block.<name>Html">` (готовый HTML, не сырой JSON — см. §6); картинки — через `mediaUrl()`; внутренние ссылки — `NuxtLink`.
+- Rich-text — `<RichText :value="block.<name>Html">` (готовый HTML, не сырой JSON — см. §6); картинки — через `mediaUrl(media, 'sm'|'md'|'lg')` (размер по роли; без аргумента — оригинал); внутренние ссылки — `NuxtLink`.
 - CSS компонента — локальный `<style>` (в SFC это нормально; запрет §7.1 — про `<style>` внутри `<template>`).
 
 ### Шаг 4. Темы (при желании)

@@ -18,7 +18,7 @@ const { data } = await useAsyncData(`preview-post:${route.params.slug}`, () =>
   $fetch<{ post: any }>(`/api/preview/post?slug=${encodeURIComponent(String(route.params.slug))}&token=${encodeURIComponent(token)}`))
 const post = computed(() => data.value?.post)
 if (!post.value) throw createError({ statusCode: 404, message: 'Not found' })
-const postCover = computed(() => mediaUrl(post.value?.cover))
+const postCover = computed(() => mediaUrl(post.value?.cover, 'lg'))
 useHead({ htmlAttrs: { lang: siteData.value?.site?.locale ?? 'ru' }, meta: [{ name: 'robots', content: 'noindex' }] })
 </script>
 <style>

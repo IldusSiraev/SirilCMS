@@ -13,7 +13,7 @@ const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
 const images = computed(() =>
   (props.block.images ?? [])
-    .map((m: unknown) => mediaUrl(m))
+    .map((m: unknown) => mediaUrl(m, 'md'))
     .filter((s: string | null): s is string => s != null),
 )
 </script>
