@@ -4,7 +4,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { addTemplate, defineNuxtModule } from '@nuxt/kit'
 import type { BlockDef, ThemeDef } from '@siril/contracts'
 
-export type SirilModuleOptions = { blocks?: Record<string, BlockDef>; themes?: ThemeDef[] }
+export type SirilModuleOptions = { blocks?: BlockDef[]; themes?: ThemeDef[] }
 
 export default defineNuxtModule<SirilModuleOptions>({
   meta: { name: 'siril-web', configKey: 'siril' },
