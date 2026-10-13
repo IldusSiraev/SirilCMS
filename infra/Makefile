@@ -14,6 +14,8 @@ smoke:
 	@docker compose -f docker-compose.prod.yml --env-file $(ENV_FILE) exec web wget -q -O- http://web:3000/api/health || true
 backup:
 	bash scripts/backup.sh
+restore-check:
+	bash scripts/restore-check.sh $(DUMP)
 new-site:
 	@echo "Несколько сайтов на одном сервере не поддерживаются: Caddy (80/443) и admin (3001) занимают порты, второй compose-проект не поднимется."
 	@echo "Новый сайт = новый сервер: клонировать репозиторий, make -C infra init SITE_DOMAIN=..., make -C infra up."

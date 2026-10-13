@@ -17,7 +17,8 @@
 - [ ] `git clone` + `make -C infra init SITE_DOMAIN=...` — генерирует `.env` со случайными секретами
 - [ ] проверить/дозаполнить `.env` вручную, если нужно (см. таблицу ниже)
 - [ ] `make -C infra up` (§2)
-- [ ] создать первого owner **сразу после подъёма**, до публикации сайта (§2.1)
+- [ ] `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD` заданы (`init` с `OWNER_EMAIL=...`), после первого входа сменить пароль (§2.1)
+- [ ] `make -C infra restore-check` на свежем дампе — убедиться, что бэкап восстанавливается (§4)
 - [ ] закрыть хост-порт `3001` в файрволе (§2.1)
 - [ ] smoke-проверка (§3)
 
@@ -64,6 +65,10 @@ docker compose -f infra/docker-compose.prod.yml --env-file .env up -d --pull alw
 
 Если `INITIAL_OWNER_*` не заданы, а БД пуста — в админку не войти (регистрация закрыта намеренно): впишите переменные и перезапустите `admin`. Хост-порт `3001` всё равно закройте в файрволе.
 
+### 2.2 Origin админки (CSRF)
+
+Payload принимает cookie-аутентификацию только если `Origin` запроса совпадает с `serverURL`. Несовпадение даёт коварный сбой: GET работает, а save/publish молча падают 401/403. В prod-compose `PAYLOAD_URL` для `admin` задан явно как `https://admin.${SITE_DOMAIN}` (значение из `.env` перекрывается — там dev-дефолт `localhost:3001`). Админка должна открываться ровно по этому адресу (https, домен `admin.<SITE_DOMAIN>`); заход по IP/`:3001`/другому домену → save не сработает. Если нужен другой адрес админки — правьте `PAYLOAD_URL` в `docker-compose.prod.yml`.
+
 ## 3. Проверка (smoke)
 
 ```bash
@@ -86,6 +91,7 @@ TLS: Caddy автоматически выпустит Let's Encrypt (80/443 pу
 | Рестарт сервиса | `docker compose -f infra/docker-compose.prod.yml --env-file .env restart web` |
 | Обновление версии | см. §4.1 |
 | Бэкап БД | `cd infra && POSTGRES_DB_URI="postgresql://payload:***@postgres:5432/payload" make backup` → `infra/backups/<date-time>.sql.gz` (авто-очистка >30 дн). Провал — Telegram-алерт, если заданы `TELEGRAM_BOT_TOKEN` + `ALERT_TELEGRAM_CHAT_ID` (в `.env`, подхватываются скриптом автоматически) |
+| Restore-drill | `make -C infra restore-check [DUMP=backups/<file>.sql.gz]` (по умолчанию — свежий дамп): поднимает одноразовый postgres, заливает дамп с `ON_ERROR_STOP`, проверяет таблицы `users`/`sites`/`payload_migrations`, удаляет контейнер. Ненулевой код + Telegram-алерт при провале. Запускать после каждого изменения процедуры бэкапа и по cron раз в неделю |
 | Восстановление | `gunzip < f.sql.gz \| docker compose -f infra/docker-compose.prod.yml --env-file .env exec -i postgres psql -U payload payload` |
 | Новый сайт | `make -C infra new-site` — печатает инструкцию: новый сайт = новый сервер |
 | Другой env-файл (staging и т.п.) | `make -C infra up ENV_FILE=../.env.staging` (тот же флаг у `ps`/`logs`/`smoke`) |
