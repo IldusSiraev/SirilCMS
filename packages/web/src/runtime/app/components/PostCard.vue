@@ -9,7 +9,7 @@
 </template>
 <script setup lang="ts">
 const props = defineProps<{ post: any }>()
-const cover = computed(() => mediaUrl(props.post?.cover))
+const cover = computed(() => mediaUrl(props.post?.cover, 'md'))
 </script>
 <style>
 .post-card { display: block; border-radius: .5rem; overflow: hidden; background: var(--c-surface, #f5f5f5); color: inherit; }

@@ -12,7 +12,7 @@ import { getTheme } from '@siril/contracts'
 const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
-const imgSrc = computed(() => mediaUrl(props.block.image))
+const imgSrc = computed(() => mediaUrl(props.block.image, 'lg'))
 </script>
 <style>
 .hero--split { display: flex; gap: 2rem; align-items: center; padding: 4rem 2rem; max-width: 72rem; margin: 0 auto; }

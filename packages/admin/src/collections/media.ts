@@ -59,6 +59,16 @@ export const Media: CollectionConfig = {
     // v3: статический URL = `/{slug}` → /media
     staticDir,
     mimeTypes: ['image/*', 'video/mp4', 'application/pdf'],
+    // Оптимизация (нужен `sharp` в payload.config): оригинал ужимается до 2560px (EXIF срезается sharp'ом),
+    // + WebP-размеры sm/md/lg. Web берёт размер по роли картинки (mediaUrl(media, 'sm'|'md'|'lg')),
+    // для файлов без размеров (старые загрузки, svg) фолбэк на оригинал.
+    resizeOptions: { width: 2560, height: 2560, fit: 'inside', withoutEnlargement: true },
+    imageSizes: [
+      { name: 'sm', width: 480, withoutEnlargement: true, formatOptions: { format: 'webp', options: { quality: 80 } } },
+      { name: 'md', width: 960, withoutEnlargement: true, formatOptions: { format: 'webp', options: { quality: 80 } } },
+      { name: 'lg', width: 1600, withoutEnlargement: true, formatOptions: { format: 'webp', options: { quality: 80 } } },
+    ],
+    adminThumbnail: 'sm',
   },
   fields: [
     {

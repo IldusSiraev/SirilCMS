@@ -2,6 +2,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
+import sharp from 'sharp'
 import { en } from '@payloadcms/translations/languages/en'
 import { ru } from '@payloadcms/translations/languages/ru'
 
@@ -45,6 +46,7 @@ export default buildConfig({
       connectionString: process.env.PAYLOAD_DB_URI ?? '',
     },
   }),
+  sharp, // ресайз/WebP для media.imageSizes
   secret: process.env.PAYLOAD_SECRET ?? 'dev-secret',
   serverURL: process.env.PAYLOAD_URL ?? 'http://localhost:3001',
   typescript: {

@@ -21,7 +21,7 @@ const tokens = Object.fromEntries(Object.entries(theme.tokens))
 const members = computed(() =>
   (props.block.members ?? []).map((m: any) => ({
     ...m,
-    photoSrc: mediaUrl(m.photo),
+    photoSrc: mediaUrl(m.photo, 'sm'),
   })),
 )
 const isExternal = (l: string) => typeof l === 'string' && l.startsWith('http')
