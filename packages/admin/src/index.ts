@@ -7,7 +7,7 @@ export { FormSubmissions } from './collections/form-submissions'
 export { Media } from './collections/media'
 export { Pages } from './collections/pages'
 export { Posts } from './collections/posts'
-export { Sites } from './collections/sites'
+export { Sites, makeSites } from './collections/sites'
 export { SiteContent } from './collections/site-content'
 export { Users } from './collections/users'
 // `seo` — поле (Field), не коллекция (collections/seo.ts)

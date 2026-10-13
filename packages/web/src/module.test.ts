@@ -46,3 +46,16 @@ describe('block registry template', () => {
     expect(src).toContain('isBlockKey(rekeyProject(path))')
   })
 })
+
+describe('registry template', () => {
+  it('сериализует блоки и темы проекта в типизированный default export', async () => {
+    const { registryContents } = await import('./module')
+    const src = registryContents({ blocks: [{ type: 'cases', name: 'Cases', variants: [] }], themes: [{ id: 'c', name: 'C', tokens: {}, blocks: {} }] })
+    expect(src).toContain('export default {"blocks":[{"type":"cases"')
+    expect(src).toContain('"themes":[{"id":"c"')
+  })
+  it('пустые опции — пустые массивы', async () => {
+    const { registryContents } = await import('./module')
+    expect(registryContents({})).toContain('export default {"blocks":[],"themes":[]}')
+  })
+})

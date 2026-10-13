@@ -4,7 +4,9 @@ import { isOwner } from '../access/site-scope'
 import { publishHook } from '../utils/publish-hook'
 import { decryptField, encryptField } from '../utils/field-encryption'
 
-export const Sites: CollectionConfig = {
+// Фабрика: select тем берёт активный реестр (core + расширения проекта) в момент вызова,
+// поэтому вызывать после registerExtensions (sirilAdminConfig делает это сам).
+export const makeSites = (): CollectionConfig => ({
   slug: 'sites',
   labels: {
     singular: { ru: 'Сайт', en: 'Site' },
@@ -105,4 +107,7 @@ export const Sites: CollectionConfig = {
     },
   ],
   versions: false,
-}
+})
+
+/** @deprecated core-реестр на момент импорта; для проектов — makeSites() после registerExtensions */
+export const Sites: CollectionConfig = makeSites()
