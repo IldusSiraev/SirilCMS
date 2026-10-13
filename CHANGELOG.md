@@ -7,10 +7,18 @@
 ## [Unreleased]
 
 ### Security
+- Prod-compose: `PAYLOAD_URL` админки = `https://admin.${SITE_DOMAIN}` (раньше брался dev-дефолт из `.env` → save/publish за прокси мог молча падать на CSRF-проверке). Заходить в админку нужно по этому домену.
 - **users: любой залогиненный пользователь мог менять любые записи `users`** (в т.ч. поставить себе `role: owner`). Теперь `update` — owner для всех, остальные только себя; поля `role`/`site` меняет только owner.
 - Блокировка логина после 5 неудачных попыток на 10 минут (встроенный lockout Payload).
 - `/api/purge`: constant-time сравнение токена, лимит 10 неудачных попыток/мин на IP (429).
 - Prod: анонимная самрегистрация первого пользователя отключена (`DISABLE_FIRST_USER_SIGNUP=true`), первый owner создаётся из `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD`.
+
+### Added
+- `infra/scripts/restore-check.sh` / `make -C infra restore-check` — проверка восстановления дампа в одноразовом postgres.
+- `scripts/check-payload-versions.mjs` (в `pnpm lint`): все `payload`/`@payloadcms/*` — одна точная версия.
+
+### Changed
+- `@payloadcms/*` и `payload` запинены на `3.90.1` (убрана вторая копия `@payloadcms/translations@3.90.2`).
 
 ### ⚠ Breaking / ручные шаги
 - Существующим prod-установкам: если owner уже создан — ничего делать не нужно. Для новых установок `init-env.sh` принимает второй аргумент `<owner-email>`; без него впишите `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD` в `.env` вручную.

@@ -300,12 +300,12 @@ pnpm dev:all     # создать страницу в admin с новым бло
 2. **Rich-text**: `editor: 'true'` (строка) в Payload 3 → crash `editor.validate is not a function`.
    Дефолтный редактор задан один раз в `payload.config.ts` (`editor: lexicalEditor()`) — поля
    контракта (`type: 'richtext'`) editor не переопределяют.
-3. **`@payloadcms/richtext-lexical` — версия ТОЧНО как у `payload`** (без `^`), иначе pnpm
+3. **Все `payload` и `@payloadcms/*` — одна ТОЧНАЯ версия** (без `^`/`~`; `pnpm lint` запускает `scripts/check-payload-versions.mjs` и падает при расхождении). Иначе pnpm
    ставит две копии `@payloadcms/ui` (richtext-lexical тянет свою, payload/next — свою) →
    React-контекст (`useConfig()`) разъезжается между копиями → `Cannot destructure property
    'config' of useConfig(...) as it is undefined`, страница редактирования падает целиком.
    Проверка: `pnpm why @payloadcms/ui` — должна быть ровно одна версия.
-4. **Первый admin**: `role: owner` ставится автоматически хуком (§3.1) — но первым успевает тот, кто первым дернёт `POST /api/users` в пустой БД, так что создавайте его сразу после деплоя.
+4. **Первый admin**: в проде анонимная самрегистрация отключена (`DISABLE_FIRST_USER_SIGNUP=true`), owner создаётся из `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD` при старте admin (runbooks/prod.md §2.1). В dev/e2e флаг не задан: первый юзер в пустой БД самрегистрируется и хук принудительно делает его `owner`.
 5. **Draft ≠ publish**: draft-save не чистит кэш (это осознанно). Если кэш «просрочен» —
    опубликовать версию или `POST /api/purge`.
 6. **Тема без CSS-файла**: layout падает только если отсутствует `themes/default/tokens.css`

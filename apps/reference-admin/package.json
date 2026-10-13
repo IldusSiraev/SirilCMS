@@ -16,15 +16,15 @@
     "generate:types": "node --import ./scripts/ts-loader/index.mjs node_modules/payload/bin.js generate:types --disable-transpile"
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "^3.90.1",
-    "@payloadcms/next": "^3.90.1",
+    "@payloadcms/db-postgres": "3.90.1",
+    "@payloadcms/next": "3.90.1",
     "@payloadcms/richtext-lexical": "3.90.1",
-    "@payloadcms/translations": "^3.90.2",
-    "@payloadcms/ui": "^3.90.1",
+    "@payloadcms/translations": "3.90.1",
+    "@payloadcms/ui": "3.90.1",
     "@siril/admin": "workspace:*",
     "@siril/contracts": "workspace:*",
     "next": "16.3.5",
-    "payload": "^3.90.1",
+    "payload": "3.90.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "vitest": "^5.0.1"

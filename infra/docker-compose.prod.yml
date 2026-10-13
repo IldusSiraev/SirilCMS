@@ -29,6 +29,9 @@ services:
       PAYLOAD_DB_URI: postgresql://${POSTGRES_USER:-payload}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-payload}
       NUXT_URL: 'http://web:3000'
       DISABLE_FIRST_USER_SIGNUP: "true"
+      # serverURL Payload = origin админки: от него зависят CSRF-проверка cookie-аутентификации (save/publish
+      # молча дают 401/403, если не совпадает с Origin браузера) и абсолютные media-URL. Не берём из .env (там dev-значение).
+      PAYLOAD_URL: "https://admin.${SITE_DOMAIN:?SITE_DOMAIN is required}"
       PORT: "3001"
     ports:
       - "3001:3001"
