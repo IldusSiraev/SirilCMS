@@ -18,6 +18,7 @@
 - Rich-text: relationship-embed (вставка связанного документа в текст) рендерился на публичном сайте буквальным текстом «unknown node». Фича убрана из редактора (`sirilEditor()` в `@siril/admin`, reference-admin его использует). Проверено вживую: upload-картинки, ссылки (`javascript:` → `#`), списки/чек-листы, quote, hr, форматирование, выравнивание и экранирование HTML рендерятся корректно.
 
 ### Added
+- Документация для разработчиков проектов на движке: [docs/extension-api.md](docs/extension-api.md) (стабильное/нестабильное API, блок/тема/коллекция по шагам, миграции, обновление) и [docs/compat.md](docs/compat.md) (таблица совместимости). `scripts/check-no-core-copies.mjs` (в `pnpm lint`) запрещает идентичные копии core-файлов в проекте.
 - `examples/minimal-project` — эталонный проект на движке: блок `cases` (контракт + Vue-компонент), тема `client` (ThemeDef + `tokens.css`), своя коллекция `cases`, проектная серия миграций. `examples/minimal-project/scripts/verify.mjs` и CI-джоб «Example project» проверяют сквозной сценарий admin → web на собранных (`next build` / `nuxt build`) приложениях.
 - `@siril/admin`: бинарь `siril-migrations-sync` — копирует core-миграции из пакета в каталог миграций проекта (идемпотентно, файлы проекта не трогает).
 - Extension API подключён: `sirilAdminConfig({ blocks, themes })` (admin) и опции Nuxt-модуля `siril: { blocks, themes }` (web) регистрируют блоки/темы проекта до сборки коллекций и до рендера. `makeSites()` — фабрика коллекции `sites` (select тем из активного реестра); `Sites` оставлен для совместимости.
