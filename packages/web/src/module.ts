@@ -31,7 +31,9 @@ export default defineNuxtModule<SirilModuleOptions>({
     // runtime/app/plugins/00.siril-registry.ts (SSR+клиент) и runtime/server/plugins/00.siril-registry.ts (Nitro)
     // подхватываются слоем модуля и вызывают registerExtensions до любого рендера.
     const registry = addTemplate({
-      filename: 'siril/registry.gen.mjs',
+      // .ts (не .mjs): path-алиас tsconfig указывает на файл без расширения. Содержимое — чистый JS (без TS-синтаксиса):
+      // Nitro не транспилирует .ts из node_modules/.cache. Тип сужается кастом в плагинах.
+      filename: 'siril/registry.gen.ts',
       write: true,
       getContents: () => registryContents(options),
     })
