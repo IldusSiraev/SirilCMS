@@ -14,9 +14,12 @@
 - Prod: анонимная самрегистрация первого пользователя отключена (`DISABLE_FIRST_USER_SIGNUP=true`), первый owner создаётся из `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD`.
 
 ### Fixed
+- `@siril/web`: блоки и темы **проекта** (`app/blocks/<type>/<Variant>.vue`, `themes/<id>/tokens.css`) не подхватывались — `import.meta.glob` в сгенерированном модуле резолвился в пустой объект (Nuxt 4), блок рендерился заглушкой. Теперь модуль сканирует каталоги проекта и встраивает абсолютные импорты; добавление/удаление файла в dev пересобирает шаблоны.
 - Rich-text: relationship-embed (вставка связанного документа в текст) рендерился на публичном сайте буквальным текстом «unknown node». Фича убрана из редактора (`sirilEditor()` в `@siril/admin`, reference-admin его использует). Проверено вживую: upload-картинки, ссылки (`javascript:` → `#`), списки/чек-листы, quote, hr, форматирование, выравнивание и экранирование HTML рендерятся корректно.
 
 ### Added
+- `examples/minimal-project` — эталонный проект на движке: блок `cases` (контракт + Vue-компонент), тема `client` (ThemeDef + `tokens.css`), своя коллекция `cases`, проектная серия миграций. `examples/minimal-project/scripts/verify.mjs` и CI-джоб «Example project» проверяют сквозной сценарий admin → web на собранных (`next build` / `nuxt build`) приложениях.
+- `@siril/admin`: бинарь `siril-migrations-sync` — копирует core-миграции из пакета в каталог миграций проекта (идемпотентно, файлы проекта не трогает).
 - Extension API подключён: `sirilAdminConfig({ blocks, themes })` (admin) и опции Nuxt-модуля `siril: { blocks, themes }` (web) регистрируют блоки/темы проекта до сборки коллекций и до рендера. `makeSites()` — фабрика коллекции `sites` (select тем из активного реестра); `Sites` оставлен для совместимости.
 - `@siril/contracts`: `registerExtensions({ blocks, themes })` / `resetExtensions()` — подключение блоков и тем проекта к активному реестру (`BLOCKS`/`THEMES`/`getBlock`/`getTheme`); `CORE_BLOCKS`/`CORE_THEMES` — неизменяемые core-списки. Core-темы по умолчанию включают новые блоки проекта.
 - Отложенная публикация страниц и постов: в админке рядом с «Опубликовать» — планирование на дату/время. Исполняется очередью Payload jobs (`autoRun` раз в минуту в процессе admin), публикация чистит кэш сайта как обычная. Точность — до минуты.

@@ -1,0 +1,13 @@
+{
+  "name": "@siril/example-extensions",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Общие контракты проекта (siril.extensions.ts) — импортируются web и admin",
+  "dependencies": {
+    "@siril/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}
