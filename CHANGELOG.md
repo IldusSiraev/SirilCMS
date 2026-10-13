@@ -13,6 +13,9 @@
 - `/api/purge`: constant-time сравнение токена, лимит 10 неудачных попыток/мин на IP (429).
 - Prod: анонимная самрегистрация первого пользователя отключена (`DISABLE_FIRST_USER_SIGNUP=true`), первый owner создаётся из `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD`.
 
+### Fixed
+- Rich-text: relationship-embed (вставка связанного документа в текст) рендерился на публичном сайте буквальным текстом «unknown node». Фича убрана из редактора (`sirilEditor()` в `@siril/admin`, reference-admin его использует). Проверено вживую: upload-картинки, ссылки (`javascript:` → `#`), списки/чек-листы, quote, hr, форматирование, выравнивание и экранирование HTML рендерятся корректно.
+
 ### Added
 - `infra/scripts/restore-check.sh` / `make -C infra restore-check` — проверка восстановления дампа в одноразовом postgres.
 - `scripts/check-payload-versions.mjs` (в `pnpm lint`): все `payload`/`@payloadcms/*` — одна точная версия.

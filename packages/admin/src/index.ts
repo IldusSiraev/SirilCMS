@@ -22,6 +22,7 @@ export { makeDuplicateSlug } from './utils/duplicate-slug'
 export { encryptField, decryptField } from './utils/field-encryption'
 export { forceOwnerForFirstUser } from './utils/first-user'
 export { bootstrapOwner } from './utils/bootstrap-owner'
+export { sirilEditor, omitUnrenderable } from './utils/editor'
 export { buildPreviewURL } from './utils/preview-url'
 
 // access

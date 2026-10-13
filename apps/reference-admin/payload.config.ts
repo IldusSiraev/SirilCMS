@@ -1,12 +1,11 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { en } from '@payloadcms/translations/languages/en'
 import { ru } from '@payloadcms/translations/languages/ru'
 
-import { bootstrapOwner, sirilAdminConfig } from '@siril/admin'
+import { bootstrapOwner, sirilAdminConfig, sirilEditor } from '@siril/admin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -37,7 +36,7 @@ export default buildConfig({
   // Дефолт для всех richText-полей (posts.body, richtext-поля блоков) — реальный WYSIWYG
   // вместо MVP-заглушки (см. docs/developer.md §rich text). Явный editor на поле не задаём —
   // используют этот дефолт.
-  editor: lexicalEditor(),
+  editor: sirilEditor(),
   db: postgresAdapter({
     // Canonical migrations live in @siril/admin — pinned explicitly because Payload's default
     // dir is CWD-relative and the app-local dir is git-ignored.
