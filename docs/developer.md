@@ -298,7 +298,7 @@ pnpm dev:all     # создать страницу в admin с новым бло
    (dev: blocking overlay; build: тег молча отбрасывается). Динамический_CSS в head —
    через `useHead({ style: [{ innerHTML }] })` (пример: layout default.vue).
 2. **Rich-text**: `editor: 'true'` (строка) в Payload 3 → crash `editor.validate is not a function`.
-   Дефолтный редактор задан один раз в `payload.config.ts` (`editor: lexicalEditor()`) — поля
+   Дефолтный редактор задан один раз в `payload.config.ts` (`editor: sirilEditor()`) — поля
    контракта (`type: 'richtext'`) editor не переопределяют.
 3. **Все `payload` и `@payloadcms/*` — одна ТОЧНАЯ версия** (без `^`/`~`; `pnpm lint` запускает `scripts/check-payload-versions.mjs` и падает при расхождении). Иначе pnpm
    ставит две копии `@payloadcms/ui` (richtext-lexical тянет свою, payload/next — свою) →
