@@ -17,12 +17,14 @@
 - Rich-text: relationship-embed (вставка связанного документа в текст) рендерился на публичном сайте буквальным текстом «unknown node». Фича убрана из редактора (`sirilEditor()` в `@siril/admin`, reference-admin его использует). Проверено вживую: upload-картинки, ссылки (`javascript:` → `#`), списки/чек-листы, quote, hr, форматирование, выравнивание и экранирование HTML рендерятся корректно.
 
 ### Added
+- `@siril/contracts`: `registerExtensions({ blocks, themes })` / `resetExtensions()` — подключение блоков и тем проекта к активному реестру (`BLOCKS`/`THEMES`/`getBlock`/`getTheme`); `CORE_BLOCKS`/`CORE_THEMES` — неизменяемые core-списки. Core-темы по умолчанию включают новые блоки проекта.
 - Отложенная публикация страниц и постов: в админке рядом с «Опубликовать» — планирование на дату/время. Исполняется очередью Payload jobs (`autoRun` раз в минуту в процессе admin), публикация чистит кэш сайта как обычная. Точность — до минуты.
 - Оптимизация изображений при загрузке: оригинал ужимается до 2560px, генерируются WebP-размеры `sm` 480w / `md` 960w / `lg` 1600w (`sharp`). Блоки/посты берут размер по роли картинки (`mediaUrl(media, 'sm'|'md'|'lg')`); OG-изображения остаются оригиналом. Старые загрузки без размеров отдаются как раньше (фолбэк).
 - `infra/scripts/restore-check.sh` / `make -C infra restore-check` — проверка восстановления дампа в одноразовом postgres.
 - `scripts/check-payload-versions.mjs` (в `pnpm lint`): все `payload`/`@payloadcms/*` — одна точная версия.
 
 ### Changed
+- `mergeBlockRegistry` теперь работает с массивами `BlockDef[]` (override по `type`); раньше принимал `Record` и ломался на массиве `BLOCKS`. `SirilModuleOptions.blocks` — `BlockDef[]`.
 - `@payloadcms/*` и `payload` запинены на `3.90.1` (убрана вторая копия `@payloadcms/translations@3.90.2`).
 
 ### ⚠ Breaking / ручные шаги

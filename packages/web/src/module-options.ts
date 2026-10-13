@@ -1,10 +1,10 @@
 import { BLOCKS, THEMES, mergeBlockRegistry, mergeThemeRegistry } from '@siril/contracts'
-import type { BlockDef } from '@siril/contracts'
 import type { SirilModuleOptions } from './module'
 
+/** Смерженный (core + проект) реестр из опций модуля — для проверок/превью; рантайм использует registerExtensions. */
 export function mergeOptions(options: SirilModuleOptions) {
   return {
-    blocks: mergeBlockRegistry(BLOCKS as unknown as Record<string, BlockDef>, options.blocks ?? {}),
+    blocks: mergeBlockRegistry(BLOCKS, options.blocks ?? []),
     themes: mergeThemeRegistry(THEMES, options.themes ?? []),
   }
 }

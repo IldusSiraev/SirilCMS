@@ -1,7 +1,8 @@
 import type { BlockDef, ThemeBlockConfig, ThemeDef } from './types'
+import { mergeBlockRegistry, mergeThemeRegistry } from './merge'
 
 // Заполняется в T9–T12 (append-only). Точка расширения — только этот файл.
-export const BLOCKS: BlockDef[] = [
+export const CORE_BLOCKS: BlockDef[] = [
   { type: 'hero', name: 'Hero', description: 'Первый экран', variants: [
     { id: 'default', name: 'Центр', layout: 'center', fields: [
       { name: 'title', type: 'text', label: { ru: 'Заголовок', en: 'Title' }, required: true },
@@ -140,7 +141,7 @@ export const BLOCKS: BlockDef[] = [
   ]},
 ]
 // Явные темы (T12): default — текущий вид (teal); mono — ч/б, serif, часть вариантов недоступна → fallback.
-const all = (): Record<string, ThemeBlockConfig> => Object.fromEntries(BLOCKS.map(b => [b.type, { enabled: true } as ThemeBlockConfig]))
+const all = (): Record<string, ThemeBlockConfig> => Object.fromEntries(CORE_BLOCKS.map(b => [b.type, { enabled: true } as ThemeBlockConfig]))
 const defaultTheme: ThemeDef = {
   id: 'default', name: 'Default (teal)',
   tokens: { '--c-primary': '#0f766e', '--c-bg': '#ffffff', '--c-text': '#111827', '--radius': '.5rem' },
@@ -156,6 +157,33 @@ const mono: ThemeDef = {
     cta: { enabled: true, variants: ['default'] },
   },
 }
-export const THEMES: ThemeDef[] = [defaultTheme, mono]
+export const CORE_THEMES: ThemeDef[] = [defaultTheme, mono]
+
+// Активный реестр = core + расширения проекта (registerExtensions). Массивы мутируются in-place,
+// чтобы все импорты `BLOCKS`/`THEMES` (admin config-time, web SSR/клиент) видели одно состояние.
+export const BLOCKS: BlockDef[] = [...CORE_BLOCKS]
+export const THEMES: ThemeDef[] = [...CORE_THEMES]
+
+export interface SirilExtensions { blocks?: BlockDef[]; themes?: ThemeDef[] }
+
+/**
+ * Подключает блоки/темы проекта (extension API, spec §4). Идемпотентно: всегда пересобирает реестр
+ * из CORE_* + переданного. Блок/тема проекта с тем же type/id заменяет core целиком.
+ * Core-темы по умолчанию включают НОВЫЕ блоки проекта (иначе их нет в палитре); темы проекта — как объявлены.
+ */
+export function registerExtensions(ext: SirilExtensions = {}): void {
+  const extraBlocks = ext.blocks ?? []
+  const coreTypes = new Set(CORE_BLOCKS.map(b => b.type))
+  const added = extraBlocks.filter(b => !coreTypes.has(b.type))
+  const coreThemes = CORE_THEMES.map(t => ({
+    ...t,
+    blocks: { ...Object.fromEntries(added.map(b => [b.type, { enabled: true } as ThemeBlockConfig])), ...t.blocks },
+  }))
+  BLOCKS.splice(0, BLOCKS.length, ...mergeBlockRegistry(CORE_BLOCKS, extraBlocks))
+  THEMES.splice(0, THEMES.length, ...mergeThemeRegistry(coreThemes, ext.themes ?? []))
+}
+
+export const resetExtensions = (): void => registerExtensions({})
+
 export const getBlock = (type: string): BlockDef | undefined => BLOCKS.find(b => b.type === type)
-export const getTheme = (id: string): ThemeDef => THEMES.find(t => t.id === id) ?? defaultTheme
+export const getTheme = (id: string): ThemeDef => THEMES.find(t => t.id === id) ?? THEMES[0]!

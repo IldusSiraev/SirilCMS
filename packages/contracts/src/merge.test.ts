@@ -8,18 +8,19 @@ const block = (type: string, variant: string): BlockDef =>
 const theme = (id: string): ThemeDef => ({ id, name: id, blocks: {}, tokens: {} })
 
 describe('mergeBlockRegistry', () => {
-  it('новые id проекта добавляются', () => {
-    const merged = mergeBlockRegistry({ hero: block('hero', 'default') }, { cases: block('cases', 'card') })
-    expect(Object.keys(merged)).toEqual(['hero', 'cases'])
+  it('новые типы проекта добавляются в конец', () => {
+    const merged = mergeBlockRegistry([block('hero', 'default')], [block('cases', 'card')])
+    expect(merged.map((b) => b.type)).toEqual(['hero', 'cases'])
   })
-  it('коллизию id — полное переопределение (extra > core)', () => {
+  it('коллизию type — полное переопределение (extra > core), позиция core сохраняется', () => {
     const extra = block('hero', 'split')
-    const merged = mergeBlockRegistry({ hero: block('hero', 'default') }, { hero: extra })
-    expect(merged.hero.variants[0].id).toBe('split')
+    const merged = mergeBlockRegistry([block('hero', 'default'), block('faq', 'default')], [extra])
+    expect(merged.map((b) => b.type)).toEqual(['hero', 'faq'])
+    expect(merged[0]).toBe(extra)
   })
   it('пустое extra — core без изменений', () => {
-    const core = { hero: block('hero', 'default') }
-    expect(mergeBlockRegistry(core, {})).toBe(core)
+    const core = [block('hero', 'default')]
+    expect(mergeBlockRegistry(core, [])).toBe(core)
   })
 })
 
