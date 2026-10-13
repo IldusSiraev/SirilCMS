@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import { en } from '@payloadcms/translations/languages/en'
 import { ru } from '@payloadcms/translations/languages/ru'
 
-import { sirilAdminConfig } from '@siril/admin'
+import { bootstrapOwner, sirilAdminConfig } from '@siril/admin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -29,6 +29,11 @@ export default buildConfig({
     },
   },
   collections,
+  // Prod: первый owner создаётся из INITIAL_OWNER_EMAIL/PASSWORD (infra/scripts/init-env.sh), анонимная
+  // самрегистрация выключена DISABLE_FIRST_USER_SIGNUP=true (docker-compose.prod.yml).
+  onInit: async (payload) => {
+    await bootstrapOwner(payload)
+  },
   // Дефолт для всех richText-полей (posts.body, richtext-поля блоков) — реальный WYSIWYG
   // вместо MVP-заглушки (см. docs/developer.md §rich text). Явный editor на поле не задаём —
   // используют этот дефолт.

@@ -26,7 +26,7 @@ git clone <repo> /srv/sirilcms && cd /srv/sirilcms
 make -C infra init SITE_DOMAIN=client.example.com
 ```
 
-`infra/scripts/init-env.sh` копирует `.env.example` → `.env` и подставляет случайные `PAYLOAD_SECRET`, `PURGE_TOKEN`, `POSTGRES_PASSWORD` (и `POSTGRES_DB_URI` с тем же паролем, нужен только для `backup.sh`) через `openssl rand -hex`; отказывается перезаписать уже существующий `.env`. Без `SITE_DOMAIN=...` — впишите домен в `.env` вручную перед подъёмом. Без make — тот же скрипт напрямую: `bash infra/scripts/init-env.sh client.example.com`.
+`infra/scripts/init-env.sh` копирует `.env.example` → `.env` и подставляет случайные `PAYLOAD_SECRET`, `PURGE_TOKEN`, `POSTGRES_PASSWORD`, `INITIAL_OWNER_PASSWORD` (и `POSTGRES_DB_URI` с тем же паролем, нужен только для `backup.sh`) через `openssl rand -hex`; отказывается перезаписать уже существующий `.env`. Без `SITE_DOMAIN=...` — впишите домен в `.env` вручную перед подъёмом. Без make — тот же скрипт напрямую: `bash infra/scripts/init-env.sh client.example.com owner@client.example.com`.
 
 | Ключ | Откуда берётся |
 |---|---|
@@ -56,19 +56,13 @@ docker compose -f infra/docker-compose.prod.yml --env-file .env up -d --pull alw
 
 > Admin в compose пробрасывает хост-порт `3001` (для локального демо/отладки). **На прод-сервере закройте 3001 в файрволе** — доступ только через `admin.*` домен (TLS + Caddy).
 
-### 2.1 Первый админ (обязательно сделать сразу, до публикации сайта)
+### 2.1 Первый админ
 
-Создать через API **сразу после up** (миграции уже применены автоматически one-shot сервисом `migrate`, см. шаг 2):
+В проде анонимная самрегистрация **отключена** (`DISABLE_FIRST_USER_SIGNUP=true` в `docker-compose.prod.yml`). Первый owner создаётся автоматически при старте `admin` из `INITIAL_OWNER_EMAIL` / `INITIAL_OWNER_PASSWORD` в `.env` (если в БД ещё нет пользователей; повторные старты ничего не меняют).
 
-```bash
-curl -X POST https://admin.client.example.com/api/users \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Owner","email":"you@client.example.com","password":"<напр-32-сигла-или-сгенер-пароль>","role":"owner"}'
-```
+`infra/scripts/init-env.sh <domain> <owner-email>` сам генерирует пароль и вписывает обе переменные. Войдите в `https://admin.<domain>/admin` и **смените пароль**; после этого `INITIAL_OWNER_PASSWORD` из `.env` можно удалить.
 
-`role: owner` можно не передавать — хук (`packages/admin/src/collections/users.ts`) принудительно ставит `owner` первому пользователю в пустой БД, что бы ни пришло в запросе.
-
-⚠️ Остаточный риск: пока в БД нет ни одного user, `POST /api/users` анонимный — **кто первым создаст пользователя, тот и станет owner** (хук гарантирует, что это будет owner, но не то, что это будете вы). Создать админа **до того, как сайт попадёт в интернет/поисковики**, и закрыть хост-порт 3001.
+Если `INITIAL_OWNER_*` не заданы, а БД пуста — в админку не войти (регистрация закрыта намеренно): впишите переменные и перезапустите `admin`. Хост-порт `3001` всё равно закройте в файрволе.
 
 ## 3. Проверка (smoke)
 

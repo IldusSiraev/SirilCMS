@@ -28,6 +28,7 @@ services:
     environment:
       PAYLOAD_DB_URI: postgresql://${POSTGRES_USER:-payload}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-payload}
       NUXT_URL: 'http://web:3000'
+      DISABLE_FIRST_USER_SIGNUP: "true"
       PORT: "3001"
     ports:
       - "3001:3001"
