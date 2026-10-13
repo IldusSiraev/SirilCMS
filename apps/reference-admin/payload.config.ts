@@ -29,6 +29,11 @@ export default buildConfig({
     },
   },
   collections,
+  // Отложенная публикация (versions.drafts.schedulePublish у pages/posts) исполняется очередью jobs:
+  // раз в минуту Payload сам запускает воркер в процессе admin (admin — один долгоживущий node-процесс).
+  jobs: {
+    autoRun: [{ cron: '* * * * *', limit: 10, queue: 'default' }],
+  },
   // Prod: первый owner создаётся из INITIAL_OWNER_EMAIL/PASSWORD (infra/scripts/init-env.sh), анонимная
   // самрегистрация выключена DISABLE_FIRST_USER_SIGNUP=true (docker-compose.prod.yml).
   onInit: async (payload) => {
