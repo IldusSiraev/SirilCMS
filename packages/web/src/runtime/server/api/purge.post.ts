@@ -2,11 +2,19 @@ import { readBody } from 'h3'
 import { clearCache, clearCacheForHost } from '../utils/page-cache'
 import { clearSiteCache, clearSiteCacheForHost } from './site.get'
 import { payloadGet } from '../utils/payload'
+import { bearerMatches } from '../utils/bearer'
+import { rateLimit } from '../utils/rate-limit'
 
 export default defineEventHandler(async (event) => {
   const { PURGE_TOKEN } = useRuntimeConfig()
   const auth = getHeader(event, 'authorization')
-  if (auth !== `Bearer ${PURGE_TOKEN}`) throw createError({ statusCode: 401 })
+  if (!bearerMatches(auth, PURGE_TOKEN)) {
+    // Лимит только на неудачные попытки: легитимный publish-hook не страдает, перебор токена — да.
+    const forwarded = event.headers.get('x-forwarded-for')
+    const ip = (forwarded ? forwarded.split(',')[0]?.trim() : '') || (event.node.req.socket.remoteAddress ?? 'unknown')
+    if (!rateLimit(`purge-fail:${ip}`, 10, 60_000)) throw createError({ statusCode: 429 })
+    throw createError({ statusCode: 401 })
+  }
 
   const body = await readBody<{ siteId?: number }>(event).catch(() => undefined)
   const siteId = body?.siteId

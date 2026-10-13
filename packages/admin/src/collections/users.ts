@@ -1,10 +1,22 @@
 import type { CollectionConfig } from 'payload'
 import { isOwner } from '../access/site-scope'
 import { forceOwnerForFirstUser } from '../utils/first-user'
+import { canWriteRoleFields, firstUserSignupAllowed, userUpdateAccess } from '../utils/user-access'
+
+const countUsers = async (req: { payload: { count: (a: { collection: 'users'; overrideAccess: boolean }) => Promise<{ totalDocs: number }> } }) =>
+  (await req.payload.count({ collection: 'users', overrideAccess: true })).totalDocs
+
+// Role/site меняет только owner; исключение — самрегистрация первого юзера (hook форсит owner).
+const roleFieldAccess = {
+  create: async ({ req }: { req: Parameters<typeof countUsers>[0] & { user?: { id?: number | string; role?: 'owner' | 'editor' | null } | null } }) =>
+    canWriteRoleFields(req.user, await countUsers(req), process.env),
+  update: ({ req }: { req: { user?: { role?: 'owner' | 'editor' | null } | null } }) => isOwner(req.user),
+}
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  auth: true,
+  // Brute-force защита логина: 5 неудачных попыток → блок на 10 минут (Payload хранит счётчик в users).
+  auth: { maxLoginAttempts: 5, lockTime: 10 * 60 * 1000 },
   admin: {
     group: 'Authentication',
     hidden: true,
@@ -26,12 +38,9 @@ export const Users: CollectionConfig = {
     },
     create: async ({ req }) => {
       if (req.user && isOwner(req.user)) return true
-      const { totalDocs } = await req.payload.count({
-        collection: 'users',
-      })
-      return totalDocs === 0
+      return firstUserSignupAllowed(await countUsers(req), process.env)
     },
-    update: ({ req: { user } }) => !!user,
+    update: ({ req: { user } }) => userUpdateAccess(user),
     delete: ({ req: { user } }) => isOwner(user),
   },
   fields: [
@@ -49,12 +58,14 @@ export const Users: CollectionConfig = {
         { value: 'editor', label: { ru: 'Клиент', en: 'Client' } },
       ],
       defaultValue: 'editor',
+      access: roleFieldAccess,
     },
     {
       name: 'site',
       type: 'relationship',
       relationTo: 'sites',
       label: { ru: 'Сайт', en: 'Site' },
+      access: roleFieldAccess,
     },
   ],
 }

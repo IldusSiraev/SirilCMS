@@ -21,6 +21,7 @@ export { withRichTextHtml } from './utils/with-richtext-html'
 export { makeDuplicateSlug } from './utils/duplicate-slug'
 export { encryptField, decryptField } from './utils/field-encryption'
 export { forceOwnerForFirstUser } from './utils/first-user'
+export { bootstrapOwner } from './utils/bootstrap-owner'
 export { buildPreviewURL } from './utils/preview-url'
 
 // access

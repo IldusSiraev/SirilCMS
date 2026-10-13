@@ -6,6 +6,15 @@
 
 ## [Unreleased]
 
+### Security
+- **users: любой залогиненный пользователь мог менять любые записи `users`** (в т.ч. поставить себе `role: owner`). Теперь `update` — owner для всех, остальные только себя; поля `role`/`site` меняет только owner.
+- Блокировка логина после 5 неудачных попыток на 10 минут (встроенный lockout Payload).
+- `/api/purge`: constant-time сравнение токена, лимит 10 неудачных попыток/мин на IP (429).
+- Prod: анонимная самрегистрация первого пользователя отключена (`DISABLE_FIRST_USER_SIGNUP=true`), первый owner создаётся из `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD`.
+
+### ⚠ Breaking / ручные шаги
+- Существующим prod-установкам: если owner уже создан — ничего делать не нужно. Для новых установок `init-env.sh` принимает второй аргумент `<owner-email>`; без него впишите `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD` в `.env` вручную.
+
 ### Added
 - Процедура обновления (бэкап → `IMAGE_TAG` → `pull`/`up`, откат при упавшей миграции) — [docs/runbooks/prod.md §4.1](docs/runbooks/prod.md).
 - Платформа «движок + кастомизация» (spec [2026-09-27](docs/superpowers/specs/2026-09-27-siril-engine-platform-design.md)): `@siril/blocks-definitions` → `@siril/contracts` (SSOT: контракты блоков/тем/форм-полей, +unbuild dist); новые пакеты `@siril/web` (Nuxt-модуль: runtime UI `src/runtime/app` + темы + server middleware/кэш/purge-API) и `@siril/admin` (Payload-экстензия: `sirilAdminConfig`, collections/endpoints/access/admin-ui + канонические миграции); `apps/*` — тонкие референс-приложения `@siril/reference-web` (:3000, `nuxt build`) и `@siril/reference-admin` (:3001, `next build`).
