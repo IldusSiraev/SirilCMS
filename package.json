@@ -8,7 +8,7 @@
     "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/reference-web dev\" \"pnpm --filter @siril/reference-admin dev\"",
     "seed": "pnpm --filter @siril/reference-admin seed",
     "test": "pnpm -r --no-bail test",
-    "lint": "eslint . && node scripts/check-payload-versions.mjs",
+    "lint": "eslint . && node scripts/check-payload-versions.mjs && node scripts/check-no-core-copies.mjs",
     "typecheck": "pnpm -r --no-bail typecheck"
   },
   "devDependencies": {
