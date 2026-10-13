@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"],
+  // runtime/ — код Nuxt-app: автоимпорты (useSite, useHead, $fetch, ...) и `#build`-импорты
+  // не типизируются plain tsc (нет nuxt prepare в пакете) — типизируется `nuxt typecheck`
+  // из референс-приложения (apps/reference-web) (там модуль подключается в nuxt.config).
+  "exclude": ["src/runtime"]
+}

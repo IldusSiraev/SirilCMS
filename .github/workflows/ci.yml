@@ -107,15 +107,17 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply all migrations to a clean database
-        run: pnpm --filter @siril/admin migrate
+        run: pnpm --filter @siril/reference-admin migrate
 
       - name: Check for schema drift (collection change without a matching migration)
         run: |
-          echo "n" | pnpm --filter @siril/admin migrate:generate -- --name ci_schema_drift_check
-          if [ -n "$(git status --porcelain apps/admin/src/migrations/)" ]; then
-            echo "::error::Collection schema doesn't match the latest migration. Run 'pnpm --filter @siril/admin migrate:generate' locally and commit the generated migration."
-            git status --porcelain apps/admin/src/migrations/
-            git diff -- apps/admin/src/migrations/
+          set -euo pipefail
+          # migrate:generate writes straight into packages/admin/src/migrations (pinned migrationDir),
+          # so a fresh untracked/modified file there is the drift signal.
+          echo "n" | pnpm --filter @siril/reference-admin migrate:generate -- --name ci_schema_drift_check
+          if [ -n "$(git status --porcelain packages/admin/src/migrations)" ]; then
+            git status --porcelain packages/admin/src/migrations
+            echo "::error::Schema drift: 'migrate:generate' produced changes in packages/admin/src/migrations — a collection changed without a matching committed migration. Commit the new migration to the package."
             exit 1
           fi
 
@@ -155,7 +157,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply migrations to a clean database
-        run: pnpm --filter @siril/admin migrate
+        run: pnpm --filter @siril/reference-admin migrate
 
       - name: Install Playwright's Chromium
         run: pnpm --filter e2e exec playwright install --with-deps chromium
@@ -228,9 +230,10 @@ jobs:
           - image: web
             dockerfile: infra/docker/web.Dockerfile
             target: ''
-          # admin's runtime image is a Next.js standalone build — no node_modules/payload/bin.js,
-          # no src/migrations, no ts-loader script. `pnpm --filter @siril/admin migrate` needs the
-          # full pre-build stage instead, published as its own (much larger) image.
+          # admin's runtime image is a Next.js standalone build — no node_modules/payload/bin.js
+          # (the payload CLI) and no app ts-loader script needed to run the package's TS.
+          # `pnpm --filter @siril/reference-admin migrate` needs the full pre-build stage instead,
+          # published as its own (much larger) image.
           - image: admin-migrate
             dockerfile: infra/docker/admin.Dockerfile
             target: build

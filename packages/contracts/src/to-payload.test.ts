@@ -1,0 +1,79 @@
+import { expect, it } from 'vitest'
+import { toPayloadBlockFields, toPayloadFormFields } from './to-payload'
+import { BLOCKS } from './registry'
+import type { BlockDef } from './types'
+
+const block: BlockDef = { type: 'hero', name: 'Hero', variants: [
+  { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }, { name: 'caption', type: 'text', label: { ru: 'С', en: 'C' } }] },
+  { id: 'split', name: 'Split', layout: 'split-right', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }, { name: 'image', type: 'image', label: { ru: 'I', en: 'I' } }] },
+]}
+
+it('первый элемент — select variant', () => {
+  const fields = toPayloadBlockFields(block)
+  expect(fields[0]).toMatchObject({ type: 'select', name: 'variant', options: [{ value: 'default', label: 'Default' }, { value: 'split', label: 'Split' }] })
+})
+it('variant — визуальный пикер: превью-SVG на variant, компонент подключён', () => {
+  const fields = toPayloadBlockFields(block)
+  const variant = fields[0] as { admin?: { custom?: { variantPreviews?: { value: string; label: string; svg: string }[] }; components?: { Field?: string } } }
+  expect(variant.admin?.components?.Field).toBe('./src/admin-ui/variant-picker')
+  const previews = variant.admin?.custom?.variantPreviews
+  expect(previews).toHaveLength(2)
+  expect(previews?.[0]).toMatchObject({ value: 'default', label: 'Default' })
+  expect(previews?.[0]?.svg).toContain('<svg')
+  expect(previews?.[1]?.svg).not.toBe(previews?.[0]?.svg)
+})
+it('adminUiBase rebase-ит путь компонента', () => {
+  const hero = BLOCKS.find(b => b.type === 'hero')!
+  const fields = toPayloadBlockFields(hero, { adminUiBase: './admin-ui' })
+  const variant = fields[0] as { admin?: { components?: { Field?: string } } }
+  expect(variant.admin?.components?.Field).toBe('./admin-ui/variant-picker')
+})
+it('union полей — admin.condition показывает поле только для варианта-владельца', () => {
+  const fields = toPayloadBlockFields(block)
+  const image = fields.find(f => f.name === 'image')
+  const admin = image?.admin as { condition?: (data: unknown, siblingData: Record<string, unknown>) => boolean } | undefined
+  expect(admin?.condition?.(undefined, { variant: 'split' })).toBe(true)
+  expect(admin?.condition?.(undefined, { variant: 'default' })).toBe(false)
+})
+it('toPayloadFormFields — строки в порядке: name, label, type, required, placeholder, options', () => {
+  const rows = toPayloadFormFields()
+  expect(rows.map(r => r.name)).toEqual(['name', 'label', 'type', 'required', 'placeholder', 'options'])
+})
+it('toPayloadFormFields — type: select с 11 опциями', () => {
+  const rows = toPayloadFormFields()
+  const type = rows.find(r => r.name === 'type')
+  expect(type?.type).toBe('select')
+  expect(type?.options).toHaveLength(11)
+})
+
+it('deprecated поле — admin.readOnly + двуязычное описание', () => {
+  const b: BlockDef = { type: 'x', name: 'X', variants: [
+    { id: 'default', name: 'Default', fields: [{ name: 'old', type: 'text', label: { ru: 'Старое', en: 'Old' }, deprecated: true }] },
+  ] }
+  const fields = toPayloadBlockFields(b)
+  const old = fields.find(f => f.name === 'old') as { admin?: { readOnly?: boolean; description?: { ru: string; en: string } } }
+  expect(old.admin?.readOnly).toBe(true)
+  expect(old.admin?.description?.ru).toContain('Устарело')
+  expect(old.admin?.description?.en).toContain('Deprecated')
+})
+
+it('richtext-поле не задаёт свой editor — использует дефолтный из payload.config.ts', () => {
+  const b: BlockDef = { type: 'z', name: 'Z', variants: [
+    { id: 'default', name: 'Default', fields: [{ name: 'body', type: 'richtext', label: { ru: 'Т', en: 'T' } }] },
+  ] }
+  const fields = toPayloadBlockFields(b)
+  const body = fields.find(f => f.name === 'body') as { editor?: unknown }
+  expect(body.editor).toBeUndefined()
+})
+
+it('deprecated вариант — попадает в variantPreviews с флагом deprecated', () => {
+  const b: BlockDef = { type: 'y', name: 'Y', variants: [
+    { id: 'default', name: 'Default', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }] },
+    { id: 'old-style', name: 'Old style', fields: [{ name: 'title', type: 'text', label: { ru: 'Т', en: 'T' } }], deprecated: true },
+  ] }
+  const fields = toPayloadBlockFields(b)
+  const variant = fields[0] as { admin?: { custom?: { variantPreviews?: { value: string; deprecated?: boolean }[] } } }
+  const previews = variant.admin?.custom?.variantPreviews ?? []
+  expect(previews.find(p => p.value === 'default')?.deprecated).toBeFalsy()
+  expect(previews.find(p => p.value === 'old-style')?.deprecated).toBe(true)
+})

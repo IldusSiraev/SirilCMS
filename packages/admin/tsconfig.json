@@ -1,0 +1,5 @@
+{
+  "extends": "../../apps/reference-admin/tsconfig.json",
+  "compilerOptions": { "noEmit": true, "jsx": "preserve" },
+  "include": ["src"]
+}

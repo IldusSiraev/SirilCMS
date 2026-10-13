@@ -8,6 +8,15 @@
 
 ### Added
 - Процедура обновления (бэкап → `IMAGE_TAG` → `pull`/`up`, откат при упавшей миграции) — [docs/runbooks/prod.md §4.1](docs/runbooks/prod.md).
+- Платформа «движок + кастомизация» (spec [2026-09-27](docs/superpowers/specs/2026-09-27-siril-engine-platform-design.md)): `@siril/blocks-definitions` → `@siril/contracts` (SSOT: контракты блоков/тем/форм-полей, +unbuild dist); новые пакеты `@siril/web` (Nuxt-модуль: runtime UI `src/runtime/app` + темы + server middleware/кэш/purge-API) и `@siril/admin` (Payload-экстензия: `sirilAdminConfig`, collections/endpoints/access/admin-ui + канонические миграции); `apps/*` — тонкие референс-приложения `@siril/reference-web` (:3000, `nuxt build`) и `@siril/reference-admin` (:3001, `next build`).
+- Merge-примитивы: `mergeBlockRegistry`, `mergeThemeRegistry` (`@siril/contracts`) — project-overlay блоков/тем (проект сильнее модуля).
+
+### Changed
+- Lockstep-версия пакетов: 0.1.0.
+- Миграции Payload канонизированы в `packages/admin/src/migrations` — явным `postgresAdapter({ migrationDir })` в `apps/reference-admin/payload.config.ts` (дефолтный каталог Payload — относительный CWD, а это не workspace-root).
+
+### ⚠ Breaking / ручные шаги
+- Оператору действий не требуется: docker-образы пересобраны, one-shot-сервис `migrate` по-прежнему выполняет `pnpm --filter @siril/reference-admin migrate` по тем же `packages/admin/src/migrations`, схема БД в этом релизе не изменилась.
 
 ## [0.2.0] — 2026-09-26
 
