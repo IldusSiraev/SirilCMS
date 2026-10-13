@@ -12,6 +12,7 @@ import * as migration_20260926_180447_i18n_labels_site_locale from './20260926_1
 import * as migration_20260927_073049_contact_hours_field from './20260927_073049_contact_hours_field';
 import * as migration_20260927_083223_lexical_richtext_html from './20260927_083223_lexical_richtext_html';
 import * as migration_20261013_180050_media_image_sizes from './20261013_180050_media_image_sizes';
+import * as migration_20261013_182430_scheduled_publish from './20261013_182430_scheduled_publish';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20261013_180050_media_image_sizes.up,
     down: migration_20261013_180050_media_image_sizes.down,
-    name: '20261013_180050_media_image_sizes'
+    name: '20261013_180050_media_image_sizes',
+  },
+  {
+    up: migration_20261013_182430_scheduled_publish.up,
+    down: migration_20261013_182430_scheduled_publish.down,
+    name: '20261013_182430_scheduled_publish'
   },
 ];

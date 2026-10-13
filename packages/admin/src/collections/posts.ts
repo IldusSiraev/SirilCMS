@@ -33,7 +33,7 @@ export const Posts: CollectionConfig = {
     delete: ({ req: { user } }) => !!user,
   },
   versions: {
-    drafts: true,
+    drafts: { schedulePublish: true },
   },
   hooks: {
     afterChange: [
