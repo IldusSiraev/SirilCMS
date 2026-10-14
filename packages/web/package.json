@@ -14,7 +14,7 @@
   "main": "./dist/module.mjs",
   "types": "./dist/types.d.mts",
   "scripts": {
-    "build": "nuxt-module-build build",
+    "build": "nuxt-module-build build && node scripts/clean-runtime-dts.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

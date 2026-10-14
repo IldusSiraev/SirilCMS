@@ -288,6 +288,10 @@ jobs:
           node "$GITHUB_WORKSPACE/packages/create-siril/bin/create-siril.mjs" acme-site --engine-source /tmp/packs
           cd acme-site
           pnpm install
+          # декларации в dist/runtime подхватываются Nuxt как плагины и ломают гидрацию (SSR при этом работает)
+          if find node_modules/.pnpm -path '*@sirilcms+web*/dist/runtime/*' \( -name '*.d.ts' -o -name '*.d.mts' \) | grep -q .; then
+            echo "::error::dist/runtime of @sirilcms/web contains declaration files"; exit 1
+          fi
           cp .env.example .env
           pnpm setup
           pnpm typecheck

@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- `@sirilcms/web`: приложение не гидрировалось в браузере (меню, копирование, подсветка аннотаций не работали, SSR при этом был в порядке) — Nuxt подхватывал `dist/runtime/**/plugins/*.d.ts` как плагин («does not provide an export named default»). После сборки декларации внутри `dist/runtime` удаляются (`packages/web/scripts/clean-runtime-dts.mjs`). Найдено на пилотном проекте в браузере; в CI добавлена проверка отсутствия `.d.ts` в runtime.
+
 ## [0.7.0] — 2026-10-14
 
 ### Added
