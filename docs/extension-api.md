@@ -19,7 +19,7 @@
 | `siril-migrations-sync` (bin) | **Стабилен** |
 | Соглашения путей проекта: `app/blocks/<type>/<Variant>.vue`, `themes/<id>/tokens.css`, `app/pages/**`, `server/**` | **Стабильны** |
 | Внутренняя структура core-коллекций (имена полей, `admin-ui` компоненты), генерируемые файлы `.nuxt/siril/*`, `#siril-registry`, plugin-файлы модуля | **Нестабильны** — меняются без предупреждения (кроме записи в CHANGELOG) |
-| Прямые импорты из `@sirilcms/admin/src/**`, `@sirilcms/web/src/runtime/**` | **Запрещены** — не API |
+| Прямые импорты из `@sirilcms/admin/dist/**`, `@sirilcms/web/dist/runtime/**` | **Запрещены** — не API |
 
 Публичный semver-контракт с гарантиями совместимости — фаза D (триггер «выход наружу»); сейчас гарантии внутренние, версии lockstep (`@sirilcms/contracts`, `@sirilcms/web`, `@sirilcms/admin` — одна версия).
 

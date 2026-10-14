@@ -25,7 +25,7 @@ const { collections, endpoints } = sirilAdminConfig({ adminUiBase: './admin-ui' 
 export default buildConfig({
   admin: {
     importMap: {
-      baseDir: path.resolve(dirname, '../../packages/admin/src'),
+      baseDir: path.resolve(dirname, '../../packages/admin/dist'),
     },
   },
   collections,

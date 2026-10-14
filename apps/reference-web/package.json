@@ -8,7 +8,7 @@
     "start": "node .output/server/index.mjs",
     "test": "vitest run",
     "typecheck": "nuxt typecheck",
-    "postinstall": "nuxt prepare"
+    "postinstall": "pnpm -w run build:packages && nuxt prepare"
   },
   "dependencies": {
     "@sirilcms/contracts": "workspace:*",

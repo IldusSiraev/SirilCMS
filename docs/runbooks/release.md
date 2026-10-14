@@ -28,13 +28,15 @@ git push origin main v0.3.0                # push тега запускает п
 
 ## 3. Что публикуется
 
-| Пакет | Содержимое tgz | Зависимость на contracts |
+| Пакет | Содержимое tgz | Сборка |
 |---|---|---|
-| `@sirilcms/contracts` | `dist/` (собирается `unbuild` при `pnpm install` через `prepare`) | — |
-| `@sirilcms/web` | `src/` как **TypeScript-исходник** (Nuxt-модуль + runtime) | `workspace:*` → точная версия при pack |
-| `@sirilcms/admin` | `src/` как TS-исходник (+ `src/migrations`, `bin/siril-migrations-sync`) | то же |
+| `@sirilcms/contracts` | `dist/` | `unbuild` |
+| `@sirilcms/web` | `dist/` (Nuxt-модуль + runtime: `.vue`, `.js`, CSS тем) | `nuxt-module-build build` (`@nuxt/module-builder`) |
+| `@sirilcms/admin` | `dist/` (JS + `.d.ts`, admin-ui, core-миграции `.js`/`.json`) + `bin/siril-migrations-sync` | `unbuild` (mkdist) |
 
-Исходники без компиляции — осознанное решение: проекты уже транспилируют их сами (`build.transpile` в Nuxt, ts-loader у Payload CLI). Компиляция `web`/`admin` — фаза D (публичный registry).
+Все три пакета **компилируются** (`pnpm build:packages`; он же запускается в `prepare`/`postinstall` монорепо). Версия 0.5.0 вышла с исходниками TypeScript и для проекта вне монорепо **непригодна**: Payload CLI не загружает TS из `node_modules` (`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`), Nitro не транспилирует серверные роуты модуля, а `@sirilcms/admin` импортировал типы по пути `apps/reference-admin/…`. Исправлено в 0.6.0.
+
+`workspace:*` при `pnpm pack/publish` заменяется на точную версию `@sirilcms/contracts`.
 
 ## 4. Scope и registry
 

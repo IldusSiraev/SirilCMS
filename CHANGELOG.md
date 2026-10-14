@@ -16,6 +16,7 @@
 - Prod: анонимная самрегистрация первого пользователя отключена (`DISABLE_FIRST_USER_SIGNUP=true`), первый owner создаётся из `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD`.
 
 ### Fixed
+- **Пакеты `@sirilcms/web` и `@sirilcms/admin` теперь компилируются и публикуются как `dist/`** (раньше — исходники TS: версия 0.5.0 не работала у потребителя вне монорепо — Payload CLI отказывался грузить TS из `node_modules`, Nitro не транспилировал серверные роуты, `next build` падал на type-check). `@sirilcms/admin` больше не импортирует типы из `apps/reference-admin/payload-types` (свои структурные типы в `src/types/payload-shapes.ts`). Проверено установкой из `pnpm pack`-tarball'ов в проект вне монорепо: `migrations:sync`, `generate:importmap`, `typecheck`, `next build`, `nuxt build`.
 - `@sirilcms/web`: блоки и темы **проекта** (`app/blocks/<type>/<Variant>.vue`, `themes/<id>/tokens.css`) не подхватывались — `import.meta.glob` в сгенерированном модуле резолвился в пустой объект (Nuxt 4), блок рендерился заглушкой. Теперь модуль сканирует каталоги проекта и встраивает абсолютные импорты; добавление/удаление файла в dev пересобирает шаблоны.
 - Rich-text: relationship-embed (вставка связанного документа в текст) рендерился на публичном сайте буквальным текстом «unknown node». Фича убрана из редактора (`sirilEditor()` в `@sirilcms/admin`, reference-admin его использует). Проверено вживую: upload-картинки, ссылки (`javascript:` → `#`), списки/чек-листы, quote, hr, форматирование, выравнивание и экранирование HTML рендерятся корректно.
 
@@ -36,6 +37,8 @@
 - `@payloadcms/*` и `payload` запинены на `3.90.1` (убрана вторая копия `@payloadcms/translations@3.90.2`).
 
 ### ⚠ Breaking / ручные шаги
+- Сборка пакетов обязательна перед использованием в монорепо: `pnpm install` делает это сам (`prepare`/`postinstall`), после правок в `packages/{web,admin,contracts}` запускайте `pnpm build:packages`. `importMap.baseDir` у приложений на движке теперь указывает на `…/@sirilcms/admin/dist` (не `src`) — перегенерируйте `importMap.js` (`generate:importmap`).
+- `siril-migrations-sync` копирует теперь скомпилированные `.js`/`.json` core-миграций (раньше `.ts`): в проекте, обновляющемся с 0.5.0, после `migrations:sync` в каталоге миграций окажутся обе версии одних и тех же миграций — удалите старые `.ts`-копии core-миграций.
 - **Переименование scope `@siril/*` → `@sirilcms/*`** и перенос репозитория в организацию `sirilcms` (имя `siril` занято на GitHub и npm). Проекты на движке меняют импорты и зависимости на `@sirilcms/contracts|web|admin`. Образы GHCR теперь публикуются как `ghcr.io/sirilcms/sirilcms-{admin,web,admin-migrate}`: на **существующих серверах** обновите `image:` в `infra/docker-compose.prod.yml` (новые теги появятся только по новому пути; старые образы `ghcr.io/ildussiraev/…` остаются, но не обновляются).
 - Миграция `scheduled_publish` добавляет таблицы `payload_jobs*` (применяется сервисом `migrate`). Проекты на `@sirilcms/admin` должны включить `jobs.autoRun` в своём `payload.config.ts` (см. reference-admin), иначе запланированные публикации не исполнятся.
 - Миграция `media_image_sizes` (только добавляет колонки) применяется автоматически сервисом `migrate`. Уже загруженные картинки размеров не получат — перезагрузите нужные файлы, если хотите оптимизацию для них.
