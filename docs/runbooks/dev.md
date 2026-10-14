@@ -51,7 +51,7 @@ Test-NetConnection 127.0.0.1 -Port 5433 -InformationLevel Quiet   # режим �
 ## 3. Миграции + сид (первый раз)
 
 ```bash
-pnpm --filter @siril/admin migrate   # применить все migration-файлы к БД
+pnpm --filter @sirilcms/admin migrate   # применить все migration-файлы к БД
 pnpm seed                            # демонстрационный контент (идемпотентно: skip, если sites > 0)
 ```
 

@@ -1,8 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { THEMES } from '@siril/contracts'
-import type { ThemeDef } from '@siril/contracts'
+import { THEMES } from '@sirilcms/contracts'
+import type { ThemeDef } from '@sirilcms/contracts'
 
 type Site = { id: number; theme: string }
 

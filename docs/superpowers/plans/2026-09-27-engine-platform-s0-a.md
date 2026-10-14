@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Превратить SirilCMS в движок-библиотеку: спайки (S0), затем выворот ядерного кода в npm-пакеты `@siril/contracts`, `@siril/web`, `@siril/admin`, а текущие `apps/*` — в тонкие референс-приложения на пакетах.
+**Goal:** Превратить SirilCMS в движок-библиотеку: спайки (S0), затем выворот ядерного кода в npm-пакеты `@sirilcms/contracts`, `@sirilcms/web`, `@sirilcms/admin`, а текущие `apps/*` — в тонкие референс-приложения на пакетах.
 
-**Architecture:** Подход A из спеки — ядро = пакетные `@siril/*` (workspace-ссылки в dev), проект = тонкое приложение. Core закрыт, расширение аддитивное. `@siril/web` — Nuxt-модуль (runtime слои/шаблоны), `@siril/admin` — Payload-экстензия (`sirilAdminConfig`), `@siril/contracts` — чистая логика (SSOT-контракты + merge-примитивы) с `unbuild`-dist. Неопределённости Nuxt-layer/механизма миграций/admin-components снимаются спайками S0; спайки пишут decision-доки, фазы A следуют им.
+**Architecture:** Подход A из спеки — ядро = пакетные `@sirilcms/*` (workspace-ссылки в dev), проект = тонкое приложение. Core закрыт, расширение аддитивное. `@sirilcms/web` — Nuxt-модуль (runtime слои/шаблоны), `@sirilcms/admin` — Payload-экстензия (`sirilAdminConfig`), `@sirilcms/contracts` — чистая логика (SSOT-контракты + merge-примитивы) с `unbuild`-dist. Неопределённости Nuxt-layer/механизма миграций/admin-components снимаются спайками S0; спайки пишут decision-доки, фазы A следуют им.
 
 **Tech Stack:** pnpm 11 workspaces, Node 22, Nuxt 4 (Nitro), Payload 3.90 (`@payloadcms/next` 3.90.1, `@payloadcms/db-postgres`, Postgres 16), Next.js 16, TypeScript, unbuild, Vitest, Playwright, ESLint 9 flat.
 
@@ -13,10 +13,10 @@
 ## Global Constraints
 
 - **Ядро закрыто, расширение аддитивное** (spec §2.2): проект не редактирует core; core может менять свои коллекции/блоки только с миграциями и deprecate-процессом (developer.md §4 шаг 6).
-- **Lockstep-версионирование** (spec §2.4): все пакеты `@siril/{contracts,web,admin}` после фазы A — `0.1.0`; breaking в minor'ах, CHANGELOG явный (Keep-a-Changelog).
+- **Lockstep-версионирование** (spec §2.4): все пакеты `@sirilcms/{contracts,web,admin}` после фазы A — `0.1.0`; breaking в minor'ах, CHANGELOG явный (Keep-a-Changelog).
 - **Не копировать core-файлы в проект** (spec §6): только override (полная замена файла) или новый путь.
 - **Демо-контент — не в ядре** (spec §2.7, §3): `seed.ts`, демо-темы/контент живут в референсе (`apps/*`), пакеты — только движок.
-- **DX не меняется** (spec §3, §11): `pnpm dev:all` работает как сейчас; пакеты — workspace-ссылки; TS-исходник в dev + `build.transpile` (как сейчас); пакеты `@siril/admin` и `@siril/web` ship как TS-исходник + consumer-transpile (см. заметку-отклонение в Task 9), `@siril/contracts` — dist via unbuild.
+- **DX не меняется** (spec §3, §11): `pnpm dev:all` работает как сейчас; пакеты — workspace-ссылки; TS-исходник в dev + `build.transpile` (как сейчас); пакеты `@sirilcms/admin` и `@sirilcms/web` ship как TS-исходник + consumer-transpile (см. заметку-отклонение в Task 9), `@sirilcms/contracts` — dist via unbuild.
 - **Out of scope** (spec §1): автоимпорт HTML→токены, S3, live-preview, multitenancy, публичный semver-контракт (фаза D).
 - **Acceptance фазы A** (spec §9): все юнит-тесты + Playwright e2e зелёные на том же потоке; `pnpm dev:all` без изменений; drift-check CI зелёный.
 - **Коммиты:** маленький коммит после каждого завершённого шага-цикла; дерево не остаётся в сломанном состоянии на коммите (lint+test зелёные).
@@ -26,24 +26,24 @@
 
 ```
 packages/
-  blocks-definitions/            → contracts/            @siril/contracts (rename + unbuild + merge.ts)
-  web/                            (NOVYI)                @siril/web — Nuxt-модуль
+  blocks-definitions/            → contracts/            @sirilcms/contracts (rename + unbuild + merge.ts)
+  web/                            (NOVYI)                @sirilcms/web — Nuxt-модуль
     src/module.ts                                  — defineNuxtModule (механизм из С0.1)
     src/runtime/app/{components,blocks,layouts,pages,composables,utils}/…  — из apps/web/app
     src/runtime/server/**                                        — из apps/web/server
     src/runtime/themes/{default,mono}/tokens.css          — из apps/web/themes
-  admin/                           (NOVYI)                @siril/admin — Payload-экстензия
+  admin/                           (NOVYI)                @sirilcms/admin — Payload-экстензия
     src/{collections,access,utils,endpoints,admin-ui,migrations}/… — из apps/admin/src
     src/index.ts                                   — sirilAdminConfig + экспорт helpers
 apps/web                           → референс: app.vue, error.vue, nuxt.config, themes? НЕТ (v пакете), .env
-                                     name: @siril/reference-web
+                                     name: @sirilcms/reference-web
 apps/admin                         → референс: payload.config.ts (тонкий), app/ (Next), src/scripts/seed.ts,
                                      src/migrations/ (пустый каталог проекта)
-                                     name: @siril/reference-admin
+                                     name: @sirilcms/reference-admin
 e2e, .github/workflows/ci.yml      → те же файлы, фильтры pnpm --filter — обновить на новые имена
 ```
 
-**Заметка-отклонение от спеки (§3, осознанное):** `@siril/admin` и `@siril/web` в фазе A ship как TS-исходник с consumer-transpile (workspace), а не как скомпилированный dist. Обоснование: Payload CLI у референса/шаблонов уже работает через `ts-loader` (`--disable-transpile`), это текущий DX; компиляция admin-пакета (tsx, миграции, manifest) — в фазу B (там же lockstep-релиз-скрипт). `@siril/contracts` — dist (чистая логика, unbuild тривиален).
+**Заметка-отклонение от спеки (§3, осознанное):** `@sirilcms/admin` и `@sirilcms/web` в фазе A ship как TS-исходник с consumer-transpile (workspace), а не как скомпилированный dist. Обоснование: Payload CLI у референса/шаблонов уже работает через `ts-loader` (`--disable-transpile`), это текущий DX; компиляция admin-пакета (tsx, миграции, manifest) — в фазу B (там же lockstep-релиз-скрипт). `@sirilcms/contracts` — dist (чистая логика, unbuild тривиален).
 
 ---
 
@@ -344,17 +344,17 @@ git worktree remove .worktrees/s0
 
 Работаем в main. Каждый Task — отдельный зелёный коммит. Порядок: A1 contracts, A2 admin, A3 web, A4 gate.
 
-### Task 4: `@siril/contracts` — переименование + unbuild
+### Task 4: `@sirilcms/contracts` — переименование + unbuild
 
 **Files:**
 - Rename: `packages/blocks-definitions/` → `packages/contracts/`
 - Modify: `packages/contracts/package.json`
-- Modify (импорт-строки `@siril/blocks-definitions` → `@siril/contracts`): `apps/web/nuxt.config.ts:13`, все `apps/web/app/**/*.{vue,ts}` (блоки, компоненты, страницы, composables — ~20 файлов), `apps/admin/package.json:24`, `apps/admin/src/collections/{pages,forms,sites}.ts`, `apps/admin/app/design/design-client.tsx:4-5`
+- Modify (импорт-строки `@sirilcms/blocks-definitions` → `@sirilcms/contracts`): `apps/web/nuxt.config.ts:13`, все `apps/web/app/**/*.{vue,ts}` (блоки, компоненты, страницы, composables — ~20 файлов), `apps/admin/package.json:24`, `apps/admin/src/collections/{pages,forms,sites}.ts`, `apps/admin/app/design/design-client.tsx:4-5`
 - Modify: `packages/contracts/src/types.ts:1` (комментарий с именем пакета)
 - Test: `packages/contracts/src/*.test.ts` (те же, имя пакета в импортах не важно)
 
 **Interfaces:**
-- Produces: пакет `@siril/contracts` (`0.1.0`), `dist/index.mjs` + `dist/index.d.ts` via unbuild; исходный export-surface `src/index.ts` неизменён.
+- Produces: пакет `@sirilcms/contracts` (`0.1.0`), `dist/index.mjs` + `dist/index.d.ts` via unbuild; исходный export-surface `src/index.ts` неизменён.
 
 - [x] **Step 1: Renaming каталога**
 
@@ -368,7 +368,7 @@ git mv packages/blocks-definitions packages/contracts
 
 ```json
 {
-  "name": "@siril/contracts",
+  "name": "@sirilcms/contracts",
   "version": "0.1.0",
   "type": "module",
   "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.mjs" } },
@@ -390,7 +390,7 @@ git mv packages/blocks-definitions packages/contracts
 # PowerShell (repon root): заменить в исходниках (исключая node_modules/docs)
 Get-ChildItem -Recurse -Include *.ts,*.vue,*.mjs,*.json -File -Exclude pnpm-lock.yaml |
   Where-Object { $_.FullName -notmatch 'node_modules|\.git|dist|\.nuxt|\.next' } |
-  ForEach-Object { (Get-Content $_.FullName -Raw) -replace '@siril/blocks-definitions', '@siril/contracts' | Set-Content $_.FullName -NoNewline }
+  ForEach-Object { (Get-Content $_.FullName -Raw) -replace '@sirilcms/blocks-definitions', '@sirilcms/contracts' | Set-Content $_.FullName -NoNewline }
 git status   # — пересмотреть список (ожидание: nuxt.config.ts, vue-блоки, админ-коллекции, design-client.tsx, package.json)
 ```
 
@@ -400,8 +400,8 @@ git status   # — пересмотреть список (ожидание: nuxt
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" install
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/contracts build
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/contracts test
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/contracts build
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/contracts test
 & "$env:APPDATA\npm\pnpm.cmd" typecheck   # все workspace'ы
 & "$env:APPDATA\npm\pnpm.cmd" lint
 ```
@@ -416,10 +416,10 @@ git status   # — пересмотреть список (ожидание: nuxt
 
 ```bash
 git add -A
-git commit -m "refactor: blocks-definitions → @siril/contracts (+unbuild dist)"
+git commit -m "refactor: blocks-definitions → @sirilcms/contracts (+unbuild dist)"
 ```
 
-### Task 5: Merge-примитивы `@siril/contracts` (TDD) + `adminUiBase`
+### Task 5: Merge-примитивы `@sirilcms/contracts` (TDD) + `adminUiBase`
 
 **Files:**
 - Create: `packages/contracts/src/merge.ts`, `packages/contracts/src/merge.test.ts`
@@ -486,7 +486,7 @@ it('adminUiBase rebase-ит путь компонента', () => {
 - [x] **Step 2: Пробег — тесты падают**
 
 ```bash
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/contracts test -- merge
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/contracts test -- merge
 ```
 
 Ожидание: FAIL (`merge.ts` не найден).
@@ -528,8 +528,8 @@ export function toPayloadBlockFields(blocks: Record<string, BlockDef>, opts: { a
 - [x] **Step 4: Тесты зелёные + build**
 
 ```bash
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/contracts test
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/contracts build
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/contracts test
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/contracts build
 ```
 
 - [x] **Step 5: Commit**
@@ -539,13 +539,13 @@ git add packages/contracts
 git commit -m "feat(contracts): merge primitives (blocks/themes) + adminUiBase rebase"
 ```
 
-### Task 6: Скелет пакета `@siril/admin`
+### Task 6: Скелет пакета `@sirilcms/admin`
 
 **Files:**
 - Create: `packages/admin/package.json`, `packages/admin/tsconfig.json`, `packages/admin/src/index.ts`, `packages/admin/src/siril-admin-config.ts`, `packages/admin/src/siril-admin-config.test.ts`, `packages/admin/vitest.config.ts` (или `vitest`-блок в tsconfig)
 
 **Interfaces:**
-- Produces: пакет `@siril/admin` (`0.1.0`), экспортирующий `sirilAdminConfig(project: { collections?: CollectionConfig[]; endpoints?: Endpoint[]; hooks?: Record<string, Hook[]> }): { collections: CollectionConfig[]; endpoints: Endpoint[]; hooks: Record<string, Hook[]> }` — пока пустые core-списки (заполняются Task 7); merge — аддитивный (project + core).
+- Produces: пакет `@sirilcms/admin` (`0.1.0`), экспортирующий `sirilAdminConfig(project: { collections?: CollectionConfig[]; endpoints?: Endpoint[]; hooks?: Record<string, Hook[]> }): { collections: CollectionConfig[]; endpoints: Endpoint[]; hooks: Record<string, Hook[]> }` — пока пустые core-списки (заполняются Task 7); merge — аддитивный (project + core).
 
 - [x] **Step 1: package.json**
 
@@ -553,7 +553,7 @@ git commit -m "feat(contracts): merge primitives (blocks/themes) + adminUiBase r
 
 ```json
 {
-  "name": "@siril/admin",
+  "name": "@sirilcms/admin",
   "version": "0.1.0",
   "private": false,
   "type": "module",
@@ -563,7 +563,7 @@ git commit -m "feat(contracts): merge primitives (blocks/themes) + adminUiBase r
   "scripts": { "test": "vitest run", "typecheck": "tsc --noEmit" },
   "dependencies": {
     "@payloadcms/translations": "^3.90.2",
-    "@siril/contracts": "workspace:*",
+    "@sirilcms/contracts": "workspace:*",
     "payload": "^3.90.1"
   },
   "devDependencies": { "typescript": "^5.6.0", "vitest": "^3.0.0", "@types/node": "^22.20.4" }
@@ -647,7 +647,7 @@ export function sirilAdminConfig(_project: SirilProject = {}): {
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" install
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/admin test
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/admin test
 ```
 
 Ожидание: PASS.
@@ -656,10 +656,10 @@ export function sirilAdminConfig(_project: SirilProject = {}): {
 
 ```bash
 git add packages/admin pnpm-lock.yaml
-git commit -m "feat(admin): @siril/admin package skeleton (sirilAdminConfig)"
+git commit -m "feat(admin): @sirilcms/admin package skeleton (sirilAdminConfig)"
 ```
 
-### Task 7: Перенос core-кода админки в `@siril/admin`
+### Task 7: Перенос core-кода админки в `@sirilcms/admin`
 
 **Files:**
 - Rename (git mv, из `apps/admin/src/` в `packages/admin/src/`):
@@ -671,11 +671,11 @@ git commit -m "feat(admin): @siril/admin package skeleton (sirilAdminConfig)"
   - `migrations/*.ts` (12 файлов миграций + `index.ts`)
   - `access.test.ts` (→ `packages/admin/src/access.test.ts`)
 - Delete (из `apps/admin/src/`): всё перечисленное выше
-- Modify: `packages/admin/src/siril-admin-config.ts` (импорт core-списков), `packages/admin/src/index.ts` (экспорт helpers), `packages/admin/package.json` (зависимости `@payloadcms/db-postgres`, `@payloadcms/richtext-lexical`, `nodemailer`), `apps/admin/src/scripts/seed.ts` (импорты `../collections/*` → `@siril/admin`), `apps/admin/payload.config.ts` (в Task 8)
+- Modify: `packages/admin/src/siril-admin-config.ts` (импорт core-списков), `packages/admin/src/index.ts` (экспорт helpers), `packages/admin/package.json` (зависимости `@payloadcms/db-postgres`, `@payloadcms/richtext-lexical`, `nodemailer`), `apps/admin/src/scripts/seed.ts` (импорты `../collections/*` → `@sirilcms/admin`), `apps/admin/payload.config.ts` (в Task 8)
 
 **Interfaces:**
-- Consumes: `sirilAdminConfig` (Task 6), `toPayloadBlockFields(blocks, { adminUiBase })` (Task 5), `BLOCKS`/`THEMES` из `@siril/contracts`.
-- Produces: `@siril/admin` c core-коллекциями/хуками/эндпоинтами/админ-уи; export-surface: `sirilAdminConfig`, `publishHook`, `notify`, `duplicateSlug`, `withRichtextHtml`, `field-encryption` helpers, `firstUser` hook, `Sites`…(все коллекции), `submissionsCsv`.
+- Consumes: `sirilAdminConfig` (Task 6), `toPayloadBlockFields(blocks, { adminUiBase })` (Task 5), `BLOCKS`/`THEMES` из `@sirilcms/contracts`.
+- Produces: `@sirilcms/admin` c core-коллекциями/хуками/эндпоинтами/админ-уи; export-surface: `sirilAdminConfig`, `publishHook`, `notify`, `duplicateSlug`, `withRichtextHtml`, `field-encryption` helpers, `firstUser` hook, `Sites`…(все коллекции), `submissionsCsv`.
 
 - [x] **Step 1: git mv**
 
@@ -689,7 +689,7 @@ git mv apps/admin/src/migrations packages/admin/src/migrations
 git mv apps/admin/src/access.test.ts packages/admin/src/
 ```
 
-(Относительные импорты внутри перенесённых файлов (`../utils/…`, `./publish-hook`) не меняются. Импорт `@siril/contracts` — уже переименован в Task 4.)
+(Относительные импорты внутри перенесённых файлов (`../utils/…`, `./publish-hook`) не меняются. Импорт `@sirilcms/contracts` — уже переименован в Task 4.)
 
 - [x] **Step 2: Подключить к sirilAdminConfig**
 
@@ -735,7 +735,7 @@ export * as accessScopes from './access'
 
 - [x] **Step 4: seed.ts референса — импорты**
 
-`apps/admin/src/scripts/seed.ts` — заменить `from '../collections/…'` (если есть) на `from '@siril/admin'`; `from '../utils/…'` — аналогично.
+`apps/admin/src/scripts/seed.ts` — заменить `from '../collections/…'` (если есть) на `from '@sirilcms/admin'`; `from '../utils/…'` — аналогично.
 
 - [x] **Step 5: package.json — зависимости**
 
@@ -751,7 +751,7 @@ export * as accessScopes from './access'
 И из `apps/admin/package.json` **убрать** перешедшие зависимости (`payload`, `@payloadcms/db-postgres`, `@payloadcms/richtext-lexical`, `@payloadcms/translations`, `nodemailer`), добавить:
 
 ```json
-"@siril/admin": "workspace:*"
+"@sirilcms/admin": "workspace:*"
 ```
 
 (`@payloadcms/next`, `@payloadcms/ui`, `next`, `react` — остаются в приложении.)
@@ -760,7 +760,7 @@ export * as accessScopes from './access'
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" install
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/admin test
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/admin test
 & "$env:APPDATA\npm\pnpm.cmd" typecheck
 & "$env:APPDATA\npm\pnpm.cmd" lint
 ```
@@ -771,19 +771,19 @@ export * as accessScopes from './access'
 
 ```bash
 git add -A
-git commit -m "refactor(admin): move core collections/hooks/endpoints/admin-ui/migrations to @siril/admin"
+git commit -m "refactor(admin): move core collections/hooks/endpoints/admin-ui/migrations to @sirilcms/admin"
 ```
 
 ### Task 8: `sirilAdminConfig` в референсе + importMap baseDir (S0.2) + migration-механизм (S0.1b)
 
 **Files:**
-- Modify: `apps/admin/payload.config.ts` (полная замена — тонкий конфиг), `apps/admin/package.json` (name → `@siril/reference-admin`, script `migrations:sync` при copy-fallback), `apps/admin/tsconfig.json` (paths `@payload-config` → локальный конфиг), `.github/workflows/ci.yml` (фильтры), `e2e/playwright.config.ts:27,35` (команды фильтров), `package.json` root (script `seed`)
+- Modify: `apps/admin/payload.config.ts` (полная замена — тонкий конфиг), `apps/admin/package.json` (name → `@sirilcms/reference-admin`, script `migrations:sync` при copy-fallback), `apps/admin/tsconfig.json` (paths `@payload-config` → локальный конфиг), `.github/workflows/ci.yml` (фильтры), `e2e/playwright.config.ts:27,35` (команды фильтров), `package.json` root (script `seed`)
 - Create (только если S0.1b → copy-fallback): `apps/admin/scripts/migrations-sync.mjs`
 - Modify: `apps/admin/src/migrations/.gitkeep` (пустой каталог проектных)
 
 **Interfaces:**
 - Consumes: `sirilAdminConfig` (Task 7), механизм S0.2 (decision-док), механизм S0.1b (decision-док).
-- Produces: референс-админка, собранная на пакете; rename `@siril/reference-admin`.
+- Produces: референс-админка, собранная на пакете; rename `@sirilcms/reference-admin`.
 
 - [x] **Step 1: Тонкий payload.config**
 
@@ -792,7 +792,7 @@ git commit -m "refactor(admin): move core collections/hooks/endpoints/admin-ui/m
 ```ts
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { sirilAdminConfig } from '@siril/admin'
+import { sirilAdminConfig } from '@sirilcms/admin'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { en } from '@payloadcms/translations/languages/en'
@@ -834,7 +834,7 @@ export default buildConfig({
 По decision-доку S0.2:
 - если `baseDir` → каталог пакета: `importMap: { baseDir: path.resolve(dirname, '../../packages/admin/src') }` (workspace) + `adminUiBase = './admin-ui'` (Task 5) — передать в `sirilAdminConfig({ adminUiBase: './admin-ui' })` (расширить сигнатуру Task 7/6 этим опциональным полем — 1 строка).
 - строковые пути `admin.components` в контрактах — остаются `${adminUiBase}/variant-picker` (Task 5).
-- Сгенерировать: `& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-admin generate:importmap` (имя фильтра — ПОСЛЕ rename в Step 4; для промежуточной генерации — до rename) → убедиться, что `app/(payload)/admin/importMap.js` импортирует из `packages/admin` (workspace-симлинк). Commit-ится.
+- Сгенерировать: `& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/reference-admin generate:importmap` (имя фильтра — ПОСЛЕ rename в Step 4; для промежуточной генерации — до rename) → убедиться, что `app/(payload)/admin/importMap.js` импортирует из `packages/admin` (workspace-симлинк). Commit-ится.
 
 - [x] **Step 3: Migration-механизм — по S0.1b**
 
@@ -856,7 +856,7 @@ for (const f of readdirSync(src)) {
   if (f === 'index.ts') continue
   cpSync(path.join(src, f), path.join(dst, f)) // перезапись idempotent (fайлы self-contained)
 }
-console.log('migrations synced from @siril/admin → src/migrations')
+console.log('migrations synced from @sirilcms/admin → src/migrations')
 ```
 
 `package.json` референса: `"migrations:sync": "node scripts/migrations-sync.mjs"`; `migrate` script не меняется (dir по умолчанию = `src/migrations`). CI drift-check → на `apps/admin/src/migrations` (не меняется).
@@ -864,25 +864,25 @@ console.log('migrations synced from @siril/admin → src/migrations')
 - [x] **Step 4: Rename приложения + фильтры**
 
 ```bash
-# package.json apps/admin: "name": "@siril/reference-admin"
+# package.json apps/admin: "name": "@sirilcms/reference-admin"
 ```
 
-- `e2e/playwright.config.ts:27`: `pnpm --filter @siril/reference-admin build && pnpm --filter @siril/reference-admin start`
-- `.github/workflows/ci.yml`: все `--filter @siril/admin` → `--filter @siril/reference-admin` (migrations job: `migrate`, `migrate:generate`; drift-check git path — по Step 3 вариант)
-- `package.json` root: `"seed": "pnpm --filter @siril/reference-admin seed"`
+- `e2e/playwright.config.ts:27`: `pnpm --filter @sirilcms/reference-admin build && pnpm --filter @sirilcms/reference-admin start`
+- `.github/workflows/ci.yml`: все `--filter @sirilcms/admin` → `--filter @sirilcms/reference-admin` (migrations job: `migrate`, `migrate:generate`; drift-check git path — по Step 3 вариант)
+- `package.json` root: `"seed": "pnpm --filter @sirilcms/reference-admin seed"`
 
 - [x] **Step 5: Полная проверка**
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" install
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/contracts build
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/contracts build
 & "$env:APPDATA\npm\pnpm.cmd" typecheck
 & "$env:APPDATA\npm\pnpm.cmd" lint
 & "$env:APPDATA\npm\pnpm.cmd" test
 docker run -d --rm --name apg -p 5433:5432 -e POSTGRES_USER=payload -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=payload postgres:16
 $env:PAYLOAD_DB_URI='postgresql://payload:dev@localhost:5433/payload'
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-admin migrate
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-admin seed
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/reference-admin migrate
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/reference-admin seed
 ```
 
 Ожидание: migrate применяет core-миграции (из пакета), seed создаёт демо-контент. (dev-сервер + ручной логин — Task 13 gate.)
@@ -891,10 +891,10 @@ $env:PAYLOAD_DB_URI='postgresql://payload:dev@localhost:5433/payload'
 
 ```bash
 git add -A
-git commit -m "refactor(admin): reference app on @siril/admin (sirilAdminConfig, importMap baseDir, migrations)"
+git commit -m "refactor(admin): reference app on @sirilcms/admin (sirilAdminConfig, importMap baseDir, migrations)"
 ```
 
-### Task 9: Скелет Nuxt-модуля `@siril/web`
+### Task 9: Скелет Nuxt-модуля `@sirilcms/web`
 
 **Files:**
 - Create: `packages/web/package.json`, `packages/web/tsconfig.json`, `packages/web/src/module.ts`, `packages/web/src/module.test.ts` (smoke: setup не падает), `packages/web/src/runtime/` (пустые `app/`, `server/`, `themes/`)
@@ -909,7 +909,7 @@ git commit -m "refactor(admin): reference app on @siril/admin (sirilAdminConfig,
 
 ```json
 {
-  "name": "@siril/web",
+  "name": "@sirilcms/web",
   "version": "0.1.0",
   "type": "module",
   "exports": { ".": "./src/module.ts" },
@@ -918,7 +918,7 @@ git commit -m "refactor(admin): reference app on @siril/admin (sirilAdminConfig,
   "scripts": { "test": "vitest run", "typecheck": "nuxt typecheck" },
   "dependencies": {
     "@nuxt/kit": "^4.0.0",
-    "@siril/contracts": "workspace:*"
+    "@sirilcms/contracts": "workspace:*"
   },
   "devDependencies": { "nuxt": "^4.5.2", "typescript": "^5.6.0", "vitest": "^3.0.0" }
 }
@@ -931,8 +931,8 @@ git commit -m "refactor(admin): reference app on @siril/admin (sirilAdminConfig,
 ```ts
 import { fileURLToPath } from 'node:url'
 import { addTemplate, createResolver, defineNuxtModule } from '@nuxt/kit'
-import type { BlockDef, ThemeDef } from '@siril/contracts'
-import { mergeBlockRegistry, mergeThemeRegistry, BLOCKS, THEMES } from '@siril/contracts'
+import type { BlockDef, ThemeDef } from '@sirilcms/contracts'
+import { mergeBlockRegistry, mergeThemeRegistry, BLOCKS, THEMES } from '@sirilcms/contracts'
 
 export type SirilModuleOptions = { blocks?: Record<string, BlockDef>; themes?: ThemeDef[] }
 
@@ -978,8 +978,8 @@ describe('module options', () => {
 `packages/web/src/module-options.ts`:
 
 ```ts
-import type { BlockDef, ThemeDef } from '@siril/contracts'
-import { BLOCKS, THEMES, mergeBlockRegistry, mergeThemeRegistry } from '@siril/contracts'
+import type { BlockDef, ThemeDef } from '@sirilcms/contracts'
+import { BLOCKS, THEMES, mergeBlockRegistry, mergeThemeRegistry } from '@sirilcms/contracts'
 import type { SirilModuleOptions } from './module'
 
 export function mergeOptions(options: SirilModuleOptions) {
@@ -992,7 +992,7 @@ export function mergeOptions(options: SirilModuleOptions) {
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" install
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/web test
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/web test
 ```
 
 (Тип `BLOCKS` в контрактах — `Record<string, BlockDef>`? если нет — cast, как в тесте выше; зафиксировать точный тип в Task 10.)
@@ -1001,7 +1001,7 @@ export function mergeOptions(options: SirilModuleOptions) {
 
 ```bash
 git add packages/web pnpm-lock.yaml
-git commit -m "feat(web): @siril/web nuxt module skeleton (S0.1 mechanism)"
+git commit -m "feat(web): @sirilcms/web nuxt module skeleton (S0.1 mechanism)"
 ```
 
 ### Task 10: Перенос web-app кода в runtime модуля
@@ -1020,7 +1020,7 @@ git commit -m "feat(web): @siril/web nuxt module skeleton (S0.1 mechanism)"
 - Modify: `packages/web/src/runtime/app/blocks/Placeholder.vue` (не менять, путь), `packages/web/src/runtime/app/layouts/default.vue` (dual-glob — ниже), `packages/web/src/module.ts` (addTemplate для block-registry)
 
 **Interfaces:**
-- Consumes: S0.1 механизм, merge-примитивы, `@siril/contracts`.
+- Consumes: S0.1 механизм, merge-примитивы, `@sirilcms/contracts`.
 - Produces: runtime с блоками/страницами/роутами; `#siril-block-registry` (generated) с dual-glob (модуль + `~/app/blocks` проекта, oверлей: проект > модуль).
 
 - [x] **Step 1: git mv (все файлы)**
@@ -1037,7 +1037,7 @@ git mv apps/web/themes packages/web/src/runtime/themes
 git rm packages/web/src/runtime/app/blocks/registry.ts
 ```
 
-(Относительные импорты внутри runtime не меняются. Импорт `@siril/contracts` — Task 4 уже переименовал.)
+(Относительные импорты внутри runtime не меняются. Импорт `@sirilcms/contracts` — Task 4 уже переименовал.)
 
 - [x] **Step 2: Dual-glob блок-registrы — addTemplate в module.ts**
 
@@ -1079,7 +1079,7 @@ if (!selected) throw new Error('themes/default/tokens.css not found in build')
 - [x] **Step 4: Проверка сборки runtime (unit + typecheck пакета)**
 
 ```bash
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/web test   # media/analytics тесты переехали
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/web test   # media/analytics тесты переехали
 & "$env:APPDATA\npm\pnpm.cmd" typecheck
 ```
 
@@ -1087,20 +1087,20 @@ if (!selected) throw new Error('themes/default/tokens.css not found in build')
 
 ```bash
 git add -A
-git commit -m "refactor(web): move app code to @siril/web runtime (blocks, pages, server, themes)"
+git commit -m "refactor(web): move app code to @sirilcms/web runtime (blocks, pages, server, themes)"
 ```
 
 ### Task 11: Тонкий референс-web + merge опций
 
 **Files:**
 - Create: `apps/web/app/app.vue` (5 строк, как сейчас), `apps/web/app/error.vue` (не меняется, уже в app), `apps/web/app/blocks/.gitkeep`, `apps/web/app/themes/.gitkeep` (пустые палитры проекта — шаблонный pattern, spec §8)
-- Modify: `apps/web/nuxt.config.ts` (модуль + transpile + runtimeConfig), `apps/web/package.json` (name → `@siril/reference-web`, deps), `apps/web/.gitignore` (dist/nuxt уже есть)
+- Modify: `apps/web/nuxt.config.ts` (модуль + transpile + runtimeConfig), `apps/web/package.json` (name → `@sirilcms/reference-web`, deps), `apps/web/.gitignore` (dist/nuxt уже есть)
 - Delete: `apps/web/app/{components,blocks,layouts,pages,composables,utils}` (уже в runtime, Task 10)
 - Modify: `e2e/playwright.config.ts:35`, `package.json` root (dev:all), `apps/admin/src/scripts/seed.ts` (если ссылается на web — нет)
 
 **Interfaces:**
 - Consumes: модуль + runtime (Task 10).
-- Produces: референс-web, имя `@siril/reference-web`; `nuxt.config.ts` — 15 строк; DX `pnpm dev:all` 1:1.
+- Produces: референс-web, имя `@sirilcms/reference-web`; `nuxt.config.ts` — 15 строк; DX `pnpm dev:all` 1:1.
 
 - [x] **Step 1: Остатки app-директории** (после Task 10 в `apps/web/app/` остаются только `app.vue`, `error.vue`):
 
@@ -1116,7 +1116,7 @@ New-Item -ItemType File apps/web\app\themes\.gitkeep
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  modules: ['@siril/web'],
+  modules: ['@sirilcms/web'],
   siril: {}, // референс — без проектных blocks/themes (дог-фуддинг ядра)
   devtools: { enabled: true },
   runtimeConfig: {
@@ -1127,7 +1127,7 @@ export default defineNuxtConfig({
       MEDIA_BASE: process.env.NUXT_PUBLIC_MEDIA_BASE ?? 'http://localhost:3001',
     },
   },
-  build: { transpile: ['@siril/web', '@siril/contracts'] },
+  build: { transpile: ['@sirilcms/web', '@sirilcms/contracts'] },
   vite: { server: { allowedHosts: true } },
 })
 ```
@@ -1136,13 +1136,13 @@ export default defineNuxtConfig({
 
 ```json
 {
-  "name": "@siril/reference-web",
+  "name": "@sirilcms/reference-web",
   "private": true,
   "type": "module",
   "scripts": { "dev": "nuxt dev --port 3000", "build": "nuxt build", "start": "node .output/server/index.mjs", "test": "vitest run", "typecheck": "nuxt typecheck", "postinstall": "nuxt prepare" },
   "dependencies": {
-    "@siril/contracts": "workspace:*",
-    "@siril/web": "workspace:*",
+    "@sirilcms/contracts": "workspace:*",
+    "@sirilcms/web": "workspace:*",
     "nuxt": "^4.5.2",
     "vue": "^3.5.43",
     "vue-router": "^5.3.1"
@@ -1153,15 +1153,15 @@ export default defineNuxtConfig({
 
 - [x] **Step 4: Фильтры**
 
-- `e2e/playwright.config.ts:35`: `pnpm --filter @siril/reference-web build && pnpm --filter @siril/reference-web start`
-- `package.json` root `dev:all`: `"dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/reference-web dev\" \"pnpm --filter @siril/reference-admin dev\""`
+- `e2e/playwright.config.ts:35`: `pnpm --filter @sirilcms/reference-web build && pnpm --filter @sirilcms/reference-web start`
+- `package.json` root `dev:all`: `"dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @sirilcms/reference-web dev\" \"pnpm --filter @sirilcms/reference-admin dev\""`
 - `pnpm-lock.yaml` — пересоздаст `pnpm install` (Step 5).
 
 - [x] **Step 5: Install + dev-smoke**
 
 ```bash
 & "$env:APPDATA\npm\pnpm.cmd" install
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-web build
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/reference-web build
 # dev smoke: запустить dev, curl-ом проверить страницу блога/главную (нужен запущенный admin — либо просто build-проверка)
 ```
 
@@ -1171,7 +1171,7 @@ export default defineNuxtConfig({
 
 ```bash
 git add -A
-git commit -m "refactor(web): thin reference app on @siril/web module"
+git commit -m "refactor(web): thin reference app on @sirilcms/web module"
 ```
 
 ### Task 12: Gate — Acceptance фазы A
@@ -1213,7 +1213,7 @@ curl -s http://localhost:3001/admin/login   # — HTML логина
 docker run -d --rm --name e2epg -p 5432:5432 -e POSTGRES_USER=payload -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=payload postgres:16
 $env:PAYLOAD_DB_URI='postgresql://payload:dev@localhost:5432/payload'
 $env:PAYLOAD_SECRET='e2e-secret-at-least-32-characters-long'
-& "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-admin migrate
+& "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/reference-admin migrate
 & "$env:APPDATA\npm\pnpm.cmd" --filter e2e test:e2e
 ```
 
@@ -1222,7 +1222,7 @@ $env:PAYLOAD_SECRET='e2e-secret-at-least-32-characters-long'
 - [x] **Step 4: Drift-check (локально, как CI)**
 
 ```bash
-echo "n" | & "$env:APPDATA\npm\pnpm.cmd" --filter @siril/reference-admin migrate:generate -- --name local_drift
+echo "n" | & "$env:APPDATA\npm\pnpm.cmd" --filter @sirilcms/reference-admin migrate:generate -- --name local_drift
 if (git status --porcelain packages/admin/src/migrations/ apps/admin/src/migrations/) { Write-Error "Drift found" } else { Write-Host "No drift" }
 ```
 
@@ -1238,14 +1238,14 @@ git commit -m "chore: phase A gate — all green"
 ### Task 13: Докси (CLAUDE.md, README, developer.md, CHANGELOG)
 
 **Files:**
-- Modify: `CLAUDE.md` (таблица структуры + команды: `@siril/contracts`/`@siril/web`/`@siril/admin`/reference-имена), `README.md` (таблица пакетов, § "блоки" — путь к contracts), `docs/developer.md` (путь `packages/blocks-definitions` → `packages/contracts`; §4 шаг 1 — путь в registry; §8/команды — имя пакета), `CHANGELOG.md` (новое "Unreleased" entry)
+- Modify: `CLAUDE.md` (таблица структуры + команды: `@sirilcms/contracts`/`@sirilcms/web`/`@sirilcms/admin`/reference-имена), `README.md` (таблица пакетов, § "блоки" — путь к contracts), `docs/developer.md` (путь `packages/blocks-definitions` → `packages/contracts`; §4 шаг 1 — путь в registry; §8/команды — имя пакета), `CHANGELOG.md` (новое "Unreleased" entry)
 - Modify: `docs/roadmap.md` (не трогать — ссылки на phases остаются валидными)
 
 **Interfaces:** (нет)
 
 - [x] **Step 1: Обновить CLAUDE.md**
 
-Таблица: строка `packages/blocks-definitions` → `packages/contracts (@siril/contracts)`; добавить строки `packages/web (@siril/web — Nuxt module)`, `packages/admin (@siril/admin — Payload extension)`; `apps/web`/`apps/admin` → "reference: @siril/reference-web / @siril/reference-admin".Команды: `pnpm --filter @siril/contracts test` и т.д.
+Таблица: строка `packages/blocks-definitions` → `packages/contracts (@sirilcms/contracts)`; добавить строки `packages/web (@sirilcms/web — Nuxt module)`, `packages/admin (@sirilcms/admin — Payload extension)`; `apps/web`/`apps/admin` → "reference: @sirilcms/reference-web / @sirilcms/reference-admin".Команды: `pnpm --filter @sirilcms/contracts test` и т.д.
 
 - [x] **Step 2: README + developer.md**
 
@@ -1256,8 +1256,8 @@ git commit -m "chore: phase A gate — all green"
 В `CHANGELOG.md` в секцию `[Unreleased]` (или создать `## [0.1.0] - 2026-09-27`):
 
 ```markdown
-- Платформа "движок + кастомизация" (spec 2026-09-27): `@siril/blocks-definitions` → `@siril/contracts` (unbuild, dist), новые пакеты `@siril/web` (Nuxt-модуль), `@siril/admin` (Payload-экстензия, `sirilAdminConfig`); `apps/*` — тонкие reференс-приложения (`@siril/reference-web`, `@siril/reference-admin`).
-- Merge-примитивы: `mergeBlockRegistry`, `mergeThemeRegistry` (`@siril/contracts`).
+- Платформа "движок + кастомизация" (spec 2026-09-27): `@sirilcms/blocks-definitions` → `@sirilcms/contracts` (unbuild, dist), новые пакеты `@sirilcms/web` (Nuxt-модуль), `@sirilcms/admin` (Payload-экстензия, `sirilAdminConfig`); `apps/*` — тонкие reференс-приложения (`@sirilcms/reference-web`, `@sirilcms/reference-admin`).
+- Merge-примитивы: `mergeBlockRegistry`, `mergeThemeRegistry` (`@sirilcms/contracts`).
 - Lockstep-версия пакетов: 0.1.0.
 ```
 
@@ -1265,7 +1265,7 @@ git commit -m "chore: phase A gate — all green"
 
 ```bash
 git add -A
-git commit -m "docs: update for @siril/* package structure (phase A)"
+git commit -m "docs: update for @sirilcms/* package structure (phase A)"
 ```
 
 ---
@@ -1279,6 +1279,6 @@ git commit -m "docs: update for @siril/* package structure (phase A)"
 
 ## Self-review (сделан автором плана)
 
-1. **Spec coverage:** S0 (S0.1 overlay — Task 1, S0.1b migrations — Task 2, S0.2 admin-ui — Task 3), A (contracts rename+unbuild — Task 4, merge-примитивы — Task 5, admin-выворот+`sirilAdminConfig` — Tasks 6–8, web-выворот+модуль — Tasks 9–11, demo/seed в референсе — Task 8, e2e+drift+DX-гейты — Task 12, dox — Task 13). Закрытость core и обходные пути (§4) — зафиксированы в Global Constraints + доки (Task 13); расширение-механизмы (project collections/endpoints/hooks) — интерфейс `sirilAdminConfig` уже принимает (Task 6), доки — фаза B. **Gap:** compiled dist `@siril/admin`/`@siril/web` (spec §3) — осознанное отклонение (заметка в File Structure), компенсация — потребитель-транспайл через ts-loader (текущий DX); компиляция — фаза B.
+1. **Spec coverage:** S0 (S0.1 overlay — Task 1, S0.1b migrations — Task 2, S0.2 admin-ui — Task 3), A (contracts rename+unbuild — Task 4, merge-примитивы — Task 5, admin-выворот+`sirilAdminConfig` — Tasks 6–8, web-выворот+модуль — Tasks 9–11, demo/seed в референсе — Task 8, e2e+drift+DX-гейты — Task 12, dox — Task 13). Закрытость core и обходные пути (§4) — зафиксированы в Global Constraints + доки (Task 13); расширение-механизмы (project collections/endpoints/hooks) — интерфейс `sirilAdminConfig` уже принимает (Task 6), доки — фаза B. **Gap:** compiled dist `@sirilcms/admin`/`@sirilcms/web` (spec §3) — осознанное отклонение (заметка в File Structure), компенсация — потребитель-транспайл через ts-loader (текущий DX); компиляция — фаза B.
 2. **Placeholder scan:** S0-задачи — конкретный scratch-код + curl-проверки; S0-зависимые шаги фазы A — явные ветки (вариант A/B) с кодом, не "TBD".
-3. **Type consistency:** `sirilAdminConfig` (Tasks 6/7/8), `mergeBlockRegistry`/`mergeThemeRegistry` (Task 5 → 9/10), `adminUiBase` (Task 5 → 8), имена пакетов/фильтров (Tasks 4/8/11/12 — все `@siril/reference-*` с Task 8/11, CI/e2e обновляются в тех же коммитах).
+3. **Type consistency:** `sirilAdminConfig` (Tasks 6/7/8), `mergeBlockRegistry`/`mergeThemeRegistry` (Task 5 → 9/10), `adminUiBase` (Task 5 → 8), имена пакетов/фильтров (Tasks 4/8/11/12 — все `@sirilcms/reference-*` с Task 8/11, CI/e2e обновляются в тех же коммитах).

@@ -7,7 +7,7 @@
 
 ## Question
 
-How will the future `@siril/admin` engine package ship Payload core migrations while a project
+How will the future `@sirilcms/admin` engine package ship Payload core migrations while a project
 developed on the platform keeps its own migrations, all on the same Postgres?
 Candidate mechanisms: (a) a config/adapter migrations-directory option, (b) copy-sync.
 
@@ -73,7 +73,7 @@ applied from a *different* directory. `migrate.js` (drizzle) dedupes by name aga
 ## CHOICE: **copy-sync** (with `migrationDir` as the optional location switch)
 
 The engine package ships migrations as a plain directory, e.g.
-`@siril/admin/migrations/*.ts` (append-only, same `<timestampMs>_<slug>.ts` convention).
+`@sirilcms/admin/migrations/*.ts` (append-only, same `<timestampMs>_<slug>.ts` convention).
 The project keeps its own `src/migrations`. Before `payload migrate` the project syncs
 core migrations into its own single directory:
 
@@ -84,7 +84,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
-const coreDir = path.dirname(fileURLToPath(import.meta.resolve('@siril/admin/migrations/package.json')))
+const coreDir = path.dirname(fileURLToPath(import.meta.resolve('@sirilcms/admin/migrations/package.json')))
 const destDir = path.resolve(here, '..', 'src', 'migrations')
 
 for (const f of readdirSync(coreDir).sort()) {

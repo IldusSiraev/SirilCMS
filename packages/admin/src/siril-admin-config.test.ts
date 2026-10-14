@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { resetExtensions } from '@siril/contracts'
+import { resetExtensions } from '@sirilcms/contracts'
 import { sirilAdminConfig } from './siril-admin-config'
 
 describe('sirilAdminConfig', () => {

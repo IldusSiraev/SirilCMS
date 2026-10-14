@@ -1,4 +1,4 @@
-// Lockstep-релиз движка: бамп версии @siril/{contracts,web,admin}, перенос [Unreleased] в CHANGELOG,
+// Lockstep-релиз движка: бамп версии @sirilcms/{contracts,web,admin}, перенос [Unreleased] в CHANGELOG,
 // коммит `release: vX.Y.Z` и тег. НЕ пушит — push тега запускает publish-workflow (.github/workflows/publish-packages.yml).
 //
 //   node scripts/release.mjs <major|minor|patch|X.Y.Z> [--dry-run]

@@ -1,5 +1,5 @@
 {
-  "name": "@siril/contracts",
+  "name": "@sirilcms/contracts",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -26,7 +26,7 @@
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IldusSiraev/SirilCMS.git",
+    "url": "git+https://github.com/sirilcms/SirilCMS.git",
     "directory": "packages/contracts"
   },
   "publishConfig": {

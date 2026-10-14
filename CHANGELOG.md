@@ -14,16 +14,16 @@
 - Prod: анонимная самрегистрация первого пользователя отключена (`DISABLE_FIRST_USER_SIGNUP=true`), первый owner создаётся из `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD`.
 
 ### Fixed
-- `@siril/web`: блоки и темы **проекта** (`app/blocks/<type>/<Variant>.vue`, `themes/<id>/tokens.css`) не подхватывались — `import.meta.glob` в сгенерированном модуле резолвился в пустой объект (Nuxt 4), блок рендерился заглушкой. Теперь модуль сканирует каталоги проекта и встраивает абсолютные импорты; добавление/удаление файла в dev пересобирает шаблоны.
-- Rich-text: relationship-embed (вставка связанного документа в текст) рендерился на публичном сайте буквальным текстом «unknown node». Фича убрана из редактора (`sirilEditor()` в `@siril/admin`, reference-admin его использует). Проверено вживую: upload-картинки, ссылки (`javascript:` → `#`), списки/чек-листы, quote, hr, форматирование, выравнивание и экранирование HTML рендерятся корректно.
+- `@sirilcms/web`: блоки и темы **проекта** (`app/blocks/<type>/<Variant>.vue`, `themes/<id>/tokens.css`) не подхватывались — `import.meta.glob` в сгенерированном модуле резолвился в пустой объект (Nuxt 4), блок рендерился заглушкой. Теперь модуль сканирует каталоги проекта и встраивает абсолютные импорты; добавление/удаление файла в dev пересобирает шаблоны.
+- Rich-text: relationship-embed (вставка связанного документа в текст) рендерился на публичном сайте буквальным текстом «unknown node». Фича убрана из редактора (`sirilEditor()` в `@sirilcms/admin`, reference-admin его использует). Проверено вживую: upload-картинки, ссылки (`javascript:` → `#`), списки/чек-листы, quote, hr, форматирование, выравнивание и экранирование HTML рендерятся корректно.
 
 ### Added
-- Релизный инструментарий движка: `scripts/release.mjs` (lockstep-бамп `@siril/{contracts,web,admin}`, перенос `[Unreleased]` в CHANGELOG, коммит и тег; не пушит), workflow `publish-packages.yml` (по тегу `vX.Y.Z` публикует пакеты; ручной запуск — dry-run), runbook [docs/runbooks/release.md](docs/runbooks/release.md). Пакеты больше не `private`, имеют `files`/`publishConfig`; `web` и `admin` публикуются как TS-исходники.
+- Релизный инструментарий движка: `scripts/release.mjs` (lockstep-бамп `@sirilcms/{contracts,web,admin}`, перенос `[Unreleased]` в CHANGELOG, коммит и тег; не пушит), workflow `publish-packages.yml` (по тегу `vX.Y.Z` публикует пакеты; ручной запуск — dry-run), runbook [docs/runbooks/release.md](docs/runbooks/release.md). Пакеты больше не `private`, имеют `files`/`publishConfig`; `web` и `admin` публикуются как TS-исходники.
 - Документация для разработчиков проектов на движке: [docs/extension-api.md](docs/extension-api.md) (стабильное/нестабильное API, блок/тема/коллекция по шагам, миграции, обновление) и [docs/compat.md](docs/compat.md) (таблица совместимости). `scripts/check-no-core-copies.mjs` (в `pnpm lint`) запрещает идентичные копии core-файлов в проекте.
 - `examples/minimal-project` — эталонный проект на движке: блок `cases` (контракт + Vue-компонент), тема `client` (ThemeDef + `tokens.css`), своя коллекция `cases`, проектная серия миграций. `examples/minimal-project/scripts/verify.mjs` и CI-джоб «Example project» проверяют сквозной сценарий admin → web на собранных (`next build` / `nuxt build`) приложениях.
-- `@siril/admin`: бинарь `siril-migrations-sync` — копирует core-миграции из пакета в каталог миграций проекта (идемпотентно, файлы проекта не трогает).
+- `@sirilcms/admin`: бинарь `siril-migrations-sync` — копирует core-миграции из пакета в каталог миграций проекта (идемпотентно, файлы проекта не трогает).
 - Extension API подключён: `sirilAdminConfig({ blocks, themes })` (admin) и опции Nuxt-модуля `siril: { blocks, themes }` (web) регистрируют блоки/темы проекта до сборки коллекций и до рендера. `makeSites()` — фабрика коллекции `sites` (select тем из активного реестра); `Sites` оставлен для совместимости.
-- `@siril/contracts`: `registerExtensions({ blocks, themes })` / `resetExtensions()` — подключение блоков и тем проекта к активному реестру (`BLOCKS`/`THEMES`/`getBlock`/`getTheme`); `CORE_BLOCKS`/`CORE_THEMES` — неизменяемые core-списки. Core-темы по умолчанию включают новые блоки проекта.
+- `@sirilcms/contracts`: `registerExtensions({ blocks, themes })` / `resetExtensions()` — подключение блоков и тем проекта к активному реестру (`BLOCKS`/`THEMES`/`getBlock`/`getTheme`); `CORE_BLOCKS`/`CORE_THEMES` — неизменяемые core-списки. Core-темы по умолчанию включают новые блоки проекта.
 - Отложенная публикация страниц и постов: в админке рядом с «Опубликовать» — планирование на дату/время. Исполняется очередью Payload jobs (`autoRun` раз в минуту в процессе admin), публикация чистит кэш сайта как обычная. Точность — до минуты.
 - Оптимизация изображений при загрузке: оригинал ужимается до 2560px, генерируются WebP-размеры `sm` 480w / `md` 960w / `lg` 1600w (`sharp`). Блоки/посты берут размер по роли картинки (`mediaUrl(media, 'sm'|'md'|'lg')`); OG-изображения остаются оригиналом. Старые загрузки без размеров отдаются как раньше (фолбэк).
 - `infra/scripts/restore-check.sh` / `make -C infra restore-check` — проверка восстановления дампа в одноразовом postgres.
@@ -34,21 +34,22 @@
 - `@payloadcms/*` и `payload` запинены на `3.90.1` (убрана вторая копия `@payloadcms/translations@3.90.2`).
 
 ### ⚠ Breaking / ручные шаги
-- Миграция `scheduled_publish` добавляет таблицы `payload_jobs*` (применяется сервисом `migrate`). Проекты на `@siril/admin` должны включить `jobs.autoRun` в своём `payload.config.ts` (см. reference-admin), иначе запланированные публикации не исполнятся.
+- **Переименование scope `@siril/*` → `@sirilcms/*`** и перенос репозитория в организацию `sirilcms` (имя `siril` занято на GitHub и npm). Проекты на движке меняют импорты и зависимости на `@sirilcms/contracts|web|admin`. Образы GHCR теперь публикуются как `ghcr.io/sirilcms/sirilcms-{admin,web,admin-migrate}`: на **существующих серверах** обновите `image:` в `infra/docker-compose.prod.yml` (новые теги появятся только по новому пути; старые образы `ghcr.io/ildussiraev/…` остаются, но не обновляются).
+- Миграция `scheduled_publish` добавляет таблицы `payload_jobs*` (применяется сервисом `migrate`). Проекты на `@sirilcms/admin` должны включить `jobs.autoRun` в своём `payload.config.ts` (см. reference-admin), иначе запланированные публикации не исполнятся.
 - Миграция `media_image_sizes` (только добавляет колонки) применяется автоматически сервисом `migrate`. Уже загруженные картинки размеров не получат — перезагрузите нужные файлы, если хотите оптимизацию для них.
 - Существующим prod-установкам: если owner уже создан — ничего делать не нужно. Для новых установок `init-env.sh` принимает второй аргумент `<owner-email>`; без него впишите `INITIAL_OWNER_EMAIL`/`INITIAL_OWNER_PASSWORD` в `.env` вручную.
 
 ### Added
 - Процедура обновления (бэкап → `IMAGE_TAG` → `pull`/`up`, откат при упавшей миграции) — [docs/runbooks/prod.md §4.1](docs/runbooks/prod.md).
-- Платформа «движок + кастомизация» (spec [2026-09-27](docs/superpowers/specs/2026-09-27-siril-engine-platform-design.md)): `@siril/blocks-definitions` → `@siril/contracts` (SSOT: контракты блоков/тем/форм-полей, +unbuild dist); новые пакеты `@siril/web` (Nuxt-модуль: runtime UI `src/runtime/app` + темы + server middleware/кэш/purge-API) и `@siril/admin` (Payload-экстензия: `sirilAdminConfig`, collections/endpoints/access/admin-ui + канонические миграции); `apps/*` — тонкие референс-приложения `@siril/reference-web` (:3000, `nuxt build`) и `@siril/reference-admin` (:3001, `next build`).
-- Merge-примитивы: `mergeBlockRegistry`, `mergeThemeRegistry` (`@siril/contracts`) — project-overlay блоков/тем (проект сильнее модуля).
+- Платформа «движок + кастомизация» (spec [2026-09-27](docs/superpowers/specs/2026-09-27-siril-engine-platform-design.md)): `@sirilcms/blocks-definitions` → `@sirilcms/contracts` (SSOT: контракты блоков/тем/форм-полей, +unbuild dist); новые пакеты `@sirilcms/web` (Nuxt-модуль: runtime UI `src/runtime/app` + темы + server middleware/кэш/purge-API) и `@sirilcms/admin` (Payload-экстензия: `sirilAdminConfig`, collections/endpoints/access/admin-ui + канонические миграции); `apps/*` — тонкие референс-приложения `@sirilcms/reference-web` (:3000, `nuxt build`) и `@sirilcms/reference-admin` (:3001, `next build`).
+- Merge-примитивы: `mergeBlockRegistry`, `mergeThemeRegistry` (`@sirilcms/contracts`) — project-overlay блоков/тем (проект сильнее модуля).
 
 ### Changed
 - Lockstep-версия пакетов: 0.1.0.
 - Миграции Payload канонизированы в `packages/admin/src/migrations` — явным `postgresAdapter({ migrationDir })` в `apps/reference-admin/payload.config.ts` (дефолтный каталог Payload — относительный CWD, а это не workspace-root).
 
 ### ⚠ Breaking / ручные шаги
-- Оператору действий не требуется: docker-образы пересобраны, one-shot-сервис `migrate` по-прежнему выполняет `pnpm --filter @siril/reference-admin migrate` по тем же `packages/admin/src/migrations`, схема БД в этом релизе не изменилась.
+- Оператору действий не требуется: docker-образы пересобраны, one-shot-сервис `migrate` по-прежнему выполняет `pnpm --filter @sirilcms/reference-admin migrate` по тем же `packages/admin/src/migrations`, схема БД в этом релизе не изменилась.
 
 ## [0.2.0] — 2026-09-26
 

@@ -26,13 +26,13 @@
 
 | # | Решение |
 |---|---|
-| 1 | **Подход A**: ядро = npm-пакеты `@siril/*`; проект клиента = отдельный репо, тонкое приложение на ядре. Не выбирается: форк-репо (обновления = «никогда не догнать») и моно-репо со всеми проектами внутрь (конфиденциальность клиентов, нет внешнего доступа) |
+| 1 | **Подход A**: ядро = npm-пакеты `@sirilcms/*`; проект клиента = отдельный репо, тонкое приложение на ядре. Не выбирается: форк-репо (обновления = «никогда не догнать») и моно-репо со всеми проектами внутрь (конфиденциальность клиентов, нет внешнего доступа) |
 | 2 | **Ядро закрытое, расширение аддитивное**. Ядро (мы) свободно развивает core-коллекции/блоки/поля (с миграциями и deprecate-процессом developer.md §4 шаг 6). Проект **не может** редактировать код ядра и не может долить поля в core-коллекции — только добавлять (блоки, темы, коллекции, страницы, хуки). Единственная гарантия, что bump версий ядра остаётся безболезненным |
 | 3 | **Обходные пути без нарушения замкнутости** (закрывают ~95% реальных нужд): доп. контент на страницах → новый **тип блока** (append-only); новый вид сущности → новая **коллекция** проекта с `relationship` на core. Нарушение открываем только по реальному кейсу, не покрываемому этими путями |
-| 4 | **Lockstep-версионирование**: одна версия движка = все `@siril/*` с этой версией. До 1.0 — `0.x` (breaking в minor'ах, но в CHANGELOG всегда явный — существующая конвенция) |
+| 4 | **Lockstep-версионирование**: одна версия движка = все `@sirilcms/*` с этой версией. До 1.0 — `0.x` (breaking в minor'ах, но в CHANGELOG всегда явный — существующая конвенция) |
 | 5 | **Дистрибуция**: npm → GitHub Packages registry (приватный с рождения); образ — проектный `Dockerfile` в репо проекта (2 стадии: install → build), универсальный core-образ отменяется (ядро — библиотека, не приложение) |
-| 6 | **Обновление проекта** = `pnpm up @siril/*` + чтение CHANGELOG → `pnpm migrations:sync` → тесты/сборка → деплой по существующей runbook-процедуре (бэкап → deploy → verify → откат). Без git-merge |
-| 7 | **Референс-проект** (текущие `apps/web` + `apps/admin`) остаётся в engine-репо как тонкое приложение на `@siril/*` — dogfooding и источник шаблона. Демо-контент/демо-темы выносятся из ядра в референс |
+| 6 | **Обновление проекта** = `pnpm up @sirilcms/*` + чтение CHANGELOG → `pnpm migrations:sync` → тесты/сборка → деплой по существующей runbook-процедуре (бэкап → deploy → verify → откат). Без git-merge |
+| 7 | **Референс-проект** (текущие `apps/web` + `apps/admin`) остаётся в engine-репо как тонкое приложение на `@sirilcms/*` — dogfooding и источник шаблона. Демо-контент/демо-темы выносятся из ядра в референс |
 | 8 | **Фазы S0 → C** (спайки → выворот пакетов → стабилизация API → генератор + пилот); фаза D (публичный API) — отдельный триггер |
 
 ## 3. Структура пакетов
@@ -40,21 +40,21 @@
 ```
 engine-репо (текущий SirilCMS)
 ├─ packages/
-│  ├─ @siril/contracts      ← ex blocks-definitions (переименование; +unbuild → dist)
+│  ├─ @sirilcms/contracts      ← ex blocks-definitions (переименование; +unbuild → dist)
 │  │                          типы, BLOCKS, THEMES, to-payload, resolve, form-fields, variant-preview,
 │  │                          merge-примитивы (§4). Чистая логика, ноль рантайм-зависимостей.
-│  ├─ @siril/web            ← НОВОЕ. Nuxt-модуль: core-блоки (Vue SFC), components (RichText,
+│  ├─ @sirilcms/web            ← НОВОЕ. Nuxt-модуль: core-блоки (Vue SFC), components (RichText,
 │  │                          BlockRenderer, Placeholder, PostCard), layouts, pages, server-роуты
 │  │                          (api/site, api/page, api/posts, preview/*, purge, submit, sitemap,
 │  │                          robots, metrics, health), cache-middleware. Опции: siril.blocks, siril.themes
-│  ├─ @siril/admin          ← НОВОЕ. Payload-экстензия: sirilAdmin(project) → buildConfig'ные
+│  ├─ @sirilcms/admin          ← НОВОЕ. Payload-экстензия: sirilAdmin(project) → buildConfig'ные
 │  │                          коллекции (Sites, Media, Users, Pages, Posts, Categories,
 │  │                          SiteContent, Forms, FormSubmissions), endpoints, hooks (publish-hook,
 │  │                          notifications, first-user, field-encryption), i18n, admin-ui (variant-picker).
 │  │                          Проектные коллекции — аддитивно. Core-миграции — в dist/migrations/
-│  ├─ @siril/create-siril   ← НОВОЕ. bin-генератор проекта (§8)
-│  └─ (текущие блоки-составляющие blocks-definitions переезжают в @siril/contracts)
-├─ apps/web, apps/admin     ← РЕФЕРЕНС-ПРОЕКТ: тонкие приложения, потребляют @siril/* из workspace.
+│  ├─ @sirilcms/create-siril   ← НОВОЕ. bin-генератор проекта (§8)
+│  └─ (текущие блоки-составляющие blocks-definitions переезжают в @sirilcms/contracts)
+├─ apps/web, apps/admin     ← РЕФЕРЕНС-ПРОЕКТ: тонкие приложения, потребляют @sirilcms/* из workspace.
 │                              Демо-контент (`seed.ts`), demo-темы, демо-сид — здесь, не в ядре.
 ├─ templates/project/       ← шаблон «чистого» проекта для create-siril (≠ референс: без демо-данных)
 └─ e2e/                     ← без изменений (гоняется на референсе)
@@ -62,7 +62,7 @@ engine-репо (текущий SirilCMS)
 
 **Правило**: в engine-репо не остаётся ничего «сайтового». Всё, что относится к конкретному клиенту/демо, — в референсе (в репо) или в проекте (в отдельном репо).
 
-**Сборка пакетов**: `@siril/contracts` — `unbuild` (ESM). `@siril/web` — Nuxt module-конвенция (src как TS, как принято в модулях; Vue SFC — компилируемый dist). `@siril/admin` — компилируемый dist (в т.ч. миграции) + админ-компоненты. DX текущих девов не меняется: в engine-репо пакеты подтягиваются workspace-ссылками как сейчас (TS-исходник в dev, как в `build.transpile`), dist — только для npm-потребления.
+**Сборка пакетов**: `@sirilcms/contracts` — `unbuild` (ESM). `@sirilcms/web` — Nuxt module-конвенция (src как TS, как принято в модулях; Vue SFC — компилируемый dist). `@sirilcms/admin` — компилируемый dist (в т.ч. миграции) + админ-компоненты. DX текущих девов не меняется: в engine-репо пакеты подтягиваются workspace-ссылками как сейчас (TS-исходник в dev, как в `build.transpile`), dist — только для npm-потребления.
 
 ## 4. Extension API (поверхность кастомизации)
 
@@ -70,7 +70,7 @@ engine-репо (текущий SirilCMS)
 
 | Кастомизация | Механизм |
 |---|---|
-| Новые блоки/варианты клиента | контракт (TS, формат `BlockDef` из `@siril/contracts`) в `nuxt.config` проекта (`siril.blocks`) + SFC в `app/blocks/<type>/<Variant>.vue` проекта (Nuxt подхватывает авто-реестром). Палитра в админке, условия полей, `<x>Html`-поля — строятся `to-payload` из **смерженного** реестра (core + проект) — config-time, без участия проекта |
+| Новые блоки/варианты клиента | контракт (TS, формат `BlockDef` из `@sirilcms/contracts`) в `nuxt.config` проекта (`siril.blocks`) + SFC в `app/blocks/<type>/<Variant>.vue` проекта (Nuxt подхватывает авто-реестром). Палитра в админке, условия полей, `<x>Html`-поля — строятся `to-payload` из **смерженного** реестра (core + проект) — config-time, без участия проекта |
 | Клиентская тема 1:1 | `ThemeDef` в `siril.themes` + `app/themes/<id>/tokens.css` в проекте. Collision id → **полное** переопределение: тема проекта заменяет core-тему целиком (css-файл + варианты + enabled-флаги) — это и есть путь «один в один по верстке клиента». `Sites.theme`-select строится из смерженного реестра. ⚠ Уточнение по факту фазы B: select — это enum Postgres, поэтому список тем **влияет на схему** (добавление/удаление темы = проектная миграция `ALTER TYPE`); CSS темы лежит в `themes/<id>/tokens.css` в **корне** web-проекта, а не в `app/themes/` |
 | Свои коллекции/ поля в админке | `sirilAdmin({ collections: [Cases, ...] })` — новые content-типы с произвольными полями. Связь с core — `relationship` **со стороны проекта** (case → pages), ядро не знает о них |
 | Свои страницы/маршруты сайта | обычные `app/pages/**` и `app/server/**` проекта (Nitro/Nuxt авто-роутинг) |
@@ -91,10 +91,10 @@ engine-репо (текущий SirilCMS)
 
 | Серия | Где живут | Кто генерирует |
 |---|---|---|
-| Core | `@siril/admin` → `dist/migrations/` (+манифест: имя файла, id, порядок) | release-процесс engine-репо (как сейчас: `migrate:generate`) |
+| Core | `@sirilcms/admin` → `dist/migrations/` (+манифест: имя файла, id, порядок) | release-процесс engine-репо (как сейчас: `migrate:generate`) |
 | Проектная | `src/migrations/` проекта | разработчик проекта (`migrate:generate`) |
 
-**`migrations:sync`** (скрипт проекта, идемпотентный): копирует core-миграции из `node_modules/@siril/admin/dist/migrations/` в единый локальный каталог (рядом со проектными). Файлы self-contained, имена уникальны (timestamp+name); повторный sync — no-op; уже применённые не трогаются (учёт в Payload'овской `migrations`-таблице по id, как сейчас).
+**`migrations:sync`** (скрипт проекта, идемпотентный): копирует core-миграции из `node_modules/@sirilcms/admin/dist/migrations/` в единый локальный каталог (рядом со проектными). Файлы self-contained, имена уникальны (timestamp+name); повторный sync — no-op; уже применённые не трогаются (учёт в Payload'овской `migrations`-таблице по id, как сейчас).
 
 **Drift-check** (механика из фазы 1 CI engine-репо) переезжает в **проектный** CI: `migrate` на чистой БД + `migrate:generate` (auto-«нет» на пустую миграцию) → `git status --porcelain src/migrations/` должен быть пуст. Палит: и core-дрейф (если ядро сохранило несостыкованное состояние), и проектный. CI engine-репо сохраняет свой drift-check для core-серии.
 
@@ -102,7 +102,7 @@ engine-репо (текущий SirilCMS)
 
 ## 6. Web-overlay (Nuxt модуль)
 
-`@siril/web` — Nuxt-модуль, регистрирующий из пакета: компоненты (`blocks/`, `components/`), layouts, страницы, server-роуты, middleware.
+`@sirilcms/web` — Nuxt-модуль, регистрирующий из пакета: компоненты (`blocks/`, `components/`), layouts, страницы, server-роуты, middleware.
 
 **Правило overlay**: файл в `app/` проекта с тем же именем пути **перекрывает** соответствующий в модуле (app > module). Это штатная Nuxt-модульная конвенция — **проверяется** спайком S0.1 (порядок преференции в Nuxt 4, в т.ч. для server-роутов Nitro и CSS-глобов тем).
 
@@ -116,18 +116,18 @@ engine-репо (текущий SirilCMS)
 |---|---|
 | Версии | Lockstep (§2.4). Текущая `0.x`; breaking — в minor'ах, всегда явный в `CHANGELOG.md` (существующая конвенция Keep-a-Changelog) |
 | Публикация | Git-тег `vX.Y.Z` → CI: publish npm-пакетов в **GitHub Packages** (приватный registry; «выход наружу» = смена видимости, без переделки) + существующий GHCR-поток |
-| Образ | **Проектный** `Dockerfile` (2 стадии; `pnpm install` + `nuxt build` / `next build`; `@siril/*` — обычные зависимости). Универсальный core-обрат отменяется: ядро — библиотека |
-| Обновление проекта (runbook в шаблоне) | 1. `pnpm up @siril/*`, читать CHANGELOG движка (breaking/ручные шаги) → 2. `pnpm migrations:sync` → 3. `pnpm test && pnpm typecheck && pnpm build` (зелёные = совместимо) → 4. деплой по runbooks/prod.md (бэкап → `IMAGE_TAG`/deploy → verify → откат) |
+| Образ | **Проектный** `Dockerfile` (2 стадии; `pnpm install` + `nuxt build` / `next build`; `@sirilcms/*` — обычные зависимости). Универсальный core-обрат отменяется: ядро — библиотека |
+| Обновление проекта (runbook в шаблоне) | 1. `pnpm up @sirilcms/*`, читать CHANGELOG движка (breaking/ручные шаги) → 2. `pnpm migrations:sync` → 3. `pnpm test && pnpm typecheck && pnpm build` (зелёные = совместимо) → 4. деплой по runbooks/prod.md (бэкап → `IMAGE_TAG`/deploy → verify → откат) |
 | Совместимость | Компат-таблица «версия шаблона ↔ диапазон версий движка»; scaffold пинит совместимую пару; отклонение за пределы диапазона — явная ошибка scaffold'а с подсказкой |
 | Канал обратной связи | Проект не может «тихо» отстать: drift-check + типы ловят несостыковки на стороне проекта |
 
 ## 8. Генератор `create-siril`
 
-`npx @siril/create-siril <project-name> [--git]`:
+`npx @sirilcms/create-siril <project-name> [--git]`:
 
 1. Создать репо проекта из `templates/project/`:
-   - `package.json` — зависимости `@siril/*` (версии по компат-таблице), scripts (dev, test, typecheck, build, **migrations:sync**, e2e-опционально)
-   - `nuxt.config.ts` — модуль `@siril/web` + пустой `siril: {}` (место для blocks/themes)
+   - `package.json` — зависимости `@sirilcms/*` (версии по компат-таблице), scripts (dev, test, typecheck, build, **migrations:sync**, e2e-опционально)
+   - `nuxt.config.ts` — модуль `@sirilcms/web` + пустой `siril: {}` (место для blocks/themes)
    - `payload.config.ts` — `buildConfig(sirilAdminConfig({}))`
    - `app/` — пустые палитры `blocks/`, `themes/` (с readme-заглушками), `pages/` (перекрывает core'ные только при необходимости), `server/`
    - `src/collections/` + `src/migrations/` (с gitkeep), `.env.example` (список переменных движка + проекта)
@@ -141,7 +141,7 @@ engine-репо (текущий SirilCMS)
 | Фаза | Содержание | Критерий готовности |
 |---|---|---|
 | **S0 — Spikes** | S0.1: overlay Nuxt 4 (app>module) + механизм каталога миграций Payload 3.90. S0.2 (опц.): админ-компоненты (variant-picker) из пакета vs из проекта (importMap baseDir) — если не укладывается штатно, зафиксировать обход | 2-строчный документ «спайки: что подтвердилось, какие обходы»; план фазы A не меняется или меняется осознанно |
-| **A — Выворот пакетов** | `blocks-definitions` → `@siril/contracts` (+unbuild); выворот `@siril/web` (модуль из движка); выворот `@siril/admin` (`sirilAdminConfig` из payload.config); `apps/*` → тонкие приложения; demo-темы/seed — в референс | Все 62 юнит-теста + Playwright e2e зелёные на том же потоке; DX (pnpm dev:all) не изменился; drift-check CI зелёный |
+| **A — Выворот пакетов** | `blocks-definitions` → `@sirilcms/contracts` (+unbuild); выворот `@sirilcms/web` (модуль из движка); выворот `@sirilcms/admin` (`sirilAdminConfig` из payload.config); `apps/*` → тонкие приложения; demo-темы/seed — в референс | Все 62 юнит-теста + Playwright e2e зелёные на том же потоке; DX (pnpm dev:all) не изменился; drift-check CI зелёный |
 | **B — Стабилизация API** | `docs/extension-api.md` (что стабильно/что нет, примеры каждого §4); компат-таблица; lockstep-релиз-скрипт (тег → npm+GHCR, единый бамп); конвенция «не копировать core-файлы» | Трив. проект-пустышка с 1 кастомным блоком + 1 темой + 1 коллекцией, собранный **по докам без чтения исходников**, — собирается и разворачивается |
 | **C — create-siril + пилот** | Генератор; `templates/project/`; проект-пилот — реальный клиентский сайт **вне** engine-репо, собранный из шаблона | Пилот: сайт по HTML-шаблону клиента создан и развёрнут из шаблона быстрее «копируй репо и правь» (текущий конвейер 1–3 дня); пилот получает одно обновление ядра через §7 без потерь |
 | **D — (триггер: «выход наружу»)** | Лицензия ядра (решается к фазе), публичный registry, публичный `docs/extension-api` как контракт, API-гарантии + компат-матрица как обязательство, 1.0 | — |
@@ -150,7 +150,7 @@ engine-репо (текущий SirilCMS)
 
 ## 10. Тесты и гарантии
 
-- **Юнит** (TDD, как в проекте): merge-примитивы `@siril/contracts` (merge реестров блоков/тем, правила override/полного переопределения темы, merge конфигов `siril.*`); sync-логика `migrations:sync` (идемпотентность, no-op).
+- **Юнит** (TDD, как в проекте): merge-примитивы `@sirilcms/contracts` (merge реестров блоков/тем, правила override/полного переопределения темы, merge конфигов `siril.*`); sync-логика `migrations:sync` (идемпотентность, no-op).
 - **Интеграция**: референс-проект в engine-репо — постоянный интеграционный тест движка (каждый коммит гоняет его).
 - **E2E**: существующий Playwright-флоу (create page → publish → cache → purge) без изменений — гоняется на референсе.
 - **Новый CI-джоб в engine-репо**: «template freshness» — регенерация scaffold в tmp → install → test → build (шаблон не расползается от ядра).

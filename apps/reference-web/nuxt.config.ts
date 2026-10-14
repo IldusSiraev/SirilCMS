@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  modules: ['@siril/web'],
+  modules: ['@sirilcms/web'],
   siril: {}, // reference — no project blocks/themes (dogfooding the core)
   devtools: { enabled: true },
   runtimeConfig: {
@@ -12,7 +12,7 @@ export default defineNuxtConfig({
       MEDIA_BASE: process.env.NUXT_PUBLIC_MEDIA_BASE ?? 'http://localhost:3001',
     },
   },
-  build: { transpile: ['@siril/web', '@siril/contracts'] },
+  build: { transpile: ['@sirilcms/web', '@sirilcms/contracts'] },
   // Мультисайт: локально тестируется через `curl -H "Host: <domain>"` с произвольными
   // доменами — Vite dev-сервер по умолчанию блокирует незнакомые Host (DNS-rebinding
   // защита), это только для `nuxt dev`, на прод-сборку (.output, без Vite) не влияет.

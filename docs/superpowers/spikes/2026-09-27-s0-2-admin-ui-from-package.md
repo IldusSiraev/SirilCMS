@@ -72,7 +72,7 @@ Evidence:
 ## Finding 3 — `node_modules` is a hard boundary for Turbopack (important for Task 8)
 
 If the component file is **physically under `node_modules`** — e.g. `baseDir` resolved through the pnpm
-store (`node_modules/.pnpm/@siril+admin@…/node_modules/@siril/admin/src/...`), whether via a relative
+store (`node_modules/.pnpm/@siril+admin@…/node_modules/@sirilcms/admin/src/...`), whether via a relative
 rebased import or a bare-specifier import — dev SSR fails:
 
 ```

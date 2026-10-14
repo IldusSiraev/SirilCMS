@@ -7,7 +7,7 @@ import { en } from '@payloadcms/translations/languages/en'
 import { ru } from '@payloadcms/translations/languages/ru'
 import sharp from 'sharp'
 
-import { sirilAdminConfig } from '@siril/admin'
+import { sirilAdminConfig } from '@sirilcms/admin'
 import { blocks, themes } from '../siril.extensions'
 import { Cases } from './src/collections/cases'
 
@@ -22,7 +22,7 @@ const { collections, endpoints } = sirilAdminConfig({
 
 export default buildConfig({
   admin: {
-    importMap: { baseDir: path.resolve(dirname, 'node_modules/@siril/admin/src') },
+    importMap: { baseDir: path.resolve(dirname, 'node_modules/@sirilcms/admin/src') },
   },
   collections,
   endpoints,

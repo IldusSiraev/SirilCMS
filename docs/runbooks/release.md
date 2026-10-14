@@ -1,8 +1,8 @@
-# Runbook: релиз движка (`@siril/*`)
+# Runbook: релиз движка (`@sirilcms/*`)
 
-Релиз = одна версия для `@siril/contracts`, `@siril/web`, `@siril/admin` (lockstep) + git-тег `vX.Y.Z`. Тег запускает два независимых потока CI:
+Релиз = одна версия для `@sirilcms/contracts`, `@sirilcms/web`, `@sirilcms/admin` (lockstep) + git-тег `vX.Y.Z`. Тег запускает два независимых потока CI:
 - `ci.yml` → образы GHCR (`sirilcms-{admin,web,admin-migrate}`) — для деплоя референса/продукта;
-- `publish-packages.yml` → npm-пакеты `@siril/*` — для проектов на движке ([extension-api.md](../extension-api.md)).
+- `publish-packages.yml` → npm-пакеты `@sirilcms/*` — для проектов на движке ([extension-api.md](../extension-api.md)).
 
 Пространство версий **общее**: тег `v0.3.0` — это и образы, и пакеты. Поэтому `release.mjs` не даст выпустить версию, не большую уже записанной в CHANGELOG (на момент написания последний релиз `0.2.0`, пакеты в репо — `0.1.0`: первый пакетный релиз делайте точной версией, например `0.3.0`).
 
@@ -30,36 +30,30 @@ git push origin main v0.3.0                # push тега запускает п
 
 | Пакет | Содержимое tgz | Зависимость на contracts |
 |---|---|---|
-| `@siril/contracts` | `dist/` (собирается `unbuild` при `pnpm install` через `prepare`) | — |
-| `@siril/web` | `src/` как **TypeScript-исходник** (Nuxt-модуль + runtime) | `workspace:*` → точная версия при pack |
-| `@siril/admin` | `src/` как TS-исходник (+ `src/migrations`, `bin/siril-migrations-sync`) | то же |
+| `@sirilcms/contracts` | `dist/` (собирается `unbuild` при `pnpm install` через `prepare`) | — |
+| `@sirilcms/web` | `src/` как **TypeScript-исходник** (Nuxt-модуль + runtime) | `workspace:*` → точная версия при pack |
+| `@sirilcms/admin` | `src/` как TS-исходник (+ `src/migrations`, `bin/siril-migrations-sync`) | то же |
 
 Исходники без компиляции — осознанное решение: проекты уже транспилируют их сами (`build.transpile` в Nuxt, ts-loader у Payload CLI). Компиляция `web`/`admin` — фаза D (публичный registry).
 
-## 4. ⚠ Scope и registry (требует решения владельца)
+## 4. Scope и registry
 
-GitHub Packages (`npm.pkg.github.com`) публикует только пакеты, чей **scope = владелец репозитория**. Репозиторий принадлежит `IldusSiraev`, а пакеты называются `@siril/*` — публикация в GitHub Packages **не пройдёт**, пока не выбран один из вариантов:
+Организация GitHub — `sirilcms`, пакеты — `@sirilcms/*`, registry — GitHub Packages (`npm.pkg.github.com`). GitHub Packages принимает только пакеты со scope = владелец репозитория, поэтому scope обязан совпадать с организацией (имя `@siril` на GitHub и npmjs занято, отсюда `sirilcms`). Публикация идёт на `GITHUB_TOKEN` workflow — отдельных секретов не нужно.
 
-| Вариант | Что сделать |
-|---|---|
-| A. GitHub-организация `siril` | перенести репозиторий в org `siril` — scope совпадёт, ничего переименовывать не нужно |
-| B. Переименовать scope | `@siril/*` → `@ildussiraev/*` (все импорты, `build.transpile`, документы) |
-| C. npm-registry | завести org `siril` на npmjs.com (private packages), в репозитории задать variable `NPM_REGISTRY=https://registry.npmjs.org` и secret `NPM_TOKEN` |
-
-Workflow уже параметризован под вариант C (variable/secret), варианты A/B не требуют изменений в workflow.
+Если когда-нибудь понадобится npmjs.com (фаза D, публичный registry): создать организацию на npm, в репозитории задать variable `NPM_REGISTRY=https://registry.npmjs.org` и secret `NPM_TOKEN` — workflow уже это поддерживает. Scope при этом должен совпадать с npm-организацией.
 
 ## 5. Подключение пакетов в проекте
 
 В корне проекта `.npmrc` (токен — `read:packages` PAT или `NODE_AUTH_TOKEN` в CI; в репозиторий токен не коммитить):
 
 ```ini
-@siril:registry=https://npm.pkg.github.com
+@sirilcms:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
-Затем `pnpm add @siril/contracts @siril/web @siril/admin` (одной версии) и обновление — [extension-api.md §5](../extension-api.md).
+Затем `pnpm add @sirilcms/contracts @sirilcms/web @sirilcms/admin` (одной версии) и обновление — [extension-api.md §5](../extension-api.md).
 
 ## 6. Что проверено, а что нет
 
 - Проверено: логика релиза (`scripts/release-lib.mjs`, 16 unit-тестов), `release.mjs --dry-run`, `pnpm pack` всех трёх пакетов (состав tgz, `workspace:*` → точная версия, тесты исключены).
-- **Не проверено**: фактическая публикация в registry и установка опубликованных пакетов в проект вне монорепо — зависит от решения в §4; первый пробный прогон — `workflow_dispatch` с `dry_run`.
+- **Не проверено**: фактическая публикация в registry и установка опубликованных пакетов в проект вне монорепо; первый пробный прогон — `workflow_dispatch` с `dry_run`.

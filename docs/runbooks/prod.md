@@ -47,7 +47,7 @@ make -C infra up
 docker compose -f infra/docker-compose.prod.yml --env-file .env up -d --pull always
 ```
 
-Образы `admin`/`web`/`migrate` — готовые из GHCR (`ghcr.io/ildussiraev/sirilcms-*`, версия — `IMAGE_TAG` в `.env`, по умолчанию `latest`), сборка на сервере клиента не нужна. Вывод: контейнеры `postgres / admin / web / caddy`, все `healthy`/`running`. Перед стартом admin отработает one-shot `migrate` (прикладывает миграции Payload и выходит 0) — это нормально.
+Образы `admin`/`web`/`migrate` — готовые из GHCR (`ghcr.io/sirilcms/sirilcms-*`, версия — `IMAGE_TAG` в `.env`, по умолчанию `latest`), сборка на сервере клиента не нужна. Вывод: контейнеры `postgres / admin / web / caddy`, все `healthy`/`running`. Перед стартом admin отработает one-shot `migrate` (прикладывает миграции Payload и выходит 0) — это нормально.
 
 | Сервис | Доступ | Роль |
 |---|---|---|
@@ -126,7 +126,7 @@ make -C infra up
 #           && docker compose -f infra/docker-compose.prod.yml --env-file .env up -d
 ```
 
-Миграции Payload применяются автоматически: one-shot сервис `migrate` стартует перед `admin` при каждом `up` и выполняет `pnpm --filter @siril/reference-admin migrate` (образ `admin-migrate`, см. §2) — ручной шаг не нужен. Если миграция в новой версии breaking (несовместима со старыми данными без ручных действий) — сверяться с release notes/`CHANGELOG.md` (см. [docs/roadmap.md](../roadmap.md)) перед обновлением на минорную/мажорную версию.
+Миграции Payload применяются автоматически: one-shot сервис `migrate` стартует перед `admin` при каждом `up` и выполняет `pnpm --filter @sirilcms/reference-admin migrate` (образ `admin-migrate`, см. §2) — ручной шаг не нужен. Если миграция в новой версии breaking (несовместима со старыми данными без ручных действий) — сверяться с release notes/`CHANGELOG.md` (см. [docs/roadmap.md](../roadmap.md)) перед обновлением на минорную/мажорную версию.
 
 Если `migrate` упал (exit ≠ 0) — `admin` не стартует (`depends_on: service_completed_successfully`), сайт продолжает работать на старой версии `web`/`admin` до ручного вмешательства. Откат: вернуть предыдущий `IMAGE_TAG` в `.env`, `make -C infra up`; если миграция уже частично применилась — восстановить БД из бэкапа шага 1 (`gunzip < f.sql.gz | ... psql`, см. таблицу выше) **до** отката образов.
 

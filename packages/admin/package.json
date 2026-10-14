@@ -1,5 +1,5 @@
 {
-  "name": "@siril/admin",
+  "name": "@sirilcms/admin",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -19,7 +19,7 @@
     "@payloadcms/richtext-lexical": "3.90.1",
     "@payloadcms/translations": "3.90.1",
     "@payloadcms/ui": "3.90.1",
-    "@siril/contracts": "workspace:*",
+    "@sirilcms/contracts": "workspace:*",
     "nodemailer": "^10.0.10",
     "payload": "3.90.1"
   },
@@ -38,7 +38,7 @@
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IldusSiraev/SirilCMS.git",
+    "url": "git+https://github.com/sirilcms/SirilCMS.git",
     "directory": "packages/admin"
   },
   "publishConfig": {

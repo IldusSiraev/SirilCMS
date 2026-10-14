@@ -1,5 +1,5 @@
 import type { CollectionConfig, Field } from 'payload'
-import { toPayloadFormFields } from '@siril/contracts'
+import { toPayloadFormFields } from '@sirilcms/contracts'
 
 export const Forms: CollectionConfig = {
   slug: 'forms',

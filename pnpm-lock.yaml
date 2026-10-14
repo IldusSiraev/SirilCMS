@@ -53,10 +53,10 @@ importers:
       '@payloadcms/ui':
         specifier: 3.90.1
         version: 3.90.1(@types/react@19.3.0)(monaco-editor@0.56.0)(next@16.3.5(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.63.0)(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(payload@3.90.1(graphql@16.14.2)(supports-color@10.2.2)(typescript@5.9.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(typescript@5.9.3)
-      '@siril/admin':
+      '@sirilcms/admin':
         specifier: workspace:*
         version: link:../../packages/admin
-      '@siril/contracts':
+      '@sirilcms/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
       next:
@@ -93,10 +93,10 @@ importers:
 
   apps/reference-web:
     dependencies:
-      '@siril/contracts':
+      '@sirilcms/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@siril/web':
+      '@sirilcms/web':
         specifier: workspace:*
         version: link:../../packages/web
       nuxt:
@@ -133,7 +133,7 @@ importers:
 
   examples/minimal-project:
     dependencies:
-      '@siril/contracts':
+      '@sirilcms/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
     devDependencies:
@@ -158,10 +158,10 @@ importers:
       '@payloadcms/ui':
         specifier: 3.90.1
         version: 3.90.1(@types/react@19.3.0)(monaco-editor@0.56.0)(next@16.3.5(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.63.0)(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(payload@3.90.1(graphql@16.14.2)(supports-color@10.2.2)(typescript@5.9.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(typescript@5.9.3)
-      '@siril/admin':
+      '@sirilcms/admin':
         specifier: workspace:*
         version: link:../../../packages/admin
-      '@siril/contracts':
+      '@sirilcms/contracts':
         specifier: workspace:*
         version: link:../../../packages/contracts
       next:
@@ -195,10 +195,10 @@ importers:
 
   examples/minimal-project/web:
     dependencies:
-      '@siril/contracts':
+      '@sirilcms/contracts':
         specifier: workspace:*
         version: link:../../../packages/contracts
-      '@siril/web':
+      '@sirilcms/web':
         specifier: workspace:*
         version: link:../../../packages/web
       nuxt:
@@ -232,7 +232,7 @@ importers:
       '@payloadcms/ui':
         specifier: 3.90.1
         version: 3.90.1(@types/react@19.3.0)(monaco-editor@0.56.0)(next@16.3.5(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.63.0)(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(payload@3.90.1(graphql@16.14.2)(supports-color@10.2.2)(typescript@5.9.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(typescript@5.9.3)
-      '@siril/contracts':
+      '@sirilcms/contracts':
         specifier: workspace:*
         version: link:../contracts
       nodemailer:
@@ -275,7 +275,7 @@ importers:
       '@nuxt/kit':
         specifier: ^4.0.0
         version: 4.5.2(magic-string@1.4.1)(magicast@0.5.5)(rolldown@1.2.9)(unplugin@3.4.0(esbuild@0.28.2)(rolldown@1.2.9)(rollup@4.63.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.77.4)(terser@5.51.2)(tsx@4.22.4)))
-      '@siril/contracts':
+      '@sirilcms/contracts':
         specifier: workspace:*
         version: link:../contracts
     devDependencies:

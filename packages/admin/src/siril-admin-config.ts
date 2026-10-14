@@ -1,6 +1,6 @@
 import type { CollectionConfig, Endpoint } from 'payload'
-import { registerExtensions } from '@siril/contracts'
-import type { BlockDef, ThemeDef } from '@siril/contracts'
+import { registerExtensions } from '@sirilcms/contracts'
+import type { BlockDef, ThemeDef } from '@sirilcms/contracts'
 
 import { Categories } from './collections/categories'
 import { Forms } from './collections/forms'

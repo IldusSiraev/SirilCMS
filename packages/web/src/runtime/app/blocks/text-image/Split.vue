@@ -8,7 +8,7 @@
   </section>
 </template>
 <script setup lang="ts">
-import { getTheme } from '@siril/contracts'
+import { getTheme } from '@sirilcms/contracts'
 const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
