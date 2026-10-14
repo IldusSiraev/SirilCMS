@@ -1,0 +1,71 @@
+name: Publish packages
+
+# Публикация @siril/{contracts,web,admin} (lockstep) в npm-registry по тегу vX.Y.Z.
+# Тег создаёт `node scripts/release.mjs` (бамп версий + CHANGELOG + тег); push тега запускает этот workflow.
+# Образы GHCR по тому же тегу публикует ci.yml — это независимый поток.
+#
+# Registry задаёт setup-node (registry-url) — по умолчанию GitHub Packages (npm.pkg.github.com). ВАЖНО: GitHub Packages принимает только пакеты
+# со scope = владелец репозитория. Если scope `@siril` не совпадает с владельцем, задайте repository variable
+# NPM_REGISTRY (напр. https://registry.npmjs.org) и secret NPM_TOKEN, либо переименуйте scope — см. docs/runbooks/release.md.
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Только собрать и показать содержимое пакетов (без publish)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Publish @siril/* packages
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: ${{ vars.NPM_REGISTRY || 'https://npm.pkg.github.com' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: ${{ vars.NPM_REGISTRY || 'https://npm.pkg.github.com' }}
+
+      - name: Install dependencies (also builds @siril/contracts via prepare)
+        run: pnpm install --frozen-lockfile
+
+      - name: Check lockstep versions and tag
+        run: |
+          node --input-type=module -e "
+            import { readFileSync } from 'node:fs'
+            import { RELEASE_PACKAGES, assertLockstep, assertTagMatches } from './scripts/release-lib.mjs'
+            const v = assertLockstep(Object.fromEntries(RELEASE_PACKAGES.map((d) => { const p = JSON.parse(readFileSync(d + '/package.json', 'utf8')); return [p.name, p.version] })))
+            const ref = process.env.GITHUB_REF_TYPE === 'tag' ? process.env.GITHUB_REF_NAME : null
+            if (ref) assertTagMatches(ref, v)
+            console.log('lockstep ok, version', v, ref ? '(tag ' + ref + ')' : '(no tag: manual run)')
+          "
+
+      - name: Verify package contents (pack)
+        run: |
+          mkdir -p /tmp/packs
+          for d in contracts web admin; do (cd packages/$d && pnpm pack --pack-destination /tmp/packs); done
+          for t in /tmp/packs/*.tgz; do echo "== $t"; tar -tzf "$t" | head -n 15; done
+
+      - name: Publish
+        if: ${{ github.event_name == 'push' || inputs.dry_run == false }}
+        run: |
+          # contracts первым: web/admin зависят от него (workspace:* заменяется на точную версию при pack/publish)
+          for d in contracts web admin; do
+            (cd packages/$d && pnpm publish --no-git-checks)
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN || secrets.GITHUB_TOKEN }}
