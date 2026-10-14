@@ -1,12 +1,11 @@
 name: Publish packages
 
-# Публикация @siril/{contracts,web,admin} (lockstep) в npm-registry по тегу vX.Y.Z.
+# Публикация @sirilcms/{contracts,web,admin} (lockstep) в npm-registry по тегу vX.Y.Z.
 # Тег создаёт `node scripts/release.mjs` (бамп версий + CHANGELOG + тег); push тега запускает этот workflow.
 # Образы GHCR по тому же тегу публикует ci.yml — это независимый поток.
 #
-# Registry задаёт setup-node (registry-url) — по умолчанию GitHub Packages (npm.pkg.github.com). ВАЖНО: GitHub Packages принимает только пакеты
-# со scope = владелец репозитория. Если scope `@siril` не совпадает с владельцем, задайте repository variable
-# NPM_REGISTRY (напр. https://registry.npmjs.org) и secret NPM_TOKEN, либо переименуйте scope — см. docs/runbooks/release.md.
+# Registry задаёт setup-node (registry-url) — по умолчанию GitHub Packages (npm.pkg.github.com); scope пакетов (@sirilcms) = организация
+# владельца репозитория, публикация идёт на GITHUB_TOKEN. Другой registry: variable NPM_REGISTRY + secret NPM_TOKEN (docs/runbooks/release.md §4).
 
 on:
   push:
@@ -24,7 +23,7 @@ permissions:
 
 jobs:
   publish:
-    name: Publish @siril/* packages
+    name: Publish @sirilcms/* packages
     runs-on: ubuntu-latest
     env:
       REGISTRY: ${{ vars.NPM_REGISTRY || 'https://npm.pkg.github.com' }}
@@ -40,7 +39,7 @@ jobs:
           cache: pnpm
           registry-url: ${{ vars.NPM_REGISTRY || 'https://npm.pkg.github.com' }}
 
-      - name: Install dependencies (also builds @siril/contracts via prepare)
+      - name: Install dependencies (also builds @sirilcms/contracts via prepare)
         run: pnpm install --frozen-lockfile
 
       - name: Check lockstep versions and tag

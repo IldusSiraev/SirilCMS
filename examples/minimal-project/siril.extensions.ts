@@ -1,6 +1,6 @@
 // Единый источник расширений проекта: его импортируют и web (nuxt.config.ts), и admin (payload.config.ts).
-// Контракты — чистые данные (формат BlockDef/ThemeDef из @siril/contracts).
-import type { BlockDef, ThemeDef } from '@siril/contracts'
+// Контракты — чистые данные (формат BlockDef/ThemeDef из @sirilcms/contracts).
+import type { BlockDef, ThemeDef } from '@sirilcms/contracts'
 
 // Новый тип блока. Vue-компонент — web/app/blocks/cases/Card.vue (файл = PascalCase id варианта).
 export const casesBlock: BlockDef = {

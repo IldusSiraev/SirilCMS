@@ -4,7 +4,7 @@ Headless CMS для лендинг-сайтов: **конструктор стр
 
 ## Возможности
 
-- **Блоки** — 14 типов (hero, текст+изображение, возможности, тарифы, галерея, FAQ, отзывы, команда, портфолио, CTA, контакты, список/сетка постов, форма), каждый с вариантами компоновки. Единый источник правды контрактов — пакет `@siril/contracts` (SSOT): по контракту **автоматически** генерируются поля формы в админке (Payload) и резолвится вёрстка на сайте.
+- **Блоки** — 14 типов (hero, текст+изображение, возможности, тарифы, галерея, FAQ, отзывы, команда, портфолио, CTA, контакты, список/сетка постов, форма), каждый с вариантами компоновки. Единый источник правды контрактов — пакет `@sirilcms/contracts` (SSOT): по контракту **автоматически** генерируются поля формы в админке (Payload) и резолвится вёрстка на сайте.
 - **Темы** — `default` (teal) и `mono` (ч/б, serif). Переключение темы в админке (`Sites → theme`) — **изменение данных, применяется мгновенно**, без деплоя. Неподдерживаемые темой блоки/варианты рендерятся по fallback (контент не теряется).
 - **Формы** — конструктор полей (text → honeypot/consent), заявки в БД, публичный submit с rate-limit, CSV-экспорт.
 - **Контент** — страницы (любой лендинг = набор блоков), блог (посты + категории), медиа-библиотека, SEO-поля на каждое сущность.
@@ -16,11 +16,11 @@ Headless CMS для лендинг-сайтов: **конструктор стр
 
 | Путь | Роль | Порт |
 |---|---|---|
-| `packages/contracts` | `@siril/contracts` — SSOT: контракты блоков/тем/форм-полей (типы, реестр, `to-payload.ts`, `resolve.ts`) | — |
-| `packages/web` | `@siril/web` — Nuxt-модуль: runtime UI (блоки, layout) + server middleware/кэш/purge-API | — |
-| `packages/admin` | `@siril/admin` — Payload-расширение: collections/endpoints/access/admin-ui + канонические миграции | — |
-| `apps/reference-web` | `@siril/reference-web` — публичный сайт: тонкое референс-приложение **Nuxt 4** (SSR, Nitro) | 3000 |
-| `apps/reference-admin` | `@siril/reference-admin` — конструктор: тонкое приложение **Payload 3** на **Next.js 16**, PostgreSQL | 3001 |
+| `packages/contracts` | `@sirilcms/contracts` — SSOT: контракты блоков/тем/форм-полей (типы, реестр, `to-payload.ts`, `resolve.ts`) | — |
+| `packages/web` | `@sirilcms/web` — Nuxt-модуль: runtime UI (блоки, layout) + server middleware/кэш/purge-API | — |
+| `packages/admin` | `@sirilcms/admin` — Payload-расширение: collections/endpoints/access/admin-ui + канонические миграции | — |
+| `apps/reference-web` | `@sirilcms/reference-web` — публичный сайт: тонкое референс-приложение **Nuxt 4** (SSR, Nitro) | 3000 |
+| `apps/reference-admin` | `@sirilcms/reference-admin` — конструктор: тонкое приложение **Payload 3** на **Next.js 16**, PostgreSQL | 3001 |
 | `infra` | `docker-compose` (dev/prod), Caddy, сценарии (dev-pg, make-цели) | 80/443 (prod) |
 | `docs` | Гайды: developer, runbooks (dev/prod), specs/plans | — |
 
@@ -55,7 +55,7 @@ apps/reference-admin/                # payload.config.ts, seed; custom-стра�
 pnpm install
 Copy-Item .env.example .env            # PS (Linux/macOS: cp)
 pnpm dev:pg                            # Postgres (docker :5432 или внешний :5433)
-pnpm --filter @siril/reference-admin migrate   # миграции
+pnpm --filter @sirilcms/reference-admin migrate   # миграции
 pnpm seed                              # демо-контент (идемпотентно)
 pnpm dev:all                           # web :3000 + admin :3001
 pnpm test                              # 62 теста

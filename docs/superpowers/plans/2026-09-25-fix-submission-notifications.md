@@ -69,7 +69,7 @@ describe('buildNotificationText', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @siril/admin test`
+Run: `pnpm --filter @sirilcms/admin test`
 Expected: FAIL — `Failed to resolve import "./notify"` (file doesn't exist yet).
 
 - [ ] **Step 3: Write the implementation**
@@ -119,7 +119,7 @@ export async function notifySubmission(payload: BasePayload, doc: FormSubmission
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pnpm --filter @siril/admin test`
+Run: `pnpm --filter @sirilcms/admin test`
 Expected: PASS (all admin tests, including the 2 new ones).
 
 - [ ] **Step 5: Wire the hook into the collection**
@@ -181,7 +181,7 @@ Expected: lockfile updates, `nodemailer` now resolves inside `apps/admin`.
 
 - [ ] **Step 7: Run full admin test suite to verify nothing broke**
 
-Run: `pnpm --filter @siril/admin test`
+Run: `pnpm --filter @sirilcms/admin test`
 Expected: PASS — all admin tests including `access.test.ts`, `test/smoke.test.ts`, and the 2 new `notify.test.ts` cases.
 
 - [ ] **Step 8: Commit**
@@ -213,7 +213,7 @@ Modify `apps/web/server/api/forms/[slug]/submit.post.ts` — remove line 5 (`imp
 
 ```ts
 import { readBody } from 'h3'
-import { validateSubmission } from '@siril/blocks-definitions'
+import { validateSubmission } from '@sirilcms/blocks-definitions'
 import { payloadGet } from '../../../utils/payload'
 import { rateLimit } from '../../../utils/rate-limit'
 

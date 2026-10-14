@@ -3,7 +3,7 @@ RUN corepack enable
 WORKDIR /app
 COPY . .
 RUN pnpm install --frozen-lockfile
-RUN pnpm --filter @siril/reference-admin build
+RUN pnpm --filter @sirilcms/reference-admin build
 
 FROM node:22-alpine
 WORKDIR /app

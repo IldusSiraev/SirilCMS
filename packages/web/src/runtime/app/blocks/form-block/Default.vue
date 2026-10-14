@@ -36,7 +36,7 @@
   </section>
 </template>
 <script setup lang="ts">
-import { getTheme } from '@siril/contracts'
+import { getTheme } from '@sirilcms/contracts'
 import { payloadGet } from '../../../server/utils/payload'
 
 const props = defineProps<{ block: any; themeId: string }>()

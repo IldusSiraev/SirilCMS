@@ -2,7 +2,7 @@ import { blocks, themes } from '../siril.extensions'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  modules: ['@siril/web'],
+  modules: ['@sirilcms/web'],
   siril: { blocks, themes },
   runtimeConfig: {
     PAYLOAD_URL: process.env.PAYLOAD_URL ?? 'http://localhost:3001',
@@ -12,6 +12,6 @@ export default defineNuxtConfig({
       MEDIA_BASE: process.env.NUXT_PUBLIC_MEDIA_BASE ?? 'http://localhost:3001',
     },
   },
-  build: { transpile: ['@siril/web', '@siril/contracts'] },
+  build: { transpile: ['@sirilcms/web', '@sirilcms/contracts'] },
   vite: { server: { allowedHosts: true } },
 })

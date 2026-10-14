@@ -17,7 +17,7 @@ describe('nextVersion', () => {
 describe('assertLockstep', () => {
   it('одинаковые версии — ок', () => expect(assertLockstep({ a: '0.1.0', b: '0.1.0' })).toBe('0.1.0'))
   it('разные — ошибка с перечнем', () => {
-    expect(() => assertLockstep({ '@siril/a': '0.1.0', '@siril/b': '0.2.0' })).toThrow(/@siril\/a@0\.1\.0, @siril\/b@0\.2\.0/)
+    expect(() => assertLockstep({ '@sirilcms/a': '0.1.0', '@sirilcms/b': '0.2.0' })).toThrow(/@sirilcms\/a@0\.1\.0, @sirilcms\/b@0\.2\.0/)
   })
 })
 

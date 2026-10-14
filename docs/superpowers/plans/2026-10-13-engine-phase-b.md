@@ -7,7 +7,7 @@
 
 Phase A перенёс файлы, но центральное обещание §4 — «проект добавляет блок/тему через `siril.blocks` / `siril.themes`» — **не работает**:
 
-- `@siril/web` module игнорирует опции (`setup(_options, …)`); `module-options.ts` не подключён.
+- `@sirilcms/web` module игнорирует опции (`setup(_options, …)`); `module-options.ts` не подключён.
 - `mergeBlockRegistry` спредит **массив** `BLOCKS` в объект (ключи `"0","1"…`) — корректно мерджить нечем.
 - `getBlock/getTheme/BLOCKS/THEMES` читают статические массивы; `Sites.theme`-select строится при загрузке модуля (`THEMES.map`) — проектные темы туда не попадут.
 - `sirilAdminConfig(project)` принимает только `collections/endpoints/hooks`, но не `blocks/themes`.
@@ -19,7 +19,7 @@ Phase A перенёс файлы, но центральное обещание 
 | # | Решение |
 |---|---|
 | 1 | Реестр блоков/тем — массивы, override по `type` / `id` (проект заменяет core-запись целиком). |
-| 2 | `@siril/contracts` хранит активный реестр; `registerExtensions({blocks, themes})` пересобирает in-place экспортируемые `BLOCKS`/`THEMES` из `CORE_*` + расширений (идемпотентно, `resetExtensions()` для тестов). In-place — чтобы все существующие импорты `BLOCKS`/`THEMES` остались валидны. |
+| 2 | `@sirilcms/contracts` хранит активный реестр; `registerExtensions({blocks, themes})` пересобирает in-place экспортируемые `BLOCKS`/`THEMES` из `CORE_*` + расширений (идемпотентно, `resetExtensions()` для тестов). In-place — чтобы все существующие импорты `BLOCKS`/`THEMES` остались валидны. |
 | 3 | Admin: `sirilAdminConfig({ blocks, themes, … })` регистрирует расширения **до** сборки коллекций; `Sites` становится фабрикой (`makeSites`), чтобы select тем брал смерженный реестр. |
 | 4 | Web: опции модуля `siril: { blocks, themes }` сериализуются в `#build/siril/registry.gen.mjs`; Nuxt-плагин (client+SSR) и Nitro-плагин зовут `registerExtensions`. |
 | 5 | Один файл контрактов проекта (`siril.extensions.ts`) импортируют и `nuxt.config.ts`, и `payload.config.ts` — единый источник для admin и web. |
@@ -32,7 +32,7 @@ Phase A перенёс файлы, но центральное обещание 
 - [x] **B3. web:** опции модуля → gen-template + плагины; приоритет `app/themes/<id>/tokens.css` проекта над модульной; тест модуля.
 - [x] **B4. example-проект** `examples/minimal-project`: 1 блок (контракт + SFC), 1 тема (ThemeDef + tokens.css), 1 коллекция; сборка `nuxt build` + загрузка payload config + `migrate:generate` без падений; CI-джоб.
 - [x] **B5. docs:** `docs/extension-api.md` (стабильно / нестабильно, пример каждой строки §4), конвенция «не копировать core-файлы» (+ скрипт-проверка), компат-таблица.
-- [x] **B6. релиз:** lockstep-скрипт (`scripts/release.mjs`: бамп версий всех `@siril/*`, CHANGELOG-проверка, тег), CI-workflow публикации в GitHub Packages (dry-run в PR).
+- [x] **B6. релиз:** lockstep-скрипт (`scripts/release.mjs`: бамп версий всех `@sirilcms/*`, CHANGELOG-проверка, тег), CI-workflow публикации в GitHub Packages (dry-run в PR).
 
 ## Вне объёма B
 

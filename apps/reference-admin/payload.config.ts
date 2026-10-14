@@ -6,7 +6,7 @@ import sharp from 'sharp'
 import { en } from '@payloadcms/translations/languages/en'
 import { ru } from '@payloadcms/translations/languages/ru'
 
-import { bootstrapOwner, sirilAdminConfig, sirilEditor } from '@siril/admin'
+import { bootstrapOwner, sirilAdminConfig, sirilEditor } from '@sirilcms/admin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -17,7 +17,7 @@ try {
   // no root .env (e.g. prod containers get env vars injected directly) — ignore
 }
 
-// Reference app: all core collections/endpoints come from the @siril/admin package.
+// Reference app: all core collections/endpoints come from the @sirilcms/admin package.
 // S0.2: admin UI components live in the package — baseDir points there, contract
 // strings are `./admin-ui/*` (adminUiBase) and resolve to packages/admin/src/admin-ui/*.
 const { collections, endpoints } = sirilAdminConfig({ adminUiBase: './admin-ui' })
@@ -44,7 +44,7 @@ export default buildConfig({
   // используют этот дефолт.
   editor: sirilEditor(),
   db: postgresAdapter({
-    // Canonical migrations live in @siril/admin — pinned explicitly because Payload's default
+    // Canonical migrations live in @sirilcms/admin — pinned explicitly because Payload's default
     // dir is CWD-relative and the app-local dir is git-ignored.
     migrationDir: path.resolve(dirname, '../../packages/admin/src/migrations'),
     pool: {

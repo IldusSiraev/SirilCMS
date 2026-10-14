@@ -8,11 +8,11 @@ SirilCMS — headless CMS for landing sites: page builder from blocks + themes +
 
 | Path | Role | Port |
 |---|---|---|
-| `packages/contracts` | `@siril/contracts` — SSOT: block/theme/form-field contracts (types, registry, `to-payload.ts`, `resolve.ts`) | — |
-| `packages/web` | `@siril/web` — Nuxt module: runtime UI (blocks, layouts), server middleware/cache/purge API | — |
-| `packages/admin` | `@siril/admin` — Payload extension: collections/endpoints/access/admin-ui + canonical migrations | — |
-| `apps/reference-web` | `@siril/reference-web` — public site: thin Nuxt 4 reference app (`nuxt build`), cache, purge API | 3000 |
-| `apps/reference-admin` | `@siril/reference-admin` — builder: thin Payload 3 app on Next.js 16 (payload.config, seed), PostgreSQL | 3001 |
+| `packages/contracts` | `@sirilcms/contracts` — SSOT: block/theme/form-field contracts (types, registry, `to-payload.ts`, `resolve.ts`) | — |
+| `packages/web` | `@sirilcms/web` — Nuxt module: runtime UI (blocks, layouts), server middleware/cache/purge API | — |
+| `packages/admin` | `@sirilcms/admin` — Payload extension: collections/endpoints/access/admin-ui + canonical migrations | — |
+| `apps/reference-web` | `@sirilcms/reference-web` — public site: thin Nuxt 4 reference app (`nuxt build`), cache, purge API | 3000 |
+| `apps/reference-admin` | `@sirilcms/reference-admin` — builder: thin Payload 3 app on Next.js 16 (payload.config, seed), PostgreSQL | 3001 |
 | `e2e` | Playwright golden-path spec: create page in admin → publish → verify on site → verify cache purge | — |
 | `infra` | docker-compose (dev/prod), Caddy, scripts, Makefile | 80/443 (prod) |
 | `docs` | developer guide, runbooks (dev/prod), specs/plans | — |
@@ -26,7 +26,7 @@ Full architecture/administration reference: [docs/developer.md](docs/developer.m
 ```bash
 pnpm install
 pnpm dev:pg                                # Postgres 16 via docker, or waits for external pg on :5433
-pnpm --filter @siril/reference-admin migrate   # apply Payload migrations
+pnpm --filter @sirilcms/reference-admin migrate   # apply Payload migrations
 pnpm seed                                  # demo content (idempotent — skips if sites already exist)
 pnpm dev:all                               # web :3000 + admin :3001 (runs dev:pg first)
 pnpm test                                  # all tests (pnpm -r --no-bail test)
@@ -37,16 +37,16 @@ pnpm typecheck                             # tsc --noEmit (packages + reference-
 Single-workspace test runs (all use vitest):
 
 ```bash
-pnpm --filter @siril/contracts test
-pnpm --filter @siril/admin test
-pnpm --filter @siril/web test
+pnpm --filter @sirilcms/contracts test
+pnpm --filter @sirilcms/admin test
+pnpm --filter @sirilcms/web test
 ```
 
 E2E (Playwright, separate from `pnpm test` — needs a real Postgres, builds+starts both apps, not run as part of the fast unit-test loop):
 
 ```bash
 docker run -d --rm -p 5432:5432 -e POSTGRES_USER=payload -e POSTGRES_PASSWORD=dev -e POSTGRES_DB=payload postgres:16
-PAYLOAD_DB_URI=postgresql://payload:dev@localhost:5432/payload PAYLOAD_SECRET=<32+ chars> pnpm --filter @siril/reference-admin migrate
+PAYLOAD_DB_URI=postgresql://payload:dev@localhost:5432/payload PAYLOAD_SECRET=<32+ chars> pnpm --filter @sirilcms/reference-admin migrate
 pnpm --filter e2e exec playwright install --with-deps chromium   # once
 PAYLOAD_DB_URI=postgresql://payload:dev@localhost:5432/payload pnpm --filter e2e test:e2e
 ```
@@ -54,9 +54,9 @@ PAYLOAD_DB_URI=postgresql://payload:dev@localhost:5432/payload pnpm --filter e2e
 Block/theme changes require a Payload migration:
 
 ```bash
-pnpm --filter @siril/reference-admin migrate:generate   # new migration file in packages/admin/src/migrations
-pnpm --filter @siril/reference-admin migrate            # apply
-pnpm --filter @siril/reference-admin generate:types     # regenerate payload-types.ts after schema changes
+pnpm --filter @sirilcms/reference-admin migrate:generate   # new migration file in packages/admin/src/migrations
+pnpm --filter @sirilcms/reference-admin migrate            # apply
+pnpm --filter @sirilcms/reference-admin generate:types     # regenerate payload-types.ts after schema changes
 ```
 
 Build: `pnpm -r build` (reference-web → `nuxt build`, reference-admin → `next build`).

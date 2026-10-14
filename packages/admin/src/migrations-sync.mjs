@@ -1,4 +1,4 @@
-// Копирует core-миграции @siril/admin в каталог миграций проекта (spike S0.1b: copy-sync).
+// Копирует core-миграции @sirilcms/admin в каталог миграций проекта (spike S0.1b: copy-sync).
 // Идемпотентно: файл с тем же содержимым не трогается; разный — перезаписывается (core — источник правды);
 // index.ts не копируется (у проекта свой). Файлы проекта (с другими именами) не удаляются.
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from 'node:fs'

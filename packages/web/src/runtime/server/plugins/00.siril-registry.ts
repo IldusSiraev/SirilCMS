@@ -1,5 +1,5 @@
-import { registerExtensions } from '@siril/contracts'
-import type { SirilExtensions } from '@siril/contracts'
+import { registerExtensions } from '@sirilcms/contracts'
+import type { SirilExtensions } from '@sirilcms/contracts'
 import extensions from '#siril-registry'
 
 // Nitro (API-роуты, submit): реестр блоков/тем проекта нужен и вне Vue-рендера.

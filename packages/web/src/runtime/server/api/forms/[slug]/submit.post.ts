@@ -1,5 +1,5 @@
 import { readBody } from 'h3'
-import { validateSubmission } from '@siril/contracts'
+import { validateSubmission } from '@sirilcms/contracts'
 import { payloadGet } from '../../../utils/payload'
 import { rateLimit } from '../../../utils/rate-limit'
 import { resolveSite } from '../../../utils/site-resolve'

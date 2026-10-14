@@ -12,11 +12,11 @@ Mono-repo (pnpm workspaces):
 
 | Путь | Роль | Порт |
 |---|---|---|
-| `packages/contracts` | `@siril/contracts` — **Единый источник правды (SSOT)**: контракты блоков, типов полей, тем | — |
-| `packages/web` | `@siril/web` — Nuxt-модуль: runtime UI (блоки, layouts) + server middleware/кэш/purge-API | — |
-| `packages/admin` | `@siril/admin` — Payload-расширение: collections/endpoints/access/admin-ui + канонические миграции | — |
-| `apps/reference-web` | `@siril/reference-web` — публичный сайт: тонкое референс-приложение Nuxt 4 (SSR), Nitro | 3000 |
-| `apps/reference-admin` | `@siril/reference-admin` — конструктор: тонкое приложение Payload 3 на Next.js, PostgreSQL | 3001 |
+| `packages/contracts` | `@sirilcms/contracts` — **Единый источник правды (SSOT)**: контракты блоков, типов полей, тем | — |
+| `packages/web` | `@sirilcms/web` — Nuxt-модуль: runtime UI (блоки, layouts) + server middleware/кэш/purge-API | — |
+| `packages/admin` | `@sirilcms/admin` — Payload-расширение: collections/endpoints/access/admin-ui + канонические миграции | — |
+| `apps/reference-web` | `@sirilcms/reference-web` — публичный сайт: тонкое референс-приложение Nuxt 4 (SSR), Nitro | 3000 |
+| `apps/reference-admin` | `@sirilcms/reference-admin` — конструктор: тонкое приложение Payload 3 на Next.js, PostgreSQL | 3001 |
 | `infra` | docker-compose (dev/prod), Caddy, сценарии | 80/443 (prod) |
 | `docs` | Документация (этот гайд, ранбуки, specs/plans) | — |
 
@@ -43,7 +43,7 @@ Mono-repo (pnpm workspaces):
 ```bash
 pnpm install
 pnpm dev:pg                                # Postgres 16 (docker) или внешний на :5433
-pnpm --filter @siril/reference-admin migrate   # применить миграции
+pnpm --filter @sirilcms/reference-admin migrate   # применить миграции
 pnpm seed                                  # демо-контент (идемпотентен)
 pnpm dev:all                               # web :3000 + admin :3001
 pnpm test                                  # 62 теста (blocks 17 / admin 24 / web 21)
@@ -53,7 +53,7 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 
 Точки входа в код:
 
-- Конфиг Payload: `apps/reference-admin/payload.config.ts` (асемблится на `sirilAdminConfig` из `@siril/admin`; коллекции — из `packages/admin/src/collections/`).
+- Конфиг Payload: `apps/reference-admin/payload.config.ts` (асемблится на `sirilAdminConfig` из `@sirilcms/admin`; коллекции — из `packages/admin/src/collections/`).
 - Коллекции: `packages/admin/src/collections/*.ts` (pages, posts, media, forms, form-submissions, site-content, sites, users, categories).
 - Миграции: `packages/admin/src/migrations/*.ts` (+ `.json`) — канонический каталог, зафиксированный явным `migrationDir` в `payload.config.ts` (по умолчанию Payload ищет миграции относительно CWD, а это не workspace-root).
 - Глобальный layout/страницы сайта: `packages/web/src/runtime/app/` + project-overlay `apps/reference-web/app/` (см. §5).
@@ -153,8 +153,8 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 ### Шаг 2. Миграция
 
 ```bash
-pnpm --filter @siril/reference-admin migrate:generate   # создать миграцию (файл в packages/admin/src/migrations)
-pnpm --filter @siril/reference-admin migrate             # применить
+pnpm --filter @sirilcms/reference-admin migrate:generate   # создать миграцию (файл в packages/admin/src/migrations)
+pnpm --filter @sirilcms/reference-admin migrate             # применить
 ```
 
 ### Шаг 3. Вёрстка: `packages/web/src/runtime/app/blocks/<type>/<Variant>.vue`
@@ -171,7 +171,7 @@ pnpm --filter @siril/reference-admin migrate             # применить
   </section>
 </template>
 <script setup lang="ts">
-import { getTheme } from '@siril/contracts'
+import { getTheme } from '@sirilcms/contracts'
 const props = defineProps<{ block: any; themeId: string }>()
 const tokens = Object.fromEntries(Object.entries(getTheme(props.themeId).tokens))
 </script>
@@ -332,10 +332,10 @@ pnpm dev:all     # создать страницу в admin с новым бло
 pnpm test                                   # все тесты (62)
 pnpm lint                                   # ESLint на весь монорепо (eslint.config.mjs)
 pnpm typecheck                              # tsc/nuxt typecheck во всех workspace
-pnpm --filter @siril/contracts test            # только контракты блоков
-pnpm --filter @siril/reference-admin migrate:generate # новая миграция (после изменения схемы)
-pnpm --filter @siril/reference-admin migrate          # применить миграции
-pnpm --filter @siril/reference-admin generate:types   # перегенерировать payload-types.ts
+pnpm --filter @sirilcms/contracts test            # только контракты блоков
+pnpm --filter @sirilcms/reference-admin migrate:generate # новая миграция (после изменения схемы)
+pnpm --filter @sirilcms/reference-admin migrate          # применить миграции
+pnpm --filter @sirilcms/reference-admin generate:types   # перегенерировать payload-types.ts
 pnpm seed                                   # демо-контент (идемпотентный)
 pnpm -r build                               # прод-сборки (reference-web: nuxt build, reference-admin: next build)
 make -C infra up                            # production-стек (см. runbooks/prod.md)

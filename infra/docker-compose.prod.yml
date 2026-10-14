@@ -13,8 +13,8 @@ services:
       timeout: 5s
       retries: 10
   migrate:
-    image: ghcr.io/ildussiraev/sirilcms-admin-migrate:${IMAGE_TAG:-latest}
-    command: pnpm --filter @siril/reference-admin migrate
+    image: ghcr.io/sirilcms/sirilcms-admin-migrate:${IMAGE_TAG:-latest}
+    command: pnpm --filter @sirilcms/reference-admin migrate
     env_file: ${ENV_FILE:-../.env}
     environment:
       PAYLOAD_DB_URI: postgresql://${POSTGRES_USER:-payload}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-payload}
@@ -22,7 +22,7 @@ services:
       postgres:
         condition: service_healthy
   admin:
-    image: ghcr.io/ildussiraev/sirilcms-admin:${IMAGE_TAG:-latest}
+    image: ghcr.io/sirilcms/sirilcms-admin:${IMAGE_TAG:-latest}
     env_file: ${ENV_FILE:-../.env}
     restart: unless-stopped
     environment:
@@ -43,7 +43,7 @@ services:
       migrate:
         condition: service_completed_successfully
   web:
-    image: ghcr.io/ildussiraev/sirilcms-web:${IMAGE_TAG:-latest}
+    image: ghcr.io/sirilcms/sirilcms-web:${IMAGE_TAG:-latest}
     env_file: ${ENV_FILE:-../.env}
     restart: unless-stopped
     environment:

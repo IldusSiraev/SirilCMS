@@ -1,5 +1,5 @@
 {
-  "name": "@siril/web",
+  "name": "@sirilcms/web",
   "version": "0.1.0",
   "type": "module",
   "engines": {
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@nuxt/kit": "^4.0.0",
-    "@siril/contracts": "workspace:*"
+    "@sirilcms/contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.20.4",
@@ -31,7 +31,7 @@
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IldusSiraev/SirilCMS.git",
+    "url": "git+https://github.com/sirilcms/SirilCMS.git",
     "directory": "packages/web"
   },
   "publishConfig": {

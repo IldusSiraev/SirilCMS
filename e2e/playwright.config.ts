@@ -24,7 +24,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'pnpm --filter @siril/reference-admin build && pnpm --filter @siril/reference-admin start',
+      command: 'pnpm --filter @sirilcms/reference-admin build && pnpm --filter @sirilcms/reference-admin start',
       url: `http://localhost:${ADMIN_PORT}/admin/login`,
       cwd: '..',
       timeout: 180_000,
@@ -32,7 +32,7 @@ export default defineConfig({
       env: { ...env, PORT: String(ADMIN_PORT) },
     },
     {
-      command: 'pnpm --filter @siril/reference-web build && pnpm --filter @siril/reference-web start',
+      command: 'pnpm --filter @sirilcms/reference-web build && pnpm --filter @sirilcms/reference-web start',
       url: `http://localhost:${WEB_PORT}/api/health`,
       cwd: '..',
       timeout: 180_000,

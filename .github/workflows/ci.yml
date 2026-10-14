@@ -107,14 +107,14 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply all migrations to a clean database
-        run: pnpm --filter @siril/reference-admin migrate
+        run: pnpm --filter @sirilcms/reference-admin migrate
 
       - name: Check for schema drift (collection change without a matching migration)
         run: |
           set -euo pipefail
           # migrate:generate writes straight into packages/admin/src/migrations (pinned migrationDir),
           # so a fresh untracked/modified file there is the drift signal.
-          echo "n" | pnpm --filter @siril/reference-admin migrate:generate -- --name ci_schema_drift_check
+          echo "n" | pnpm --filter @sirilcms/reference-admin migrate:generate -- --name ci_schema_drift_check
           if [ -n "$(git status --porcelain packages/admin/src/migrations)" ]; then
             git status --porcelain packages/admin/src/migrations
             echo "::error::Schema drift: 'migrate:generate' produced changes in packages/admin/src/migrations — a collection changed without a matching committed migration. Commit the new migration to the package."
@@ -157,7 +157,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply migrations to a clean database
-        run: pnpm --filter @siril/reference-admin migrate
+        run: pnpm --filter @sirilcms/reference-admin migrate
 
       - name: Install Playwright's Chromium
         run: pnpm --filter e2e exec playwright install --with-deps chromium
@@ -211,14 +211,14 @@ jobs:
 
       - name: Sync core migrations into the project and apply (core series + project series)
         run: |
-          pnpm --filter @siril/example-admin migrations:sync
-          pnpm --filter @siril/example-admin migrate
+          pnpm --filter @sirilcms/example-admin migrations:sync
+          pnpm --filter @sirilcms/example-admin migrate
 
       - name: Drift check (project schema == committed project migrations)
         run: |
           dir=examples/minimal-project/admin/src/migrations
           before=$(ls $dir | wc -l)
-          echo "n" | pnpm --filter @siril/example-admin migrate:generate
+          echo "n" | pnpm --filter @sirilcms/example-admin migrate:generate
           if [ "$(ls $dir | wc -l)" != "$before" ]; then
             echo "::error::Example project schema drift: commit a new project migration"
             exit 1
@@ -226,8 +226,8 @@ jobs:
 
       - name: Build example admin and web
         run: |
-          pnpm --filter @siril/example-admin build
-          pnpm --filter @siril/example-web build
+          pnpm --filter @sirilcms/example-admin build
+          pnpm --filter @sirilcms/example-web build
 
       - name: Start both and verify the extension API end-to-end
         run: |
@@ -299,7 +299,7 @@ jobs:
             target: ''
           # admin's runtime image is a Next.js standalone build — no node_modules/payload/bin.js
           # (the payload CLI) and no app ts-loader script needed to run the package's TS.
-          # `pnpm --filter @siril/reference-admin migrate` needs the full pre-build stage instead,
+          # `pnpm --filter @sirilcms/reference-admin migrate` needs the full pre-build stage instead,
           # published as its own (much larger) image.
           - image: admin-migrate
             dockerfile: infra/docker/admin.Dockerfile

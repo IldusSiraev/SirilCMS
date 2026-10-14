@@ -1,6 +1,6 @@
 # Extension API — как строить проект на движке SirilCMS
 
-Для кого: разработчик, который делает клиентский сайт **поверх** `@siril/*` и не форкает репозиторий движка.
+Для кого: разработчик, который делает клиентский сайт **поверх** `@sirilcms/*` и не форкает репозиторий движка.
 Принцип: **ядро закрыто, расширение аддитивное** — проект добавляет блоки, темы, коллекции, страницы и хуки, но не правит код ядра и не добавляет поля в core-коллекции (`pages`, `sites`, …). Нужно больше контента на странице — делайте новый **тип блока**; нужна новая сущность — делайте **коллекцию** проекта со связью на core.
 
 Рабочий эталон, который собирается и проверяется в CI: [`examples/minimal-project`](../examples/minimal-project) (блок + тема + коллекция). Всё ниже сверено с ним; сквозной сценарий — `examples/minimal-project/scripts/verify.mjs`.
@@ -13,15 +13,15 @@
 
 | Контракт | Статус (0.x, внутренний) |
 |---|---|
-| Формат `BlockDef` / `ThemeDef` / `BlockField` (`@siril/contracts`) | **Стабилен**; новые необязательные свойства — да, ломающие — только в minor с записью в CHANGELOG |
+| Формат `BlockDef` / `ThemeDef` / `BlockField` (`@sirilcms/contracts`) | **Стабилен**; новые необязательные свойства — да, ломающие — только в minor с записью в CHANGELOG |
 | `registerExtensions`, `sirilAdminConfig({ blocks, themes, collections, endpoints, hooks, adminUiBase })`, опция Nuxt-модуля `siril: { blocks, themes }` | **Стабилен** |
-| Экспортируемые helpers `@siril/admin` (`publishHook`, `notifySubmission`, `encryptField`/`decryptField`, `accessScopes`, `sirilEditor`, `bootstrapOwner`, `withRichTextHtml`, `makeDuplicateSlug`, `buildPreviewURL`, `forceOwnerForFirstUser`) | **Стабильны** сигнатуры |
+| Экспортируемые helpers `@sirilcms/admin` (`publishHook`, `notifySubmission`, `encryptField`/`decryptField`, `accessScopes`, `sirilEditor`, `bootstrapOwner`, `withRichTextHtml`, `makeDuplicateSlug`, `buildPreviewURL`, `forceOwnerForFirstUser`) | **Стабильны** сигнатуры |
 | `siril-migrations-sync` (bin) | **Стабилен** |
 | Соглашения путей проекта: `app/blocks/<type>/<Variant>.vue`, `themes/<id>/tokens.css`, `app/pages/**`, `server/**` | **Стабильны** |
 | Внутренняя структура core-коллекций (имена полей, `admin-ui` компоненты), генерируемые файлы `.nuxt/siril/*`, `#siril-registry`, plugin-файлы модуля | **Нестабильны** — меняются без предупреждения (кроме записи в CHANGELOG) |
-| Прямые импорты из `@siril/admin/src/**`, `@siril/web/src/runtime/**` | **Запрещены** — не API |
+| Прямые импорты из `@sirilcms/admin/src/**`, `@sirilcms/web/src/runtime/**` | **Запрещены** — не API |
 
-Публичный semver-контракт с гарантиями совместимости — фаза D (триггер «выход наружу»); сейчас гарантии внутренние, версии lockstep (`@siril/contracts`, `@siril/web`, `@siril/admin` — одна версия).
+Публичный semver-контракт с гарантиями совместимости — фаза D (триггер «выход наружу»); сейчас гарантии внутренние, версии lockstep (`@sirilcms/contracts`, `@sirilcms/web`, `@sirilcms/admin` — одна версия).
 
 ---
 
@@ -31,7 +31,7 @@
 my-project/
 ├─ siril.extensions.ts          ← блоки и темы (общий файл: его импортируют и web, и admin)
 ├─ web/                         ← Nuxt 4 (публичный сайт)
-│  ├─ nuxt.config.ts            ← modules: ['@siril/web'], siril: { blocks, themes }
+│  ├─ nuxt.config.ts            ← modules: ['@sirilcms/web'], siril: { blocks, themes }
 │  ├─ app/app.vue, app/error.vue
 │  ├─ app/blocks/<type>/<Variant>.vue   ← Vue-компоненты ваших блоков
 │  ├─ app/pages/**              ← (необязательно) свои страницы
@@ -47,7 +47,7 @@ my-project/
 
 Обвязку `admin/app/(payload)`, `admin/scripts/ts-loader`, `next.config.mjs`, `tsconfig.json`, `web/app/app.vue`, `web/app/error.vue` берите **как есть** из `examples/minimal-project` (в фазе C это станет шаблоном `create-siril`).
 
-> `siril.extensions.ts` лежит рядом с `web/` и `admin/`, поэтому ему нужен свой `package.json` с зависимостью `@siril/contracts` (см. эталон) — иначе типы не резолвятся.
+> `siril.extensions.ts` лежит рядом с `web/` и `admin/`, поэтому ему нужен свой `package.json` с зависимостью `@sirilcms/contracts` (см. эталон) — иначе типы не резолвятся.
 
 ---
 
@@ -56,7 +56,7 @@ my-project/
 **2.1 Контракт** — чистые данные (`siril.extensions.ts`):
 
 ```ts
-import type { BlockDef } from '@siril/contracts'
+import type { BlockDef } from '@sirilcms/contracts'
 
 export const casesBlock: BlockDef = {
   type: 'cases',                       // kebab-case, уникален; совпадает с папкой компонента
@@ -85,7 +85,7 @@ export const blocks = [casesBlock]
 ```ts
 // web/nuxt.config.ts
 import { blocks, themes } from '../siril.extensions'
-export default defineNuxtConfig({ modules: ['@siril/web'], siril: { blocks, themes } })
+export default defineNuxtConfig({ modules: ['@sirilcms/web'], siril: { blocks, themes } })
 
 // admin/payload.config.ts
 const { collections, endpoints } = sirilAdminConfig({ adminUiBase: './admin-ui', blocks, themes })
@@ -147,7 +147,7 @@ sirilAdminConfig({ blocks, themes, collections: [Cases] })
 
 **Страницы и роуты сайта** — обычные `web/app/pages/**` и `web/server/**` проекта (Nuxt/Nitro). Файл `app/…` проекта с тем же путём, что в модуле, **перекрывает** модульный (app > module). Правило: core-файл **не копируйте** «ради правки» — только полная замена файла или новый путь. Репозиторий проверяет это скриптом `scripts/check-no-core-copies.mjs` (идентичная копия core-файла — ошибка).
 
-**Хуки и серверная логика** — свой код в проекте плюс helpers из `@siril/admin` (список в §0). Хуки на коллекциях проекта вешаются как обычно в Payload; чтобы очищать кэш сайта при публикации своей сущности, вызывайте `publishHook(type, id, siteId)` из `afterChange`.
+**Хуки и серверная логика** — свой код в проекте плюс helpers из `@sirilcms/admin` (список в §0). Хуки на коллекциях проекта вешаются как обычно в Payload; чтобы очищать кэш сайта при публикации своей сущности, вызывайте `publishHook(type, id, siteId)` из `afterChange`.
 
 ---
 
@@ -155,11 +155,11 @@ sirilAdminConfig({ blocks, themes, collections: [Cases] })
 
 | Серия | Источник | Кто генерирует |
 |---|---|---|
-| core | `@siril/admin` (`src/migrations`) | релиз движка |
+| core | `@sirilcms/admin` (`src/migrations`) | релиз движка |
 | проектная | `admin/src/migrations` | вы: `pnpm migrate:generate` |
 
 ```bash
-pnpm migrations:sync     # копирует core-миграции из node_modules/@siril/admin в src/migrations (идемпотентно)
+pnpm migrations:sync     # копирует core-миграции из node_modules/@sirilcms/admin в src/migrations (идемпотентно)
 pnpm migrate             # применяет обе серии (учёт — таблица payload_migrations, по имени файла)
 pnpm migrate:generate    # создаёт ТОЛЬКО проектную разницу (core-снапшоты уже в каталоге)
 ```
@@ -168,7 +168,7 @@ pnpm migrate:generate    # создаёт ТОЛЬКО проектную раз
 
 В файле миграции импортируйте типы раздельно: `import type { MigrateUpArgs, MigrateDownArgs } …` и `import { sql } …` (одним импортом Node ESM падает).
 
-**Обновление движка в проекте:** `pnpm up "@siril/*"` → прочитать CHANGELOG движка (раздел «Breaking / ручные шаги») → `pnpm migrations:sync` → `pnpm migrate:generate` (если ядро изменило схему так, что нужна проектная правка) → `pnpm typecheck && pnpm test && pnpm build` → деплой по `docs/runbooks/prod.md` (бэкап → deploy → verify → откат).
+**Обновление движка в проекте:** `pnpm up "@sirilcms/*"` → прочитать CHANGELOG движка (раздел «Breaking / ручные шаги») → `pnpm migrations:sync` → `pnpm migrate:generate` (если ядро изменило схему так, что нужна проектная правка) → `pnpm typecheck && pnpm test && pnpm build` → деплой по `docs/runbooks/prod.md` (бэкап → deploy → verify → откат).
 
 ---
 
@@ -184,7 +184,7 @@ pnpm migrate:generate    # создаёт ТОЛЬКО проектную раз
 
 ## 7. Чеклист «проект собран по докам»
 
-- [ ] `siril.extensions.ts` + `package.json` с `@siril/contracts`
+- [ ] `siril.extensions.ts` + `package.json` с `@sirilcms/contracts`
 - [ ] Блок: контракт, `app/blocks/<type>/<Variant>.vue`, подключён в обоих конфигах
 - [ ] Тема: `ThemeDef`, `themes/<id>/tokens.css`, подключена в обоих конфигах
 - [ ] Коллекция в `sirilAdminConfig({ collections })`

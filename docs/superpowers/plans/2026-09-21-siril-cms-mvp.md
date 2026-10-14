@@ -29,7 +29,7 @@
 Все задачи цитируют эти сигнатуры. Их реализация — в T2; изменение контракта — только с правкой T2 и всех ссылками.
 
 ```ts
-// packages/blocks-definitions → import { … } from '@siril/blocks-definitions'
+// packages/blocks-definitions → import { … } from '@sirilcms/blocks-definitions'
 
 type BlockFieldType = 'text'|'email'|'richtext'|'number'|'boolean'|'select'|'image'|'link'|'array-text'|'image-array'|'object-array'|'page'|'form'
 interface BlockField  { name: string; type: BlockFieldType; label: string; required?: boolean; placeholder?: string; options?: {value:string;label:string}[]; maxItems?: number; subfields?: BlockField[] }
@@ -139,7 +139,7 @@ packages:
   "private": true,
   "scripts": {
     "dev:pg": "docker compose -f infra/compose.dev.yml up -d",
-    "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @siril/web dev\" \"pnpm --filter @siril/admin dev\"",
+    "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @sirilcms/web dev\" \"pnpm --filter @sirilcms/admin dev\"",
     "test": "pnpm -r --no-bail test"
   },
   "devDependencies": { "concurrently": "^9.0.0" }
@@ -179,7 +179,7 @@ cd apps && pnpm create nuxt@latest web --packageManager pnpm --gitInit false
 cd web && pnpm install
 pnpm add vitest
 ```
-`apps/web/package.json`: name `@siril/web`, scripts: `"dev": "nuxt dev --port 3000"`, `"build": "nuxt build"`, `"start": "node .output/server/index.mjs"`, `"test": "vitest run"`.
+`apps/web/package.json`: name `@sirilcms/web`, scripts: `"dev": "nuxt dev --port 3000"`, `"build": "nuxt build"`, `"start": "node .output/server/index.mjs"`, `"test": "vitest run"`.
 
 - [ ] **Step 3: Scaffold Next+Payload**
 
@@ -188,7 +188,7 @@ cd apps && pnpm dlx create-next-app@latest admin --ts --app --no-tailwind --no-e
 cd admin && pnpm add payload @payloadcms/next @payloadcms/db-postgres concurrently vitest
 ```
 
-`apps/admin/package.json` (name `@siril/admin`, scripts):
+`apps/admin/package.json` (name `@sirilcms/admin`, scripts):
 ```json
 {"dev": "concurrently -n next,payload \"next dev -p 3001\" \"payload build:watch\"", "build": "payload build && next build", "start": "next start -p 3001", "seed": "payload run src/scripts/seed.ts", "test": "vitest run"}
 ```
@@ -256,14 +256,14 @@ Acceptance: `pnpm dev:all` с нуля (свежий clone) поднимает p
 
 **Interfaces:**
 - Consumes: ничего (новый пакет)
-- Produces: ВСЁ из раздела «Контракты» (импорт `@siril/blocks-definitions`). В `BLOCKS` — пусто (заполняется T9–T11), в `THEMES` — один `defaultTheme` (все будущие блоки включены — генерится из BLOCKS; см. код).
+- Produces: ВСЁ из раздела «Контракты» (импорт `@sirilcms/blocks-definitions`). В `BLOCKS` — пусто (заполняется T9–T11), в `THEMES` — один `defaultTheme` (все будущие блоки включены — генерится из BLOCKS; см. код).
 
 - [ ] **Step 1: Пакет**
 
 `packages/blocks-definitions/package.json`:
 ```json
 {
-  "name": "@siril/blocks-definitions",
+  "name": "@sirilcms/blocks-definitions",
   "version": "0.0.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -330,7 +330,7 @@ it('union полей с зависимостью от variant', () => {
 
 - [ ] **Step 3: Запуск — тесты падают**
 
-Run: `pnpm --filter @siril/blocks-definitions test`
+Run: `pnpm --filter @sirilcms/blocks-definitions test`
 Expected: FAIL (модули не существуют).
 
 - [ ] **Step 4: Реализация**
@@ -457,7 +457,7 @@ export * from './form-fields'
 
 - [ ] **Step 5: Тесты зелёные**
 
-Run: `pnpm --filter @siril/blocks-definitions test` — PASS.
+Run: `pnpm --filter @sirilcms/blocks-definitions test` — PASS.
 
 - [ ] **Step 6: Коммит**
 
@@ -606,7 +606,7 @@ export const Users: CollectionConfig = {
 
 - [ ] **Step 5: Run + smoke**
 
-Run: `pnpm --filter @siril/admin test` (access-тесты) — PASS.
+Run: `pnpm --filter @sirilcms/admin test` (access-тесты) — PASS.
 Run: `pnpm dev:all` → в админке: создай Site (name Demo, slug default); создай admin-пользователь (role owner) + upload картинки (filename в БД = `1/<…>`).
 Expected: файл в `apps/admin/media/1/…`.
 
@@ -636,8 +636,8 @@ git add -A && git commit -m "feat(admin): sites+media collections, roles, site-s
 
 ```ts
 import type { CollectionConfig } from 'payload'
-import { toPayloadBlockFields } from '@siril/blocks-definitions'
-import { BLOCKS } from '@siril/blocks-definitions'
+import { toPayloadBlockFields } from '@sirilcms/blocks-definitions'
+import { BLOCKS } from '@sirilcms/blocks-definitions'
 import { canScope } from '../access/site-scope'
 
 const seo = (fieldsName = 'seo'): any => ({
@@ -738,7 +738,7 @@ Acceptance: в админке созданы все сущности; draft→pu
 
 **Interfaces:**
 - Consumes: T3–T4 коллекции
-- Produces: `pnpm seed` (и `pnpm --filter @siril/admin seed`): создаёт idempotently — site(default), 4 страницы (hero/текст/faq), 3 поста, 3 категории, site-content(меню из 4 страниц), пользователей owner+editor (email из env `SEED_ADMIN_LOGIN/SEED_ADMIN_PASS`, default owner@demo.ru / admin123).
+- Produces: `pnpm seed` (и `pnpm --filter @sirilcms/admin seed`): создаёт idempotently — site(default), 4 страницы (hero/текст/faq), 3 поста, 3 категории, site-content(меню из 4 страниц), пользователей owner+editor (email из env `SEED_ADMIN_LOGIN/SEED_ADMIN_PASS`, default owner@demo.ru / admin123).
 
 - [ ] **Step 1: Реализация**
 
@@ -812,10 +812,10 @@ export default defineNuxtConfig({
     SITE_DOMAIN: process.env.NUXT_PUBLIC_SITE_DOMAIN ?? 'localhost:3000',
     PURGE_TOKEN: process.env.PURGE_TOKEN ?? 'dev-purge-token',
   },
-  build: { transpile: ['@siril/blocks-definitions'] },
+  build: { transpile: ['@sirilcms/blocks-definitions'] },
 })
 ```
-(Без `modules` — `useSeoMeta` доступен нативно. `transpile` — чтобы TS-пакет компилировался.) Добавить зависимость: `pnpm --filter @siril/web add @siril/blocks-definitions@workspace:0.0.1`? pnpm workspace-протокол: `@siril/blocks-definitions: workspace:*`? Для TS-only пакета — `"@siril/blocks-definitions": "*"` с workspaces resolution → pnpm подхватит локальный. Записать в web/package.json: `"dependencies": { "@siril/blocks-definitions": "*" }`.
+(Без `modules` — `useSeoMeta` доступен нативно. `transpile` — чтобы TS-пакет компилировался.) Добавить зависимость: `pnpm --filter @sirilcms/web add @sirilcms/blocks-definitions@workspace:0.0.1`? pnpm workspace-протокол: `@sirilcms/blocks-definitions: workspace:*`? Для TS-only пакета — `"@sirilcms/blocks-definitions": "*"` с workspaces resolution → pnpm подхватит локальный. Записать в web/package.json: `"dependencies": { "@sirilcms/blocks-definitions": "*" }`.
 
 - [ ] **Step 2: API сайта**
 
@@ -935,8 +935,8 @@ export function getBlockComponent(type: string, variant: string): Component {
   <component :is="resolved" :block="block" :theme-id="themeId" />
 </template>
 <script setup lang="ts">
-import { resolveVariant } from '@siril/blocks-definitions'
-import { getBlock, getTheme } from '@siril/blocks-definitions'
+import { resolveVariant } from '@sirilcms/blocks-definitions'
+import { getBlock, getTheme } from '@sirilcms/blocks-definitions'
 import { getBlockComponent } from '../blocks/registry'
 const props = defineProps<{ block: any; themeId: string }>()
 const def = getBlock(props.block.type)
@@ -1039,7 +1039,7 @@ it('clearCache всё сбрасывает', () => {
   clearCache(); expect(getCache('c')).toBeNull()
 })
 ```
-Run: `pnpm --filter @siril/web test` → FAIL (нет модуля).
+Run: `pnpm --filter @sirilcms/web test` → FAIL (нет модуля).
 
 - [ ] **Step 2: Реализация кэша + middleware**
 
@@ -1111,7 +1111,7 @@ hooks: { afterChange: [async (doc, { req, id }) => {
 
 - [ ] **Step 4: Smoke**
 
-Run: `pnpm --filter @siril/web test` (3 теста PASS).
+Run: `pnpm --filter @sirilcms/web test` (3 теста PASS).
 Run: `pnpm dev:all`. Ответ `curl -i http://localhost:3000/home` → `x-siril-cache: MISS` (при первом) / HIT (при втором).
 Опубликуй изменение в Payload (draft→publish) → ответ с HIT→MISS (cache сброшен).
 Expected: кэш работает и сбрасывается по publish.
@@ -1179,7 +1179,7 @@ Expected: кэш работает и сбрасывается по publish.
   </section>
 </template>
 <script setup lang="ts">
-import { getTheme } from '@siril/blocks-definitions'
+import { getTheme } from '@sirilcms/blocks-definitions'
 const props = defineProps<{ block: any; themeId: string }>()
 const theme = getTheme(props.themeId)
 const tokens = Object.fromEntries(Object.entries(theme.tokens))
@@ -1283,7 +1283,7 @@ it('bold', () => expect(lexicalToHtml(doc([{ type: 'paragraph', children: [{ typ
 it('list', () => expect(lexicalToHtml(doc([{ type: 'list', children: [{ type: 'listitem', children: [{ type: 'text', text: 'a' }] }] }]))).toBe('<ul><li>a</li></ul>'))
 it('экранирует html', () => expect(lexicalToHtml(doc([{ type: 'paragraph', children: [{ type: 'text', text: '<i>' }] }]))).toBe('<p>&lt;i&gt;</p>'))
 ```
-Run: `pnpm --filter @siril/web test` → 4 новых теста PASS (плюс page-cache из T8).
+Run: `pnpm --filter @sirilcms/web test` → 4 новых теста PASS (плюс page-cache из T8).
 
 - [ ] **Step 6: Smoke + коммит**
 
@@ -1519,7 +1519,7 @@ it('mono не поддерживает hero/split → fallback', () => {
   expect(resolveVariant(getTheme('mono'), hero, 'split')).toEqual({ variant: 'default', fallback: true })
 })
 ```
-Run: `pnpm --filter @siril/blocks-definitions test` — PASS.
+Run: `pnpm --filter @sirilcms/blocks-definitions test` — PASS.
 
 - [ ] **Step 2: tokens.css + динамическая подгрузка**
 
@@ -1541,7 +1541,7 @@ await import(`../themes/${themeId}/tokens.css`).catch(() => import('../themes/de
 
 `sites.ts`:
 ```ts
-import { THEMES } from '@siril/blocks-definitions'
+import { THEMES } from '@sirilcms/blocks-definitions'
 // field theme:
 { name: 'theme', type: 'select', options: THEMES.map(t => ({ value: t.id, label: t.name })), defaultValue: 'default',
   admin: { description: 'Переключение темы — мгновенное (данные). Блоки/варианты, не поддержанные темой, отрисовываются по fallback-варианту.' } }
@@ -1568,7 +1568,7 @@ import { THEMES } from '@siril/blocks-definitions'
 
 ```ts
 import type { CollectionConfig } from 'payload'
-import { toPayloadFormFields } from '@siril/blocks-definitions'
+import { toPayloadFormFields } from '@sirilcms/blocks-definitions'
 import { canScope } from '../access/site-scope'
 
 export const Forms: CollectionConfig = {
@@ -1652,14 +1652,14 @@ export function rateLimit(key: string, limit = 3, windowMs = 60_000): boolean {
 }
 ```
 `rate-limit.test.ts`: 3 пропуска, 4-й — false (mock даты: `vi.useFakeTimers`).
-Run: `pnpm --filter @siril/web test` — PASS.
+Run: `pnpm --filter @sirilcms/web test` — PASS.
 
 - [ ] **Step 3: submit-эндпоинт**
 
 `server/api/forms/[slug]/submit.post.ts`:
 ```ts
 import { readBody, getRouterParam } from 'h3'
-import { validateSubmission } from '@siril/blocks-definitions'
+import { validateSubmission } from '@sirilcms/blocks-definitions'
 import { payloadGet } from '../../utils/payload'
 import { rateLimit } from '../../utils/rate-limit'
 import { notifyNewSubmission } from '../../utils/notify'
@@ -1711,7 +1711,7 @@ export async function notifyNewSubmission(p: { formName: string; values: Record<
   if (tgToken && chatId) await $fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, { method: 'POST', body: { chat_id: chatId, text } }).catch(() => {})
 }
 ```
-`pnpm --filter @siril/web add nodemailer`. В `.env.example` добавить `TELEGRAM_BOT_TOKEN=`.
+`pnpm --filter @sirilcms/web add nodemailer`. В `.env.example` добавить `TELEGRAM_BOT_TOKEN=`.
 
 - [ ] **Step 4: Блок form-block**
 
@@ -1866,7 +1866,7 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 ARG PAYLOAD_URL=http://admin:3001
 ENV PAYLOAD_URL=$PAYLOAD_URL
-RUN pnpm --filter @siril/web build
+RUN pnpm --filter @sirilcms/web build
 FROM node:22-alpine
 WORKDIR /app
 COPY --from=build /app/apps/web/.output /app/apps/web/.output
@@ -1882,7 +1882,7 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 ARG POSTGRES_DB_URI
 ENV POSTGRES_DB_URI=$POSTGRES_DB_URI
-RUN pnpm --filter @siril/admin build
+RUN pnpm --filter @sirilcms/admin build
 FROM node:22-alpine
 WORKDIR /app
 COPY --from=build /app/apps/admin/.next/standalone /app

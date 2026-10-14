@@ -1,4 +1,4 @@
-import { BLOCKS, THEMES, mergeBlockRegistry, mergeThemeRegistry } from '@siril/contracts'
+import { BLOCKS, THEMES, mergeBlockRegistry, mergeThemeRegistry } from '@sirilcms/contracts'
 import type { SirilModuleOptions } from './module'
 
 /** Смерженный (core + проект) реестр из опций модуля — для проверок/превью; рантайм использует registerExtensions. */

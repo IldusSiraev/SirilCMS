@@ -1,5 +1,5 @@
 {
-  "name": "@siril/example-admin",
+  "name": "@sirilcms/example-admin",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -20,8 +20,8 @@
     "@payloadcms/richtext-lexical": "3.90.1",
     "@payloadcms/translations": "3.90.1",
     "@payloadcms/ui": "3.90.1",
-    "@siril/admin": "workspace:*",
-    "@siril/contracts": "workspace:*",
+    "@sirilcms/admin": "workspace:*",
+    "@sirilcms/contracts": "workspace:*",
     "next": "16.3.5",
     "payload": "3.90.1",
     "react": "19.2.8",
