@@ -22,7 +22,7 @@ const { collections, endpoints } = sirilAdminConfig({
 
 export default buildConfig({
   admin: {
-    importMap: { baseDir: path.resolve(dirname, 'node_modules/@sirilcms/admin/src') },
+    importMap: { baseDir: path.resolve(dirname, 'node_modules/@sirilcms/admin/dist') },
   },
   collections,
   endpoints,

@@ -1,5 +1,7 @@
 {
   "extends": "../../apps/reference-admin/tsconfig.json",
   "compilerOptions": { "noEmit": true, "jsx": "preserve" },
-  "include": ["src"]
+  // payload-types референса добавляют module augmentation `payload` (типизированный req.user); в проекте-потребителе
+  // эту роль играет его собственный payload-types.ts, поэтому из кода пакета он НЕ импортируется.
+  "include": ["src", "../../apps/reference-admin/payload-types.ts"]
 }

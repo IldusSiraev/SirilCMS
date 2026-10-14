@@ -3,14 +3,18 @@
   "version": "0.5.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "bin": {
     "siril-migrations-sync": "./bin/siril-migrations-sync.mjs"
   },
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
+    "build": "unbuild",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
@@ -28,12 +32,12 @@
     "@types/nodemailer": "^7",
     "@types/react": "^19",
     "typescript": "^5.6.0",
+    "unbuild": "^3.6.1",
     "vitest": "^3.0.0"
   },
   "files": [
-    "src",
-    "bin",
-    "!src/**/*.test.ts"
+    "dist",
+    "bin"
   ],
   "license": "UNLICENSED",
   "repository": {

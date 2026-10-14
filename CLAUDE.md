@@ -24,7 +24,7 @@ Full architecture/administration reference: [docs/developer.md](docs/developer.m
 ## Commands
 
 ```bash
-pnpm install
+pnpm install                                # also builds packages/{contracts,web,admin} → dist (prepare); after editing them run: pnpm build:packages
 pnpm dev:pg                                # Postgres 16 via docker, or waits for external pg on :5433
 pnpm --filter @sirilcms/reference-admin migrate   # apply Payload migrations
 pnpm seed                                  # demo content (idempotent — skips if sites already exist)
