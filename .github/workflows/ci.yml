@@ -240,6 +240,76 @@ jobs:
         if: failure()
         run: tail -n 80 /tmp/admin.log /tmp/web.log || true
 
+  template-freshness:
+    name: Template freshness (create-siril → install → build → run)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: payload
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: payload
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U payload"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PAYLOAD_SECRET: ci-secret-at-least-32-characters-long
+      PAYLOAD_DB_URI: postgresql://payload:dev@localhost:5432/payload
+      PAYLOAD_URL: http://localhost:3001
+      PURGE_TOKEN: ci-template-purge-token
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install monorepo (builds the packages)
+        run: pnpm install --frozen-lockfile
+
+      - name: Pack engine packages of this commit
+        run: |
+          mkdir -p /tmp/packs
+          for d in contracts web admin create-siril; do (cd packages/$d && pnpm pack --pack-destination /tmp/packs); done
+          ls /tmp/packs
+
+      - name: Scaffold a project from the template using the packed engine (as a consumer outside the monorepo would)
+        run: |
+          mkdir -p /tmp/work && cd /tmp/work
+          node "$GITHUB_WORKSPACE/packages/create-siril/bin/create-siril.mjs" acme-site --engine-source /tmp/packs
+          cd acme-site
+          pnpm install
+          cp .env.example .env
+          pnpm setup
+          pnpm typecheck
+          pnpm build
+
+      - name: Migrate, drift check, start both apps, verify
+        run: |
+          cd /tmp/work/acme-site
+          pnpm migrate
+          dir=admin/src/migrations
+          before=$(ls $dir | wc -l)
+          echo "n" | pnpm migrate:generate
+          if [ "$(ls $dir | wc -l)" != "$before" ]; then echo "::error::fresh scaffold has schema drift"; exit 1; fi
+          (cd admin && pnpm start > /tmp/admin.log 2>&1 &)
+          (cd web && pnpm start > /tmp/web.log 2>&1 &)
+          for i in $(seq 1 40); do curl -sf -o /dev/null http://localhost:3001/api/users/me && curl -sf -o /dev/null http://localhost:3000/api/health && break; sleep 3; done
+          node "$GITHUB_WORKSPACE/scripts/verify-scaffold.mjs"
+
+      - name: Server logs on failure
+        if: failure()
+        run: tail -n 80 /tmp/admin.log /tmp/web.log || true
+
   build:
     name: Build
     runs-on: ubuntu-latest

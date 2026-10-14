@@ -1,6 +1,6 @@
 // Чистая логика релиза (lockstep-версии @sirilcms/*). CLI — scripts/release.mjs.
 
-export const RELEASE_PACKAGES = ['packages/contracts', 'packages/web', 'packages/admin']
+export const RELEASE_PACKAGES = ['packages/contracts', 'packages/web', 'packages/admin', 'packages/create-siril']
 
 const SEMVER = /^(\d+)\.(\d+)\.(\d+)$/
 

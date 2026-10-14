@@ -1,3 +1,4 @@
+import { defineEventHandler, getRequestHost } from '#imports'
 import { resolveSite } from '../utils/site-resolve'
 
 export default defineEventHandler(async (event) => {

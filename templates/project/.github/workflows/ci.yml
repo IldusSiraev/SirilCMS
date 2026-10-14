@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  # PAT с read:packages ИЛИ GITHUB_TOKEN, если репозиторию выдан доступ к пакетам @sirilcms/* (Package settings → Manage Actions access)
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN || secrets.GITHUB_TOKEN }}
+
+jobs:
+  check:
+    name: Typecheck, build, migrations drift
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: payload
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: payload
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U payload"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PAYLOAD_SECRET: ci-secret-at-least-32-characters-long
+      PAYLOAD_DB_URI: postgresql://payload:dev@localhost:5432/payload
+      PAYLOAD_URL: http://localhost:3001
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: "@sirilcms"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm migrations:sync
+      - run: pnpm migrate
+      - name: Drift check (схема == закоммиченные миграции проекта)
+        run: |
+          dir=admin/src/migrations
+          before=$(ls $dir | wc -l)
+          echo "n" | pnpm migrate:generate
+          if [ "$(ls $dir | wc -l)" != "$before" ]; then
+            echo "::error::Schema drift: закоммитьте новую миграцию проекта (pnpm migrate:generate)"
+            exit 1
+          fi
+      - run: pnpm --filter {{name}}-admin generate:types
+      - run: pnpm typecheck
+      - run: pnpm build

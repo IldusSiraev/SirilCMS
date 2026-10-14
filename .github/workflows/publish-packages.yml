@@ -56,14 +56,14 @@ jobs:
       - name: Verify package contents (pack)
         run: |
           mkdir -p /tmp/packs
-          for d in contracts web admin; do (cd packages/$d && pnpm pack --pack-destination /tmp/packs); done
+          for d in contracts web admin create-siril; do (cd packages/$d && pnpm pack --pack-destination /tmp/packs); done
           for t in /tmp/packs/*.tgz; do echo "== $t"; tar -tzf "$t" | head -n 15; done
 
       - name: Publish
         if: ${{ github.event_name == 'push' || inputs.dry_run == false }}
         run: |
           # contracts первым: web/admin зависят от него (workspace:* заменяется на точную версию при pack/publish)
-          for d in contracts web admin; do
+          for d in contracts web admin create-siril; do
             (cd packages/$d && pnpm publish --no-git-checks)
           done
         env:

@@ -1,3 +1,4 @@
+import { defineEventHandler, setHeader } from '#imports'
 import { getCache, setCache } from '../utils/page-cache'
 import { recordCacheHit, recordCacheMiss } from '../utils/metrics'
 
