@@ -7,6 +7,7 @@
 ## [Unreleased]
 
 ### Changed
+- `pnpm build:packages` — `scripts/build-packages.mjs` с межпроцессной блокировкой: параллельные postinstall'ы web-приложений при `pnpm install` больше не собирают пакеты одновременно (гонка по `dist`).
 - Подпись блока в редакторе страниц — `name` из контракта (раньше Payload выводил её из `slug`: «Dev Intro»).
 - Шаблон проекта: `migrate:generate` сам правит импорт типов в сгенерированных миграциях (`admin/scripts/fix-migration-imports.mjs`) — Payload генерирует `import { MigrateUpArgs, … }`, на котором `migrate` падает.
 
