@@ -62,6 +62,8 @@ export function makePages(opts: { adminUiBase?: string } = {}): CollectionConfig
         label: { ru: 'Секции', en: 'Sections' },
         blocks: BLOCKS.map(def => ({
           slug: def.type,
+          // Подпись блока в редакторе = имя из контракта (иначе Payload берёт её из slug: «Dev Intro»)
+          labels: { singular: def.name, plural: def.name },
           fields: withRichTextHtml(toPayloadBlockFields(def, { adminUiBase: base }) as Field[]),
         })),
       },

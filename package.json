@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@11.24.0",
   "scripts": {
-    "build:packages": "pnpm --filter @sirilcms/contracts build && pnpm --filter @sirilcms/web build && pnpm --filter @sirilcms/admin build",
+    "build:packages": "node scripts/build-packages.mjs",
     "prepare": "pnpm build:packages",
     "dev:pg": "node infra/scripts/dev-pg.mjs",
     "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @sirilcms/reference-web dev\" \"pnpm --filter @sirilcms/reference-admin dev\"",

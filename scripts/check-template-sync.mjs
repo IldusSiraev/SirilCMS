@@ -24,6 +24,7 @@ export const SHARED = [
   ['admin/tsconfig.json'],
   ['admin/scripts/ts-loader/index.mjs'],
   ['admin/scripts/ts-loader/loader.mjs'],
+  ['admin/scripts/fix-migration-imports.mjs'],
   ['web/app/app.vue'],
   ['web/app/error.vue'],
   ['web/tsconfig.json'],
