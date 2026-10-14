@@ -38,3 +38,14 @@ describe('sirilAdminConfig', () => {
     })
   })
 })
+
+describe('подписи блоков в редакторе', () => {
+  it('label блока = name из контракта, а не slug', () => {
+    const cases = { type: 'cases', name: 'Кейсы клиента', variants: [{ id: 'card', name: 'Card', fields: [] }] }
+    const r = sirilAdminConfig({ blocks: [cases] })
+    const pages: any = r.collections.find((c: any) => c.slug === 'pages')
+    const sections = pages.fields.find((f: any) => f.name === 'sections')
+    expect(sections.blocks.find((b: any) => b.slug === 'cases').labels).toEqual({ singular: 'Кейсы клиента', plural: 'Кейсы клиента' })
+    resetExtensions()
+  })
+})

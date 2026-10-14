@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### Changed
+- Подпись блока в редакторе страниц — `name` из контракта (раньше Payload выводил её из `slug`: «Dev Intro»).
+- Шаблон проекта: `migrate:generate` сам правит импорт типов в сгенерированных миграциях (`admin/scripts/fix-migration-imports.mjs`) — Payload генерирует `import { MigrateUpArgs, … }`, на котором `migrate` падает.
+
 ### Fixed
 - `@sirilcms/web`: приложение не гидрировалось в браузере (меню, копирование, подсветка аннотаций не работали, SSR при этом был в порядке) — Nuxt подхватывал `dist/runtime/**/plugins/*.d.ts` как плагин («does not provide an export named default»). После сборки декларации внутри `dist/runtime` удаляются (`packages/web/scripts/clean-runtime-dts.mjs`). Найдено на пилотном проекте в браузере; в CI добавлена проверка отсутствия `.d.ts` в runtime.
 
