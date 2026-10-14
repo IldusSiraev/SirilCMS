@@ -6,6 +6,8 @@
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-10-14
+
 ### Added
 - **`@sirilcms/create-siril`** — генератор проекта на движке: `npx @sirilcms/create-siril <name> [--git]` создаёт репозиторий из `templates/project` (admin + web + `siril.extensions.ts`, CI, Dockerfile'ы, README). Версия генератора = версия движка (lockstep); `--engine-source <dir>` ставит движок из локальных tgz (проверка до публикации). Шаблон не содержит демо-контента.
 - CI-джоб **Template freshness**: scaffold из текущего коммита → установка упакованных пакетов (как у потребителя вне монорепо) → `setup`, typecheck, build, migrate, drift-check, запуск admin+web, `scripts/verify-scaffold.mjs`. `scripts/check-template-sync.mjs` (в `pnpm lint`) держит обвязку шаблона и `examples/minimal-project` идентичными.
