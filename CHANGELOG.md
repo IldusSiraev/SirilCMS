@@ -6,6 +6,8 @@
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-10-14
+
 ### Fixed
 - **Пакеты `@sirilcms/web` и `@sirilcms/admin` теперь компилируются и публикуются как `dist/`** (раньше — исходники TS: версия 0.5.0 не работала у потребителя вне монорепо — Payload CLI отказывался грузить TS из `node_modules`, Nitro не транспилировал серверные роуты, `next build` падал на type-check). `@sirilcms/admin` больше не импортирует типы из `apps/reference-admin/payload-types` (свои структурные типы в `src/types/payload-shapes.ts`). Проверено установкой из `pnpm pack`-tarball'ов в проект вне монорепо: `migrations:sync`, `generate:importmap`, `typecheck`, `next build`, `nuxt build`.
 
