@@ -1,0 +1,13 @@
+packages:
+  - "."
+  - "admin"
+  - "web"
+
+# Нативные зависимости, которым нужны postinstall-скрипты (pnpm 11 иначе блокирует установку).
+allowBuilds:
+  esbuild: true
+  sharp: true
+
+# pnpm 11 не ставит пакеты младше minimumReleaseAge; пакеты движка выпускаются нами — доверяем им сразу.
+minimumReleaseAgeExclude:
+  - "@sirilcms/*"

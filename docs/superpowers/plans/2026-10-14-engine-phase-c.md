@@ -15,7 +15,7 @@
 ## Задачи
 
 - [x] **C0.** Компиляция пакетов, фикс типов, `build:packages`, проверка из tarball'ов вне монорепо (PR).
-- [ ] **C1.** `templates/project/` — чистый шаблон (без демо-контента) на основе `examples/minimal-project`: плейсхолдеры `{{name}}`, зависимости `@sirilcms/*` по версии движка, `.npmrc` (GitHub Packages), `pnpm-workspace.yaml` (`allowBuilds`, `overrides`-секция не нужна), Dockerfile'ы, CI проекта, README.
-- [ ] **C2.** `packages/create-siril`: bin `create-siril <name> [--git]`, копирование шаблона, подстановка токенов, валидация имени (TDD).
-- [ ] **C3.** CI «template freshness»: scaffold → установка из tarball'ов текущего коммита → migrate → build → `verify`.
+- [x] **C1.** `templates/project/` — чистый шаблон (без демо-контента) на основе `examples/minimal-project`: плейсхолдеры `{{name}}`, зависимости `@sirilcms/*` по версии движка, `.npmrc` (GitHub Packages), `pnpm-workspace.yaml` (`allowBuilds`, `overrides`-секция не нужна), Dockerfile'ы, CI проекта, README.
+- [x] **C2.** `packages/create-siril`: bin `create-siril <name> [--git]`, копирование шаблона, подстановка токенов, валидация имени (TDD).
+- [x] **C3.** CI «template freshness»: scaffold → установка из tarball'ов текущего коммита → migrate → build → `verify`.
 - [ ] **C4.** Пилот: реальный клиентский сайт из шаблона (по HTML-шаблону клиента, `html_templates/` в репо), замер времени против «копируй репо и правь»; одно обновление ядра через `docs/extension-api.md §5`.

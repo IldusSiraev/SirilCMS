@@ -1,3 +1,4 @@
+import { defineEventHandler, setHeader } from '#imports'
 import { getCacheMetrics } from '../utils/metrics'
 
 // Prometheus text exposition format (https://prometheus.io/docs/instrument/exposition_formats/).

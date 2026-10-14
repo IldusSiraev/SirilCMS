@@ -10,6 +10,7 @@ SirilCMS — headless CMS for landing sites: page builder from blocks + themes +
 |---|---|---|
 | `packages/contracts` | `@sirilcms/contracts` — SSOT: block/theme/form-field contracts (types, registry, `to-payload.ts`, `resolve.ts`) | — |
 | `packages/web` | `@sirilcms/web` — Nuxt module: runtime UI (blocks, layouts), server middleware/cache/purge API | — |
+| `packages/create-siril` | `@sirilcms/create-siril` — project generator (`npx @sirilcms/create-siril <name>`), bundles `templates/project` | — |
 | `packages/admin` | `@sirilcms/admin` — Payload extension: collections/endpoints/access/admin-ui + canonical migrations | — |
 | `apps/reference-web` | `@sirilcms/reference-web` — public site: thin Nuxt 4 reference app (`nuxt build`), cache, purge API | 3000 |
 | `apps/reference-admin` | `@sirilcms/reference-admin` — builder: thin Payload 3 app on Next.js 16 (payload.config, seed), PostgreSQL | 3001 |

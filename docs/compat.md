@@ -1,6 +1,6 @@
 # Совместимость версий
 
-Версии `@sirilcms/contracts`, `@sirilcms/web`, `@sirilcms/admin` — **lockstep** (одна версия на всех). Проект должен использовать три пакета одной версии; смешивать версии нельзя.
+Версии `@sirilcms/contracts`, `@sirilcms/web`, `@sirilcms/admin`, `@sirilcms/create-siril` — **lockstep** (одна версия на всех). Проект должен использовать три пакета одной версии; смешивать версии нельзя.
 
 | Движок (`@sirilcms/*`) | Payload / `@payloadcms/*` | Next.js | Nuxt | Node | Postgres | Шаблон проекта |
 |---|---|---|---|---|---|---|

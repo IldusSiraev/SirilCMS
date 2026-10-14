@@ -33,6 +33,7 @@ git push origin main v0.3.0                # push тега запускает п
 | `@sirilcms/contracts` | `dist/` | `unbuild` |
 | `@sirilcms/web` | `dist/` (Nuxt-модуль + runtime: `.vue`, `.js`, CSS тем) | `nuxt-module-build build` (`@nuxt/module-builder`) |
 | `@sirilcms/admin` | `dist/` (JS + `.d.ts`, admin-ui, core-миграции `.js`/`.json`) + `bin/siril-migrations-sync` | `unbuild` (mkdist) |
+| `@sirilcms/create-siril` | `bin/`, `src/`, `template/` (копия `templates/project`, кладётся `prepack`) | — (чистый JS) |
 
 Все три пакета **компилируются** (`pnpm build:packages`; он же запускается в `prepare`/`postinstall` монорепо). Версия 0.5.0 вышла с исходниками TypeScript и для проекта вне монорепо **непригодна**: Payload CLI не загружает TS из `node_modules` (`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`), Nitro не транспилирует серверные роуты модуля, а `@sirilcms/admin` импортировал типы по пути `apps/reference-admin/…`. Исправлено в 0.6.0.
 
@@ -46,14 +47,17 @@ git push origin main v0.3.0                # push тега запускает п
 
 ## 5. Подключение пакетов в проекте
 
-В корне проекта `.npmrc` (токен — `read:packages` PAT или `NODE_AUTH_TOKEN` в CI; в репозиторий токен не коммитить):
+Проще всего — создать проект генератором: `npx @sirilcms/create-siril <name>` (шаблон уже содержит нужные `.npmrc` и `pnpm-workspace.yaml`).
 
-```ini
-@sirilcms:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
-```
+Вручную, в существующем проекте:
 
-Затем `pnpm add @sirilcms/contracts @sirilcms/web @sirilcms/admin` (одной версии) и обновление — [extension-api.md §5](../extension-api.md).
+1. `.npmrc` в корне (**без токена**) — только registry для scope:
+   ```ini
+   @sirilcms:registry=https://npm.pkg.github.com
+   ```
+2. Токен (PAT с `read:packages`) — в **пользовательский** конфиг: `pnpm config set "//npm.pkg.github.com/:_authToken" <PAT>`. pnpm 11 игнорирует `${NODE_AUTH_TOKEN}` в project-level `.npmrc` (защита от утечки токена) — этот способ не работает. В CI токен даёт `actions/setup-node` (`registry-url` + `scope` + `NODE_AUTH_TOKEN`).
+3. В `pnpm-workspace.yaml` проекта: `minimumReleaseAgeExclude: ["@sirilcms/*"]` (pnpm 11 не ставит пакеты младше minimumReleaseAge) и `allowBuilds: { esbuild: true, sharp: true }`.
+4. `pnpm add @sirilcms/contracts @sirilcms/web @sirilcms/admin` (одной версии); обновление — [extension-api.md §5](../extension-api.md).
 
 ## 6. Что проверено, а что нет
 

@@ -1,3 +1,4 @@
+import { defineNitroPlugin } from '#imports'
 import { registerExtensions } from '@sirilcms/contracts'
 import type { SirilExtensions } from '@sirilcms/contracts'
 import extensions from '#siril-registry'

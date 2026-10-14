@@ -1,0 +1,25 @@
+{
+  "name": "{{name}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "{{name}} — сайт на движке SirilCMS",
+  "packageManager": "pnpm@11.24.0",
+  "scripts": {
+    "dev:pg": "docker compose -f docker/compose.dev.yml up -d postgres",
+    "setup": "pnpm --filter {{name}}-admin migrations:sync && pnpm --filter {{name}}-admin generate:importmap && pnpm --filter {{name}}-admin generate:types",
+    "dev": "concurrently -n web,admin -c cyan,magenta \"pnpm --filter {{name}}-web dev\" \"pnpm --filter {{name}}-admin dev\"",
+    "build": "pnpm --filter {{name}}-admin build && pnpm --filter {{name}}-web build",
+    "typecheck": "pnpm -r --no-bail typecheck",
+    "migrate": "pnpm --filter {{name}}-admin migrate",
+    "migrate:generate": "pnpm --filter {{name}}-admin migrate:generate",
+    "migrations:sync": "pnpm --filter {{name}}-admin migrations:sync"
+  },
+  "dependencies": {
+    "@sirilcms/contracts": "{{engineVersion}}"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "typescript": "^5"
+  }
+}
