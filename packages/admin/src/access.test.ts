@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { canScope, publishedOnlyReadAccess, resolveSiteId } from './access/site-scope'
+import { Categories } from './collections/categories'
 
 it('owner видит всё', () => {
   expect(canScope({ role: 'owner' }, 1)).toBe(true)
@@ -74,5 +75,25 @@ describe('publishedOnlyReadAccess (draft filter for pages/posts)', () => {
     expect(publishedOnlyReadAccess({ role: 'editor', site: 2 }, { draft: true })).toEqual({
       site: { equals: 2 },
     })
+  })
+})
+
+describe('Categories access', () => {
+  type AccessFn = (args: unknown) => unknown
+  const access = Categories.access as Record<'read' | 'create' | 'update' | 'delete', AccessFn>
+  const anon = { req: { user: null } }
+  const editor = { req: { user: { role: 'editor', site: 2 } } }
+
+  // Category names are rendered on the public site (post cards, blog filter); the web
+  // reads posts anonymously with depth=1, so an auth-only read leaves `category` a bare id.
+  it('read is public — anonymous requests are allowed', () => {
+    expect(access.read(anon)).toBe(true)
+  })
+
+  it('create/update/delete still require a logged-in user', () => {
+    for (const op of ['create', 'update', 'delete'] as const) {
+      expect(access[op](anon)).toBe(false)
+      expect(access[op](editor)).toBe(true)
+    }
   })
 })

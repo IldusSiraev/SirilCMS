@@ -93,6 +93,8 @@ pnpm test                                  # 62 теста (blocks 17 / admin 24
 
 `/blog` — список, `/blog/[slug]` — пост. Посты — rich-text + SEO.
 
+Рубрики (`categories`) читаются публично (`access.read: () => true`): их имена выводятся на сайте (карточки постов, фильтр блога), а web читает посты без токена с `depth=1` — при закрытом чтении связь `category` пришла бы голым id. Создание/изменение/удаление — только авторизованным.
+
 ### 3.6 Медиа (Media)
 
 Аплоады в admin. На web — абсолютные URL через `NUXT_PUBLIC_MEDIA_BASE` (dev: `http://localhost:3001`, prod: `https://admin.<domain>`), хелпер `packages/web/src/runtime/app/utils/media.ts`. Runtime-переменная (Nitro `applyEnv`, `infra/docker-compose.prod.yml` → `web.environment`) — не build-arg, менять и рестартовать без пересборки образа.

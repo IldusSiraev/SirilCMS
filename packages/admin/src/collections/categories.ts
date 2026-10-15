@@ -11,7 +11,8 @@ export const Categories: CollectionConfig = {
     defaultColumns: ['name', 'slug', 'site'],
   },
   access: {
-    read: ({ req: { user } }) => !!user,
+    // Публичное: имя рубрики показывается на сайте (карточки постов, фильтр блога), web читает без токена.
+    read: () => true,
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
     delete: ({ req: { user } }) => !!user,
