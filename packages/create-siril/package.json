@@ -1,6 +1,6 @@
 {
   "name": "@sirilcms/create-siril",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Генератор проекта на движке SirilCMS: npx @sirilcms/create-siril <name>",
   "license": "UNLICENSED",
   "type": "module",

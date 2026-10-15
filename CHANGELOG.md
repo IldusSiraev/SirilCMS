@@ -6,6 +6,8 @@
 
 ## [Unreleased]
 
+## [0.7.1] — 2026-10-15
+
 ### Changed
 - `pnpm build:packages` — `scripts/build-packages.mjs` с межпроцессной блокировкой: параллельные postinstall'ы web-приложений при `pnpm install` больше не собирают пакеты одновременно (гонка по `dist`).
 - Подпись блока в редакторе страниц — `name` из контракта (раньше Payload выводил её из `slug`: «Dev Intro»).
