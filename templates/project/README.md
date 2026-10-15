@@ -40,3 +40,5 @@ pnpm typecheck && pnpm build
 ## Docker
 
 `docker/admin.Dockerfile`, `docker/web.Dockerfile` (сборка с BuildKit-секретом `npm_token`, команды сборки — в шапке файлов). Образы **не прогонялись автоматически** — проверьте сборку при первом использовании.
+
+Собранный web на рантайме читает `runtimeConfig` только из `NUXT_`-переменных: в окружении web-контейнера задайте `NUXT_PURGE_TOKEN` (= `PURGE_TOKEN` админки) и, если админка не на `http://admin:3001`, `NUXT_PAYLOAD_URL`. Голый `PURGE_TOKEN` web не видит — останется build-time `dev-purge-token`, purge при публикации получит 401 и обновления появятся только через 5 мин TTL кэша (подробнее — `docs/runbooks/prod.md` §2.3 движка).

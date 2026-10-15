@@ -9,7 +9,7 @@
     "dev:all": "pnpm dev:pg && concurrently -n web,admin -c cyan,magenta \"pnpm --filter @sirilcms/reference-web dev\" \"pnpm --filter @sirilcms/reference-admin dev\"",
     "seed": "pnpm --filter @sirilcms/reference-admin seed",
     "test": "pnpm -r --no-bail test",
-    "lint": "eslint . && node scripts/check-payload-versions.mjs && node scripts/check-no-core-copies.mjs && node scripts/check-template-sync.mjs",
+    "lint": "eslint . && node scripts/check-payload-versions.mjs && node scripts/check-no-core-copies.mjs && node scripts/check-template-sync.mjs && node scripts/check-prod-compose-env.mjs",
     "typecheck": "pnpm -r --no-bail typecheck"
   },
   "devDependencies": {

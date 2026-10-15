@@ -176,7 +176,7 @@ pnpm migrate:generate    # создаёт ТОЛЬКО проектную раз
 
 ## 6. Окружение и запуск
 
-Переменные (полный список — `.env.example` движка): `PAYLOAD_SECRET` (≥32 символа), `PAYLOAD_DB_URI`, `PAYLOAD_URL` (origin админки — **должен совпадать с адресом, по которому её открывают**, иначе save/publish падают на CSRF), `PURGE_TOKEN` (общий у admin и web), `NUXT_URL` (адрес web для purge из admin), `NUXT_PUBLIC_MEDIA_BASE` (origin админки для картинок), для прод: `DISABLE_FIRST_USER_SIGNUP=true`, `INITIAL_OWNER_EMAIL/PASSWORD`.
+Переменные (полный список — `.env.example` движка): `PAYLOAD_SECRET` (≥32 символа), `PAYLOAD_DB_URI`, `PAYLOAD_URL` (origin админки — **должен совпадать с адресом, по которому её открывают**, иначе save/publish падают на CSRF), `PURGE_TOKEN` (общий у admin и web; собранному web передаётся как `NUXT_PURGE_TOKEN` — голые имена web на рантайме не читает), `NUXT_URL` (адрес web для purge из admin), `NUXT_PUBLIC_MEDIA_BASE` (origin админки для картинок), для прод: `DISABLE_FIRST_USER_SIGNUP=true`, `INITIAL_OWNER_EMAIL/PASSWORD`.
 
 Первый запуск: `pnpm migrations:sync && pnpm migrate`, затем `pnpm generate:importmap` и `pnpm generate:types` (в репозиторий коммитятся `importMap.js` и `payload-types.ts`), `pnpm dev` в `admin/` и `web/`. `Payload` в dev сам синхронизирует схему (push) — **не полагайтесь на это**: прод применяет только миграции, поэтому всегда генерируйте и коммитьте миграцию.
 
