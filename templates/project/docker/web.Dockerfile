@@ -7,7 +7,9 @@ RUN --mount=type=secret,id=npm_token \
     printf '//npm.pkg.github.com/:_authToken=%s\n' "$(cat /run/secrets/npm_token)" > /root/.npmrc \
     && pnpm install --frozen-lockfile \
     && rm -f /root/.npmrc
-# PAYLOAD_URL — внутренний адрес админки в сети compose; запекается при сборке, не секрет
+# PAYLOAD_URL — внутренний адрес админки в сети compose; запекается при сборке, не секрет.
+# Рантайм перекрывает runtimeConfig только NUXT_-переменными: передайте контейнеру NUXT_PURGE_TOKEN (= PURGE_TOKEN
+# админки; голый PURGE_TOKEN web не видит) и при другом адресе админки — NUXT_PAYLOAD_URL.
 ARG PAYLOAD_URL=http://admin:3001
 ENV PAYLOAD_URL=$PAYLOAD_URL
 RUN pnpm --filter {{name}}-web build

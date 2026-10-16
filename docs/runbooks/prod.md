@@ -35,7 +35,7 @@ make -C infra init SITE_DOMAIN=client.example.com
 | `POSTGRES_PASSWORD` | генерируется `init` (обязателен, guard `:?set POSTGRES_PASSWORD`) |
 | `POSTGRES_DB_URI` | генерируется `init` (нужен только при ручном запуске `backup.sh` — `make backup` его не читает из `.env` автоматически, см. §4) |
 | `PAYLOAD_SECRET` | генерируется `init`, **32+ символов** |
-| `PURGE_TOKEN` | генерируется `init` — секрет между admin и web для `/api/purge`, дефолт из `.env.example` (`dev-purge-token`) в проде недопустим |
+| `PURGE_TOKEN` | генерируется `init` — секрет между admin и web для `/api/purge`, дефолт из `.env.example` (`dev-purge-token`) в проде недопустим. Web получает его как `NUXT_PURGE_TOKEN` (compose подставляет сам, см. §2.3) |
 
 `POSTGRES_USER`/`POSTGRES_DB` можно оставить `payload` (default в compose).
 
@@ -68,6 +68,17 @@ docker compose -f infra/docker-compose.prod.yml --env-file .env up -d --pull alw
 ### 2.2 Origin админки (CSRF)
 
 Payload принимает cookie-аутентификацию только если `Origin` запроса совпадает с `serverURL`. Несовпадение даёт коварный сбой: GET работает, а save/publish молча падают 401/403. В prod-compose `PAYLOAD_URL` для `admin` задан явно как `https://admin.${SITE_DOMAIN}` (значение из `.env` перекрывается — там dev-дефолт `localhost:3001`). Админка должна открываться ровно по этому адресу (https, домен `admin.<SITE_DOMAIN>`); заход по IP/`:3001`/другому домену → save не сработает. Если нужен другой адрес админки — правьте `PAYLOAD_URL` в `docker-compose.prod.yml`.
+
+### 2.3 Runtime-переменные web (`NUXT_`-префикс)
+
+Web — собранный Nuxt (`.output`): `runtimeConfig` из `nuxt.config.ts` вычисляется при **сборке образа**, а на старте контейнера перекрывается только переменными с префиксом `NUXT_` (`PURGE_TOKEN` → `NUXT_PURGE_TOKEN`, `PAYLOAD_URL` → `NUXT_PAYLOAD_URL`, `public.MEDIA_BASE` → `NUXT_PUBLIC_MEDIA_BASE`). Голые `PURGE_TOKEN`/`PAYLOAD_URL` из `.env` web не видит. `docker-compose.prod.yml` задаёт web `NUXT_PURGE_TOKEN: ${PURGE_TOKEN}` и `NUXT_PAYLOAD_URL: http://admin:3001` — в `.env` достаточно одного `PURGE_TOKEN`, общего с admin.
+
+Если web запускается своим compose/хостингом (клиентский проект, `create-siril`) — задайте `NUXT_PURGE_TOKEN` (= `PURGE_TOKEN` admin) явно. Без него web остаётся с build-time `dev-purge-token`: purge при публикации получает 401 (в логе admin `[purge] failed … HTTP 401`), обновления видны только через TTL кэша, а дефолтный токен принимается кем угодно. Проверка на сервере:
+
+```bash
+# 200 — токен совпадает; 401 — web живёт с другим (build-time) токеном
+docker compose -f infra/docker-compose.prod.yml --env-file .env exec web   sh -c 'wget -q -S -O- --header="Authorization: Bearer $NUXT_PURGE_TOKEN" --post-data="" http://localhost:3000/api/purge 2>&1 | head -1'
+```
 
 ## 3. Проверка (smoke)
 
@@ -140,7 +151,7 @@ make -C infra up
 | Media (картинки) не грузятся | media URL = `https://admin.<domain>/api/media/file/…` (`NUXT_PUBLIC_MEDIA_BASE` — runtime-переменная web, по умолчанию derives из `SITE_DOMAIN`; можно переопределить явно в `.env`); DNS `admin.*` должен резолвиться; изменить `.env` и `make -C infra up` (рестарт, без пересборки) |
 | 503 от Let's Encrypt | порты 80/443 не публичны или DNS A не указывает на сервер; staging: `docker compose run --rm caddy caddy cert-expiring ...` / домены временно в `tls internal` |
 | Admin не стартует | `make logs admin` — типично `PAYLOAD_SECRET` < 32 символов |
-| Изменения в контенте видны с задержкой | HTML-кэш web: TTL 5 мин (env `ROUTE_TTL` в web, сек). Нормально: публичация из админки шлёт purge (`POST web/api/purge`, Bearer `PURGE_TOKEN`) — страница обносится мгновенно. Если не обносится: заголовок `x-siril-cache: HIT` + проверьте `NUXT_URL=http://web:3000` в admin; провал purge теперь пишется в лог admin (`console.error('[purge] ...')`, было полностью тихо) |
+| Изменения в контенте видны с задержкой | HTML-кэш web: TTL 5 мин (env `ROUTE_TTL` в web, сек). Нормально: публичация из админки шлёт purge (`POST web/api/purge`, Bearer `PURGE_TOKEN`) — страница обносится мгновенно. Если не обносится: заголовок `x-siril-cache: HIT` + проверьте `NUXT_URL=http://web:3000` в admin и `NUXT_PURGE_TOKEN` в web (§2.3, `HTTP 401` в логе admin = токен web не совпадает); провал purge теперь пишется в лог admin (`console.error('[purge] ...')`, было полностью тихо) |
 
 ## 6. Что **не** входит в v1 (carry-overs)
 

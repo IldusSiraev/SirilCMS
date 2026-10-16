@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+### ⚠ Breaking / ручные шаги
+- Клиентские проекты (`create-siril`) со своим prod-compose/хостингом: в окружение web-контейнера добавить `NUXT_PURGE_TOKEN=<тот же PURGE_TOKEN, что у admin>` (и `NUXT_PAYLOAD_URL`, если админка не на запечённом при сборке адресе). Проверка — `docs/runbooks/prod.md` §2.3. Стек движка (`infra/docker-compose.prod.yml`) ручных шагов не требует: обновите файл и `make -C infra up`.
+
+### Fixed
+- Prod: публикация не сбрасывала HTML-кэш сайта — purge из admin получал 401, обновления появлялись только через 5 мин TTL. Собранный web (`.output`) на рантайме перекрывает `runtimeConfig` только из `NUXT_`-переменных, а prod-compose передавал ему голый `PURGE_TOKEN`, так что web оставался с build-time `dev-purge-token` (и принимал его от кого угодно). `infra/docker-compose.prod.yml` теперь задаёт web `NUXT_PURGE_TOKEN: ${PURGE_TOKEN}` и `NUXT_PAYLOAD_URL: http://admin:3001`; задокументировано в `.env.example`, `docs/runbooks/prod.md` §2.3 и в шаблоне проекта (`.env.example`, `docker/web.Dockerfile`, README). Регрессия ловится `scripts/check-prod-compose-env.mjs` (в `pnpm lint`) и runtime-smoke собранного web в CI (`scripts/check-web-runtime-env.mjs`).
+
 ## [0.7.3] — 2026-10-15
 
 ### Fixed

@@ -47,6 +47,11 @@ services:
     env_file: ${ENV_FILE:-../.env}
     restart: unless-stopped
     environment:
+      # Собранный Nuxt (.output) на старте перекрывает runtimeConfig только из NUXT_-переменных: голые
+      # PURGE_TOKEN/PAYLOAD_URL из env_file web не видит и остаётся с build-time значениями (dev-purge-token:
+      # purge из admin получает 401, опубликованное видно только через 5 мин TTL). Токен — тот же, что у admin.
+      NUXT_PURGE_TOKEN: ${PURGE_TOKEN:?set PURGE_TOKEN}
+      NUXT_PAYLOAD_URL: 'http://admin:3001'
       NUXT_PUBLIC_MEDIA_BASE: ${NUXT_PUBLIC_MEDIA_BASE:-https://admin.${SITE_DOMAIN:?SITE_DOMAIN is required}}
     depends_on: [ admin ]
   caddy:
